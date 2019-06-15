@@ -6,11 +6,11 @@ Home-page: https://github.com/yogesh-developer/sql-tools-lib
 Author: Yogesh Aggarwal
 Author-email: developeryogeshgit@gmail.com
 License: GNU
-Download-URL: https://github.com/yogesh-developer/sql-tools-lib/archive/sql_operation-0.1.tar.gz
+Download-URL: https://github.com/yogesh-developer/sql-tools-lib/dist/sql_operation-0.1.2.tar.gz
 Description: UNKNOWN
 Keywords: SQL,DATABASES,RECORDS
 Platform: UNKNOWN
-Classifier: Development Status :: 3 - Alpha
+Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
 Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.4
