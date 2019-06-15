@@ -1,5 +1,4 @@
 import sql_tools
 
-a = sql_tools.Sqlite3(databPath="hh")
-print(a.databPath)
-
+datab = sql_tools.Sqlite3(databPath="test-db.db")
+datab.execute("Cr")
