@@ -10,25 +10,11 @@ path()
 
 import os
 import shutil
+import pathlib
 import sqlite3
 
 import numpy as np
 
-# def copyDatabase(self, newPath="", database=""):
-#     if newPath:
-#         newPath = os.path._getfullpathname(newPath)
-#     else:
-#         newPath = os.getcwd()
-
-#     if not database:
-#         database = os.path.basename(self.databPath)
-#     else:
-#         database = os.path.basename(database)
-
-#     try:
-#         shutil.copy(self.databPath,  f"{newPath}\\copy_{database}")
-#     except Exception as e:
-#         return f"SQL ERROR ---> {e}"
 
 class Sqlite3:
     def __init__(self, databPath=""):
@@ -108,8 +94,12 @@ class Sqlite3:
         else:
             return [[""]]
 
-    def createDatabase(self, path):
+    def createDatabase(self, path=""):
+        if not path:
+            if not self.databPath:
+                path = f"{os.getcwd()}\\datab.db"
         self.execute("", databPath=path)
+        return True
 
     def moveDatabase(self, newPath, oldPath=""):
         if not oldPath:
@@ -120,30 +110,55 @@ class Sqlite3:
         newPath = os.path._getfullpathname(newPath)
         oldPath = os.path._getfullpathname(oldPath)
 
-        try:
-            os.rename(oldPath, newPath)
-        except Exception as e:
-            return e
+        os.rename(oldPath, newPath)
 
-    def copyDatabase(self, newPath, oldPath=""):  # PENDING
-        if not oldPath:
-            oldPath = os.getcwd()
-        if not newPath:
-            return "Please provide the new path of the database"
+    def copyDatabase(self, newPath="", oldPath=""):
+        # New path condition
+        if newPath:
+            if not os.path.isfile(newPath):
+                try:
+                    self.createDatabase(path=newPath)
+                    if not os.path.isfile(newPath):
+                        raise FileNotFoundError("The specified file/directory doesn't exists")
+                except:
+                    raise FileNotFoundError("The specified file/directory doesn't exists")
+            newPath = os.path._getfullpathname(newPath)
+        else:
+            newPath = os.getcwd()
+
+        # Old path condition
+        if oldPath:
+            if not os.path.isfile(oldPath):
+                raise FileNotFoundError("The specified file/directory doesn't exists")
+            oldPath = os.path._getfullpathname(oldPath)
+        else:
+            if not self.databPath:
+                raise ValueError("Please provide the database path")
+            else:
+                oldPath = self.databPath
 
         try:
             shutil.copy(oldPath, newPath)
+            return True
         except Exception as e:
-            return e
+            if " are the same file" in str(e):
+                newPath = f"{pathlib.PurePath(newPath).parents[0]}\copy_{os.path.basename(newPath)}"
+                shutil.copy(oldPath, newPath)
+                return True
+            else:
+                print(e)
+
 
     def delDatabase(self, databPath=""):
         if not databPath:
             databPath = self.databPath
 
-        try:
-            os.remove(os.path._getfullpathname(databPath))
-        except Exception as e:
-            return e
+        os.remove(os.path._getfullpathname(databPath))
+
+if __name__ == "__main__":
+    print("Welcome to the SQL Tools package.")
+    with open("HELP", "r") as f:
+        print(f.read())
 
 
 class Mysql():

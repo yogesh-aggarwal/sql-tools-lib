@@ -14,21 +14,6 @@ import sqlite3
 
 import numpy as np
 
-# def copyDatabase(self, newPath="", database=""):
-#     if newPath:
-#         newPath = os.path._getfullpathname(newPath)
-#     else:
-#         newPath = os.getcwd()
-
-#     if not database:
-#         database = os.path.basename(self.databPath)
-#     else:
-#         database = os.path.basename(database)
-
-#     try:
-#         shutil.copy(self.databPath,  f"{newPath}\\copy_{database}")
-#     except Exception as e:
-#         return f"SQL ERROR ---> {e}"
 
 class Sqlite3:
     def __init__(self, databPath=""):
@@ -108,8 +93,12 @@ class Sqlite3:
         else:
             return [[""]]
 
-    def createDatabase(self, path):
+    def createDatabase(self, path=""):
+        if not path:
+            if not self.databPath:
+                path = f"{os.getcwd()}\\datab.db"
         self.execute("", databPath=path)
+        return True
 
     def moveDatabase(self, newPath, oldPath=""):
         if not oldPath:
@@ -120,30 +109,94 @@ class Sqlite3:
         newPath = os.path._getfullpathname(newPath)
         oldPath = os.path._getfullpathname(oldPath)
 
-        try:
-            os.rename(oldPath, newPath)
-        except Exception as e:
-            return e
+        os.rename(oldPath, newPath)
 
-    def copyDatabase(self, newPath, oldPath=""):  # PENDING
-        if not oldPath:
-            oldPath = os.getcwd()
-        if not newPath:
-            return "Please provide the new path of the database"
+    # def copyDatabase(self, newPath="", oldPath="", newName="", delOldDatab=False):
+    #     if newPath:
+    #         newPath = os.path._getfullpathname(newPath)
+    #     else:
+    #         newPath = os.getcwd()
 
+    #     if oldPath:
+    #         oldPath = os.path.basename(oldPath)
+    #     else:
+    #         oldPath = os.path.basename(self.databPath)
+
+    #     if not newName:
+    #         shutil.copy(oldPath, f"{newPath}\\copy_{os.path.basename(oldPath)}")
+    #         return True
+    #     else:
+    #         shutil.copy(oldPath, f"{newPath}\\copy_15935778956426_tokenize_sql_tools_base_tempcopyfile{oldPath}")
+    #         try:
+    #             os.rename(f"{newPath}\\copy_15935778956426_tokenize_sql_tools_base_tempcopyfile{oldPath}",  f"{newPath}\\{newName}")
+    #             return True
+    #         except Exception as e:
+    #             if not delOldDatab:
+    #                 os.remove(f"{newPath}\\copy_15935778956426_tokenize_sql_tools_base_tempcopyfile{oldPath}")
+    #             if delOldDatab:
+    #                 os.remove(f"{newPath}\\{newName}")
+    #                 os.rename(f"{newPath}\\copy_15935778956426_tokenize_sql_tools_base_tempcopyfile{oldPath}",  f"{newPath}\\{newName}")
+    #             else:
+    #                 print(f"---> Please change your database name, a database with same name already exists in the directory provided. ({newPath}{newName})<---")
+    #                 raise e
+
+    def copyDatabase(self, newPath="", oldPath="", newName=""):
+        # New path condition
+        if newPath:
+            newPath = os.path._getfinalpathname(newPath)
+        else:
+            newPath = os.getcwd()
+
+        # Old path condition
+        if oldPath:
+            oldPath = os.path._getfinalpathname(oldPath)
+        else:
+            if not self.databPath:
+                raise ValueError("Please provide the database path")
+            else:
+                oldPath = self.databPath
+        
+        # New name condition
+        if not newName:
+            newName = "sql_tools_temp_357159_copy_database.db"
+        
         try:
             shutil.copy(oldPath, newPath)
         except Exception as e:
-            return e
+            print(e)
+            
+
 
     def delDatabase(self, databPath=""):
         if not databPath:
             databPath = self.databPath
 
-        try:
-            os.remove(os.path._getfullpathname(databPath))
-        except Exception as e:
-            return e
+        os.remove(os.path._getfullpathname(databPath))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class Mysql():
