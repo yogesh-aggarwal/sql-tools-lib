@@ -1,0 +1,18 @@
+Metadata-Version: 1.1
+Name: sql-tools
+Version: 0.1.1
+Summary: An integrative library that contains tools for performing various tasks related to the relations (table records).
+Home-page: https://github.com/yogesh-developer/sql-tools-lib
+Author: Yogesh Aggarwal
+Author-email: developeryogeshgit@gmail.com
+License: GNU
+Download-URL: https://github.com/yogesh-developer/sql-tools-lib/archive/sql_operation-0.1.tar.gz
+Description: UNKNOWN
+Keywords: SQL,DATABASES,RECORDS
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
