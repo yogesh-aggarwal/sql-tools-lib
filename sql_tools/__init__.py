@@ -82,74 +82,21 @@ class Sqlite3:
             result = []
             try:
                 for data_fetched in c.fetchall():
-                    result.append(data_fetched)
+                    print(data_fetched)
+                    for value in data_fetched:
+                        result.append(value)
             except Exception as e:
                 raise ValueError(f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})")
             conn.commit()
             c.close()
             conn.close()
             data.append(result)
-        
-            if splitByColumns:
-                __temp = []
-
-                data = np.array(data)
-                data = np.transpose(data)
-
-                for i in range(len(data)):
-                    __temp.append(data[i].tolist())
-                
-                data = __temp.copy()
-                del __temp
-
-            if data != []:
-                if matrix:
-                    final.append(np.array(data)[0])
-                else:
-                    __temp = []
-                    if inlineData:
-                        for i in range(len(data)):
-                            __temp.append(data[i][0])
-                        data = __temp.copy()
-                        del __temp
-                        
-                        if strToList:
-                            if len(data) == 1:
-                                if data[0][0] == "(" or data[0][0] == "[":
-                                    def strTolst(query):
-                                        intLst = (1, 2, 3, 4, 5, 6, 7, 8, 0)
-
-                                        tempLst = (
-                                            query.replace("[", "", 1)
-                                            .replace("]", "", 1)
-                                            .replace("(", "", 1)
-                                            .replace(")", "", 1)
-                                            .split(", ")
-                                            .copy()
-                                        )
-
-                                        query = []
-                                        for element in tempLst:
-                                            try:
-                                                if float(element) in intLst:
-                                                    query.append(float(element))
-                                                else:
-                                                    query.append(element)
-                                            except:
-                                                query.append(element)
-                                        del intLst, tempLst
-                                        return query
-                                    data = strTolst(data[0])
-                        
-                        final.append(data)
-                    else:
-                        final.append(data)
-            else:
-                final = [[[""]]]
 
         stopTime = time.time()
 
         self.execTime = stopTime-startTime
+
+        return data
 
         return final
 
@@ -416,7 +363,13 @@ class Mysql():
 
 
 if __name__ == "__main__":
-    print("Welcome to the SQL Tools package.")
-    with open("HELP", "r") as f:
-        print(f.read())
+    # print("Welcome to the SQL Tools package.")
+    # with open("HELP", "r") as f:
+    #     print(f.read())
+    datab = Sqlite3(databPath=["hello.db", "test.db"])
+    datab.execute(["DROP TABLE IF EXISTS users;", "DROP TABLE IF EXISTS pwords;"])
+    datab.execute(["CREATE TABLE users(uname TEXT, name TEXT);", "CREATE TABLE pwords(pword TEXT);"])
+    datab.execute(["INSERT INTO users VALUES('yg', 'Yogesh');", "INSERT INTO pwords VALUES('yg@123');"])
+    RESULT = datab.execute(["SELECT * FROM users;", "SELECT * FROM pwords"], matrix=False)
+    print(RESULT)
 
