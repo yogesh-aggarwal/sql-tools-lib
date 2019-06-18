@@ -82,7 +82,6 @@ class Sqlite3:
             result = []
             try:
                 for data_fetched in c.fetchall():
-                    print(data_fetched)
                     for value in data_fetched:
                         result.append(value)
             except Exception as e:
@@ -93,8 +92,25 @@ class Sqlite3:
             data.append(result)
 
         stopTime = time.time()
-
         self.execTime = stopTime-startTime
+
+        # FOR INLINE DATA
+        __temp = []
+        if inlineData:
+            for values in data:
+                for value in values:
+                    __temp.append(value)
+
+        data = __temp.copy()
+        del __temp
+
+
+        # FOR STRtoLIST
+        
+
+
+
+
 
         return data
 
@@ -367,9 +383,9 @@ if __name__ == "__main__":
     # with open("HELP", "r") as f:
     #     print(f.read())
     datab = Sqlite3(databPath=["hello.db", "test.db"])
-    datab.execute(["DROP TABLE IF EXISTS users;", "DROP TABLE IF EXISTS pwords;"])
-    datab.execute(["CREATE TABLE users(uname TEXT, name TEXT);", "CREATE TABLE pwords(pword TEXT);"])
-    datab.execute(["INSERT INTO users VALUES('yg', 'Yogesh');", "INSERT INTO pwords VALUES('yg@123');"])
+    # datab.execute(["DROP TABLE IF EXISTS users;", "DROP TABLE IF EXISTS pwords;"])
+    # datab.execute(["CREATE TABLE users(uname TEXT, name TEXT);", "CREATE TABLE pwords(pword TEXT);"])
+    # datab.execute(["INSERT INTO users VALUES('yg', 'Yogesh');", "INSERT INTO pwords VALUES('yg@123');"])
     RESULT = datab.execute(["SELECT * FROM users;", "SELECT * FROM pwords"], matrix=False)
-    print(RESULT)
+    print(f"RESULT ---> {RESULT}")
 
