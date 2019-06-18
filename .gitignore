@@ -1,3 +1,6 @@
+.vscode
 test.*
-*`test/
+*test/
+garbage.*
+*garbase/
 __pycache__/
