@@ -38,7 +38,7 @@ class Sqlite3:
     def __time__(self):
         return f"Wall time: {self.execTime}s"
 
-    def execute(self, command, databPath="", matrix=True, inlineData=False, strToList=False, splitByColumns=False):
+    def execute(self, command, databPath="", matrix=True, inlineData=False, splitByColumns=False):
         import time
 
         startTime = time.time()
@@ -71,7 +71,6 @@ class Sqlite3:
         del __temp_lst__
 
         data = []
-        final = []
         for i in range(len(databPath)):
             conn = sqlite3.connect(databPath[i])
             c = conn.cursor()
@@ -82,8 +81,7 @@ class Sqlite3:
             result = []
             try:
                 for data_fetched in c.fetchall():
-                    for value in data_fetched:
-                        result.append(value)
+                    result.append(data_fetched)
             except Exception as e:
                 raise ValueError(f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})")
             conn.commit()
@@ -95,26 +93,33 @@ class Sqlite3:
         self.execTime = stopTime-startTime
 
         # FOR INLINE DATA
+        inlineData = False
         __temp = []
         if inlineData:
             for values in data:
                 for value in values:
                     __temp.append(value)
-
-        data = __temp.copy()
+            data = __temp.copy()
         del __temp
 
 
-        # FOR STRtoLIST
-        
+        # FOR SPLITBYCOLUMNS
+        __temp = []
+        if splitByColumns:
+            __temp = []  
+            print(data)
+            for database in data:
+                # print(database)
+                __temp.append(list(zip(*database)))
+            data = __temp.copy()
+        del __temp
 
 
-
-
-
-        return data
-
-        return final
+        # FOR MATRIX
+        if matrix:
+            return np.array(data)
+        else:
+            return data
 
     def createDatabase(self, path=""):
         if not path:
@@ -210,13 +215,17 @@ class Sqlite3:
         
         result = []
         for i in range(len(tableName)):
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0][0]:
-                result.append(len(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0][0]))
-            else:
-                raise ValueError(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0][0])
+            try:
+                if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False):
+                    result.append(len(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0]))
+                else:
+                    raise ValueError(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0])
+            except:
+                result.append(0)
+
         return result
     
-    def getNoOfColumns(self, tableName="", databPath=""):
+    def getNoOfColumns(self, tableName="", databPath="", returnDict=False):
         if not databPath:
             databPath = self.databPath
         else:
@@ -247,13 +256,24 @@ class Sqlite3:
         
         result = []
         for i in range(len(tableName)):
-            if "ERROR IN SQL QUERY --->" not in self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]:
-                result.append(len(self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]))
-            else:
-                raise ValueError(self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0])
+            try:
+                queryResult = self.getColumnNames(tableName=tableName[i], databPath=databPath[i])
+            except Exception as e:
+                raise e
+            
+            try:
+                if "ERROR IN SQL QUERY --->" not in queryResult:
+                    result.append(len(queryResult[0]))
+                else:
+                    raise ValueError(queryResult)
+            except:
+                result.append(0)
+        if returnDict:
+            result = dict(zip(databPath, result))
+
         return result
 
-    def getColumnNames(self, tableName="", databPath=""):
+    def getColumnNames(self, tableName="", databPath="", returnDict=False):
         if not databPath:
             databPath = self.databPath
         else:
@@ -284,21 +304,27 @@ class Sqlite3:
 
         result = []
         for i in range(len(tableName)):
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath[i], matrix=False, inlineData=False)[0][0]:
-                temp_result = self.execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath[i], matrix=False, inlineData=False)[0][0]
-                final = []
-                for value in temp_result:
-                    final.append(value[1])
-                
-                del temp_result
+            try:
+                queryResult = self.execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath[i], matrix=False, inlineData=False)
+            except Exception as e:
+                raise e
 
+            if "ERROR IN SQL QUERY --->" not in queryResult:
+                __info__ = queryResult[0]
+                final = []
+                for table in __info__:
+                    final.append(table[1])
+                
                 result.append(final)
             else:
-                raise ValueError(self.execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath, matrix=False, inlineData=False)[0][0])
+                raise ValueError(queryResult)
         
+        if returnDict:
+            result = dict(zip(databPath, result))
+
         return result
 
-    def getTableNames(self, databPath=""):
+    def getTableNames(self, databPath="", returnDict=False):
         if not databPath:
             databPath = self.databPath
         else:
@@ -313,17 +339,24 @@ class Sqlite3:
             databPath = __temp_lst__.copy()
             del __temp_lst__
         
-        final = []
+        result = []
         for i in range(len(databPath)):
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True):
-                result = self.execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True)
-                final.append(result[0][0])
+            queryResult = self.execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True)
+            if "ERROR IN SQL QUERY --->" not in queryResult:
+                database = queryResult[0]
+                final = []
+                for names in database:
+                    final.append(names[0])
+                result.append(final)
             else:
-                raise ValueError(self.execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True))
+                raise ValueError(queryResult)
         
-        return final
+        if returnDict:
+            result = dict(zip(databPath, result))
 
-    def getTableCommand(self, tableName="", databPath=""):
+        return result
+
+    def getTableCommand(self, tableName="", databPath="", returnDict=False):
         if not databPath:
             databPath = self.databPath
         else:
@@ -354,8 +387,10 @@ class Sqlite3:
 
         final = []
         for i in range(len(databPath)):
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True):
-                result = self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True)
+            queryResult = self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True)
+            print(queryResult)
+            if "ERROR IN SQL QUERY --->" not in queryResult:
+                result = queryResult
                 if result == [[""]]:
                     raise ValueError(f"The table doesn't exists. ({tableName[i]})")
                 else:
@@ -363,10 +398,13 @@ class Sqlite3:
             else:
                 raise ValueError(self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath, matrix=False, inlineData=True))
 
+        if returnDict:
+            result = dict(zip(tableName, result))
+
         return final
 
 
-class Mysql():
+class MySql():
     def __init__(self): 
         pass
 
@@ -386,6 +424,12 @@ if __name__ == "__main__":
     # datab.execute(["DROP TABLE IF EXISTS users;", "DROP TABLE IF EXISTS pwords;"])
     # datab.execute(["CREATE TABLE users(uname TEXT, name TEXT);", "CREATE TABLE pwords(pword TEXT);"])
     # datab.execute(["INSERT INTO users VALUES('yg', 'Yogesh');", "INSERT INTO pwords VALUES('yg@123');"])
-    RESULT = datab.execute(["SELECT * FROM users;", "SELECT * FROM pwords"], matrix=False)
+    # datab.execute(["INSERT INTO users VALUES('pa', 'Pankaj');", "INSERT INTO pwords VALUES('pa@456');"])
+
+    # RESULT = datab.execute(["SELECT * FROM users;", "SELECT * FROM pwords"], matrix=False)
+    # RESULT = datab.getNoOfColumns(tableName=["users", "pwords"])
+    # RESULT = datab.getColumnNames(tableName=["users", "pwords"])
+    # RESULT = datab.getTableCommand(tableName=["users", "pwordHack"])
+    RESULT = datab.getTableNames()
     print(f"RESULT ---> {RESULT}")
 
