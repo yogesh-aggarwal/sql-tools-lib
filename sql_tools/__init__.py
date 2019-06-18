@@ -417,19 +417,7 @@ class MySql():
 
 
 if __name__ == "__main__":
-    # print("Welcome to the SQL Tools package.")
-    # with open("HELP", "r") as f:
-    #     print(f.read())
-    datab = Sqlite3(databPath=["hello.db", "test.db"])
-    # datab.execute(["DROP TABLE IF EXISTS users;", "DROP TABLE IF EXISTS pwords;"])
-    # datab.execute(["CREATE TABLE users(uname TEXT, name TEXT);", "CREATE TABLE pwords(pword TEXT);"])
-    # datab.execute(["INSERT INTO users VALUES('yg', 'Yogesh');", "INSERT INTO pwords VALUES('yg@123');"])
-    # datab.execute(["INSERT INTO users VALUES('pa', 'Pankaj');", "INSERT INTO pwords VALUES('pa@456');"])
-
-    # RESULT = datab.execute(["SELECT * FROM users;", "SELECT * FROM pwords"], matrix=False)
-    # RESULT = datab.getNoOfColumns(tableName=["users", "pwords"])
-    # RESULT = datab.getColumnNames(tableName=["users", "pwords"])
-    # RESULT = datab.getTableCommand(tableName=["users", "pwordHack"])
-    RESULT = datab.getTableNames()
-    print(f"RESULT ---> {RESULT}")
+    print("Welcome to the SQL Tools package.")
+    with open("HELP", "r") as f:
+        print(f.read())
 
