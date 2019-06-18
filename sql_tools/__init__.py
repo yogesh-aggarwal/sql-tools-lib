@@ -8,6 +8,8 @@ import sqlite3
 
 import numpy as np
 
+def __version__():
+    return "SQL Tools version 0.1.4"
 
 class Sqlite3:
     def __init__(self, databPath=""):
