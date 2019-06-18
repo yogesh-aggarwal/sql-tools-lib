@@ -106,10 +106,8 @@ class Sqlite3:
         # FOR SPLITBYCOLUMNS
         __temp = []
         if splitByColumns:
-            __temp = []  
-            print(data)
+            __temp = []
             for database in data:
-                # print(database)
                 __temp.append(list(zip(*database)))
             data = __temp.copy()
         del __temp
@@ -388,7 +386,6 @@ class Sqlite3:
         final = []
         for i in range(len(databPath)):
             queryResult = self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True)
-            print(queryResult)
             if "ERROR IN SQL QUERY --->" not in queryResult:
                 result = queryResult
                 if result == [[""]]:
