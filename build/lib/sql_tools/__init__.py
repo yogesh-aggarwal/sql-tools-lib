@@ -8,8 +8,21 @@ import sqlite3
 
 import numpy as np
 
-def __version__():
-    return "SQL Tools version 0.1.4"
+# DATA
+__version__ = "SQL Tools version 0.1.6"
+__sqliteVersion__ = f"SQL Tools: Sqlite3 version {sqlite3.sqlite_version}"
+__mySQLVersion__ = f"SQL Tools: MySQL version 2.2.9"
+__SqliteFunctions__ = ["Create database: Sqlite3.createDatabase()",
+                       "Move database: Sqlite3.moveDatabase()",
+                       "Copy database: Sqlite3.copyDatabase()",
+                       "Delete database: Sqlite3.delDatabase()",
+                       "Get no. of records in table(s): Sqlite3.getNoOfRecords()",
+                       "Get no. of columns in table(s): Sqlite3.getNoOfColumns()",
+                       "Get no. of table(s) in database(s): Sqlite3.getNoOfTables()",
+                       "Get columns names of table(s): Sqlite3.getColumnNames()",
+                       "Get table names of database(s): Sqlite3.getTableNames()",
+                       "Get table(s) creation command: Sqlite3.getTableCommand()"]
+__help__ = "Visit the documentation for more help or type \"help(sql_tools)\""
 
 class Sqlite3:
     def __init__(self, databPath=""):
@@ -38,9 +51,32 @@ class Sqlite3:
     def __time__(self):
         return f"Wall time: {self.execTime}s"
 
-    def execute(self, command, databPath="", matrix=True, inlineData=False, strToList=False, splitByColumns=False):
-        import time
+    def execute(self, command, databPath="", matrix=True, inlineData=False, splitByColumns=False):
+        """
+        Executes the given command to the specified database(s).
+        Attributes
+        ====
+        command
+        ---
+        The command to be executed. Can execute multiple commands for multiple databases accordingly. Provide a list containing the command for multiple databases.
 
+        databPath
+        ---
+        The database path. Can cooperate with command list operation accordingly. Provide a list of database path(s) to execute the commands accordingly.
+
+        matrix
+        ---
+        Whether to convert it to numpy arrays or not. It is recomended to set it `True` when you have to perform large operation for the same result.
+
+        inlineData
+        ---
+        Whether to combine the data of the database fetched.
+
+        splitByColumns
+        ---
+        Whether to return the values column-wise. By default it return the data record-wise.
+        """
+        import time
         startTime = time.time()
 
         if not databPath:
@@ -71,7 +107,6 @@ class Sqlite3:
         del __temp_lst__
 
         data = []
-        final = []
         for i in range(len(databPath)):
             conn = sqlite3.connect(databPath[i])
             c = conn.cursor()
@@ -89,81 +124,60 @@ class Sqlite3:
             c.close()
             conn.close()
             data.append(result)
-        
-            if splitByColumns:
-                __temp = []
-
-                data = np.array(data)
-                data = np.transpose(data)
-
-                for i in range(len(data)):
-                    __temp.append(data[i].tolist())
-                
-                data = __temp.copy()
-                del __temp
-
-            if data != []:
-                if matrix:
-                    final.append(np.array(data)[0])
-                else:
-                    __temp = []
-                    if inlineData:
-                        for i in range(len(data)):
-                            __temp.append(data[i][0])
-                        data = __temp.copy()
-                        del __temp
-                        
-                        if strToList:
-                            if len(data) == 1:
-                                if data[0][0] == "(" or data[0][0] == "[":
-                                    def strTolst(query):
-                                        intLst = (1, 2, 3, 4, 5, 6, 7, 8, 0)
-
-                                        tempLst = (
-                                            query.replace("[", "", 1)
-                                            .replace("]", "", 1)
-                                            .replace("(", "", 1)
-                                            .replace(")", "", 1)
-                                            .split(", ")
-                                            .copy()
-                                        )
-
-                                        query = []
-                                        for element in tempLst:
-                                            try:
-                                                if float(element) in intLst:
-                                                    query.append(float(element))
-                                                else:
-                                                    query.append(element)
-                                            except:
-                                                query.append(element)
-                                        del intLst, tempLst
-                                        return query
-                                    data = strTolst(data[0])
-                        
-                        final.append(data)
-                    else:
-                        final.append(data)
-            else:
-                final = [[[""]]]
 
         stopTime = time.time()
-
         self.execTime = stopTime-startTime
 
-        return final
+        # FOR INLINE DATA
+        inlineData = False
+        __temp = []
+        if inlineData:
+            for values in data:
+                for value in values:
+                    __temp.append(value)
+            data = __temp.copy()
+        del __temp
 
-    def createDatabase(self, path=""):
-        if not path:
+
+        # FOR SPLITBYCOLUMNS
+        __temp = []
+        if splitByColumns:
+            __temp = []
+            for database in data:
+                __temp.append(list(zip(*database)))
+            data = __temp.copy()
+        del __temp
+
+
+        # FOR MATRIX
+        if matrix:
+            return np.array(data)
+        else:
+            return data
+
+    def createDatabase(self, databPath=""):
+        """
+        Creates the databases at the path provided.
+        Caution:
+        ---
+        Provide the name of the database in the path.
+        """
+        if not databPath:
             if not self.databPath:
-                path = f"{os.getcwd()}\\datab.db"
+                databPath = f"{os.getcwd()}\\datab.db"
             else:
-                path = self.databPath[0]
-        self.execute("", databPath=path)
+                databPath = self.databPath[0]
+        self.execute("", databPath=databPath)
         # LOG ---> Created database at {datab[0]} because of two path in the main instance.
         return True
 
     def moveDatabase(self, newPath, oldPath=""):
+        """
+        Moves the database from the old path to new path.
+        Caution:
+        ---
+        Provide the name of the database in the path.
+        """
         if not oldPath:
             oldPath = os.getcwd()
         if not newPath:
@@ -174,12 +188,18 @@ class Sqlite3:
 
         os.rename(oldPath, newPath)
 
-    def copyDatabase(self, newPath="", oldPath=""):
+    def copyDatabase(self, newPath, oldPath=""):
+        """
+        Creates a copy of database from the old path to the new path.
+        Caution:
+        ---
+        Provide the name of the database in the path.
+        """
         # New path condition
         if newPath:
             if not os.path.isfile(newPath):
                 try:
-                    self.createDatabase(path=newPath)
+                    self.createDatabase(databPath=newPath)
                     if not os.path.isfile(newPath):
                         raise FileNotFoundError("The specified file/directory doesn't exists")
                 except:
@@ -211,12 +231,22 @@ class Sqlite3:
                 raise IOError(e)
 
     def delDatabase(self, databPath=""):
+        """
+        Deletes the database at the provided path.
+        Caution:
+        ---
+        This action is irreversible.
+        """
         if not databPath:
             databPath = self.databPath
 
         os.remove(os.path._getfullpathname(databPath))
     
-    def getNoOfRecords(self, tableName="", databPath=""):
+    def getNoOfRecords(self, tableName, databPath="", returnDict=False):
+        """
+        Returns the no. of records in the provided table.
+        You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
+        """
         if not databPath:
             databPath = self.databPath
         else:
@@ -247,50 +277,76 @@ class Sqlite3:
         
         result = []
         for i in range(len(tableName)):
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0][0]:
-                result.append(len(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0][0]))
-            else:
-                raise ValueError(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0][0])
-        return result
-    
-    def getNoOfColumns(self, tableName="", databPath=""):
-        if not databPath:
-            databPath = self.databPath
-        else:
-            __temp_lst__ = []
-            __temp_lst__.append(databPath)
-            if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-                __temp_lst__ = __temp_lst__[0]
-            elif isinstance(__temp_lst__[0], str):
-                pass
-            else:
-                raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
-            databPath = __temp_lst__.copy()
-            del __temp_lst__
+            try:
+                if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False):
+                    result.append(len(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0]))
+                else:
+                    raise ValueError(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0])
+            except:
+                result.append(0)
         
-        __temp_lst__ = []
-        __temp_lst__.append(tableName)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
-        tableName = __temp_lst__.copy()
-        del __temp_lst__
-        
-        if len(tableName) != len(databPath):
-            raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
-        
-        result = []
-        for i in range(len(tableName)):
-            if "ERROR IN SQL QUERY --->" not in self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]:
-                result.append(len(self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]))
-            else:
-                raise ValueError(self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0])
+        if returnDict:
+            result = dict(zip(tableName, result))
+
         return result
 
-    def getColumnNames(self, tableName="", databPath=""):
+    def getNoOfColumns(self, tableName, databPath="", returnDict=False):
+        """
+        Returns the no. of columns in the provided table.
+        You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
+        """
+        if not databPath:
+            databPath = self.databPath
+        else:
+            __temp_lst__ = []
+            __temp_lst__.append(databPath)
+            if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+                __temp_lst__ = __temp_lst__[0]
+            elif isinstance(__temp_lst__[0], str):
+                pass
+            else:
+                raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            databPath = __temp_lst__.copy()
+            del __temp_lst__
+        
+        __temp_lst__ = []
+        __temp_lst__.append(tableName)
+        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+            __temp_lst__ = __temp_lst__[0]
+        elif isinstance(__temp_lst__[0], str):
+            pass
+        else:
+            raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        tableName = __temp_lst__.copy()
+        del __temp_lst__
+        
+        if len(tableName) != len(databPath):
+            raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+        
+        result = []
+        for i in range(len(tableName)):
+            try:
+                queryResult = self.getColumnNames(tableName=tableName[i], databPath=databPath[i])
+            except Exception as e:
+                raise e
+            
+            try:
+                if "ERROR IN SQL QUERY --->" not in queryResult:
+                    result.append(len(queryResult[0]))
+                else:
+                    raise ValueError(queryResult)
+            except:
+                result.append(0)
+        if returnDict:
+            result = dict(zip(tableName, result))
+
+        return result
+
+    def getColumnNames(self, tableName="", databPath="", returnDict=False):
+        """
+        Returns the column names of the provided table.
+        You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
+        """
         if not databPath:
             databPath = self.databPath
         else:
@@ -321,21 +377,31 @@ class Sqlite3:
 
         result = []
         for i in range(len(tableName)):
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath[i], matrix=False, inlineData=False)[0][0]:
-                temp_result = self.execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath[i], matrix=False, inlineData=False)[0][0]
+            try:
+                queryResult = self.execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath[i], matrix=False, inlineData=False)
+            except Exception as e:
+                raise e
+
+            if "ERROR IN SQL QUERY --->" not in queryResult:
+                __info__ = queryResult[0]
                 final = []
-                for value in temp_result:
-                    final.append(value[1])
+                for table in __info__:
+                    final.append(table[1])
                 
-                del temp_result
-
                 result.append(final)
             else:
-                raise ValueError(self.execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath, matrix=False, inlineData=False)[0][0])
+                raise ValueError(queryResult)
         
+        if returnDict:
+            result = dict(zip(databPath, result))
+
         return result
 
-    def getTableNames(self, databPath=""):
+    def getTableNames(self, databPath="", returnDict=False):
+        """
+        Returns the table names in the provided database.
+        You can provided multiple database paths..
+        """
         if not databPath:
             databPath = self.databPath
         else:
@@ -350,17 +416,28 @@ class Sqlite3:
             databPath = __temp_lst__.copy()
             del __temp_lst__
         
-        final = []
+        result = []
         for i in range(len(databPath)):
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True):
-                result = self.execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True)
-                final.append(result[0][0])
+            queryResult = self.execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True)
+            if "ERROR IN SQL QUERY --->" not in queryResult:
+                database = queryResult[0]
+                final = []
+                for names in database:
+                    final.append(names[0])
+                result.append(final)
             else:
-                raise ValueError(self.execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True))
+                raise ValueError(queryResult)
         
-        return final
+        if returnDict:
+            result = dict(zip(databPath, result))
 
-    def getTableCommand(self, tableName="", databPath=""):
+        return result
+
+    def getTableCommand(self, tableName="", databPath="", returnDict=False):
+        """
+        Returns the command for creating the provided table in the database accordingly.
+        You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
+        """
         if not databPath:
             databPath = self.databPath
         else:
@@ -391,8 +468,9 @@ class Sqlite3:
 
         final = []
         for i in range(len(databPath)):
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True):
-                result = self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True)
+            queryResult = self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True)
+            if "ERROR IN SQL QUERY --->" not in queryResult:
+                result = queryResult
                 if result == [[""]]:
                     raise ValueError(f"The table doesn't exists. ({tableName[i]})")
                 else:
@@ -400,10 +478,13 @@ class Sqlite3:
             else:
                 raise ValueError(self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath, matrix=False, inlineData=True))
 
+        if returnDict:
+            result = dict(zip(tableName, result))
+
         return final
 
 
-class Mysql():
+class MySql():
     def __init__(self): 
         pass
 

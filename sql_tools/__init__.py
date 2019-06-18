@@ -8,8 +8,21 @@ import sqlite3
 
 import numpy as np
 
-def __version__():
-    return "SQL Tools version 0.1.4"
+# DATA
+__version__ = "SQL Tools version 0.1.6"
+__sqliteVersion__ = f"SQL Tools: Sqlite3 version {sqlite3.sqlite_version}"
+__mySQLVersion__ = f"SQL Tools: MySQL version 2.2.9"
+__SqliteFunctions__ = ["Create database: Sqlite3.createDatabase()",
+                       "Move database: Sqlite3.moveDatabase()",
+                       "Copy database: Sqlite3.copyDatabase()",
+                       "Delete database: Sqlite3.delDatabase()",
+                       "Get no. of records in table(s): Sqlite3.getNoOfRecords()",
+                       "Get no. of columns in table(s): Sqlite3.getNoOfColumns()",
+                       "Get no. of table(s) in database(s): Sqlite3.getNoOfTables()",
+                       "Get columns names of table(s): Sqlite3.getColumnNames()",
+                       "Get table names of database(s): Sqlite3.getTableNames()",
+                       "Get table(s) creation command: Sqlite3.getTableCommand()"]
+__help__ = "Visit the documentation for more help or type \"help(sql_tools)\""
 
 class Sqlite3:
     def __init__(self, databPath=""):
@@ -39,8 +52,31 @@ class Sqlite3:
         return f"Wall time: {self.execTime}s"
 
     def execute(self, command, databPath="", matrix=True, inlineData=False, splitByColumns=False):
-        import time
+        """
+        Executes the given command to the specified database(s).
+        Attributes
+        ====
+        command
+        ---
+        The command to be executed. Can execute multiple commands for multiple databases accordingly. Provide a list containing the command for multiple databases.
 
+        databPath
+        ---
+        The database path. Can cooperate with command list operation accordingly. Provide a list of database path(s) to execute the commands accordingly.
+
+        matrix
+        ---
+        Whether to convert it to numpy arrays or not. It is recomended to set it `True` when you have to perform large operation for the same result.
+
+        inlineData
+        ---
+        Whether to combine the data of the database fetched.
+
+        splitByColumns
+        ---
+        Whether to return the values column-wise. By default it return the data record-wise.
+        """
+        import time
         startTime = time.time()
 
         if not databPath:
@@ -119,17 +155,29 @@ class Sqlite3:
         else:
             return data
 
-    def createDatabase(self, path=""):
-        if not path:
+    def createDatabase(self, databPath=""):
+        """
+        Creates the databases at the path provided.
+        Caution:
+        ---
+        Provide the name of the database in the path.
+        """
+        if not databPath:
             if not self.databPath:
-                path = f"{os.getcwd()}\\datab.db"
+                databPath = f"{os.getcwd()}\\datab.db"
             else:
-                path = self.databPath[0]
-        self.execute("", databPath=path)
+                databPath = self.databPath[0]
+        self.execute("", databPath=databPath)
         # LOG ---> Created database at {datab[0]} because of two path in the main instance.
         return True
 
     def moveDatabase(self, newPath, oldPath=""):
+        """
+        Moves the database from the old path to new path.
+        Caution:
+        ---
+        Provide the name of the database in the path.
+        """
         if not oldPath:
             oldPath = os.getcwd()
         if not newPath:
@@ -140,12 +188,18 @@ class Sqlite3:
 
         os.rename(oldPath, newPath)
 
-    def copyDatabase(self, newPath="", oldPath=""):
+    def copyDatabase(self, newPath, oldPath=""):
+        """
+        Creates a copy of database from the old path to the new path.
+        Caution:
+        ---
+        Provide the name of the database in the path.
+        """
         # New path condition
         if newPath:
             if not os.path.isfile(newPath):
                 try:
-                    self.createDatabase(path=newPath)
+                    self.createDatabase(databPath=newPath)
                     if not os.path.isfile(newPath):
                         raise FileNotFoundError("The specified file/directory doesn't exists")
                 except:
@@ -177,12 +231,22 @@ class Sqlite3:
                 raise IOError(e)
 
     def delDatabase(self, databPath=""):
+        """
+        Deletes the database at the provided path.
+        Caution:
+        ---
+        This action is irreversible.
+        """
         if not databPath:
             databPath = self.databPath
 
         os.remove(os.path._getfullpathname(databPath))
     
-    def getNoOfRecords(self, tableName="", databPath=""):
+    def getNoOfRecords(self, tableName, databPath="", returnDict=False):
+        """
+        Returns the no. of records in the provided table.
+        You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
+        """
         if not databPath:
             databPath = self.databPath
         else:
@@ -220,10 +284,17 @@ class Sqlite3:
                     raise ValueError(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0])
             except:
                 result.append(0)
+        
+        if returnDict:
+            result = dict(zip(tableName, result))
 
         return result
-    
-    def getNoOfColumns(self, tableName="", databPath="", returnDict=False):
+
+    def getNoOfColumns(self, tableName, databPath="", returnDict=False):
+        """
+        Returns the no. of columns in the provided table.
+        You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
+        """
         if not databPath:
             databPath = self.databPath
         else:
@@ -267,11 +338,15 @@ class Sqlite3:
             except:
                 result.append(0)
         if returnDict:
-            result = dict(zip(databPath, result))
+            result = dict(zip(tableName, result))
 
         return result
 
     def getColumnNames(self, tableName="", databPath="", returnDict=False):
+        """
+        Returns the column names of the provided table.
+        You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
+        """
         if not databPath:
             databPath = self.databPath
         else:
@@ -323,6 +398,10 @@ class Sqlite3:
         return result
 
     def getTableNames(self, databPath="", returnDict=False):
+        """
+        Returns the table names in the provided database.
+        You can provided multiple database paths..
+        """
         if not databPath:
             databPath = self.databPath
         else:
@@ -355,6 +434,10 @@ class Sqlite3:
         return result
 
     def getTableCommand(self, tableName="", databPath="", returnDict=False):
+        """
+        Returns the command for creating the provided table in the database accordingly.
+        You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
+        """
         if not databPath:
             databPath = self.databPath
         else:
