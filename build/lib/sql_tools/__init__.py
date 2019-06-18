@@ -8,6 +8,8 @@ import sqlite3
 
 import numpy as np
 
+def __version__():
+    return "SQL Tools version 0.1.4"
 
 class Sqlite3:
     def __init__(self, databPath=""):
@@ -282,10 +284,10 @@ class Sqlite3:
         
         result = []
         for i in range(len(tableName)):
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0][0][0]:
-                result.append(len(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0][0][0]))
+            if "ERROR IN SQL QUERY --->" not in self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]:
+                result.append(len(self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]))
             else:
-                raise ValueError(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False)[0][0][0])
+                raise ValueError(self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0])
         return result
 
     def getColumnNames(self, tableName="", databPath=""):

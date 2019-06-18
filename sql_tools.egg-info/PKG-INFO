@@ -1,13 +1,33 @@
 Metadata-Version: 1.1
 Name: sql-tools
-Version: 0.1.4
+Version: 0.1.5
 Summary: An integrative library that contains tools for performing various tasks related to the relations (table records).
 Home-page: https://github.com/yogesh-developer/sql-tools-lib
 Author: Yogesh Aggarwal
 Author-email: developeryogeshgit@gmail.com
 License: GNU
 Download-URL: https://github.com/yogesh-developer/sql-tools-lib/dist/sql_operation-0.1.3.tar.gz
-Description: UNKNOWN
+Description: # SQL-TOOLS
+        
+        **Simple python package to help out in working with SQL database related operation.**
+        
+        It is a python package which uses database (SQL) functionality to help the developer to perform SQL operations on their desired database. This project _aims_ the developer ring to focus on their main code rather than focusing on the database related headaches.
+        
+        This python package uses the ```sqlite3``` functionality to store databases on the local and ```My SQL``` for directly connect with the database setup on the host.
+        
+        ---
+        
+        <!-- ### Check it out on [PyPi]("https://pypi.org/project/sql-tools/", "SQL TOOLS"). -->
+        ### Check it out on <a href="https://pypi.org/project/sql-tools">PyPi</a>
+        
+        ### or install it directly with the package manager.
+        
+        > pip install sql-tools
+        
+        You can contribute to it through <a href="https://github.com/yogesh-developer/sql-tools-lib">GitHub</a>.
+        
+        ---
+        
 Keywords: SQL,DATABASES,RECORDS
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
