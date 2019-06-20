@@ -534,12 +534,48 @@ class Sqlite3:
 
         command = " ".join(command).replace(tableName, f"temp_sql_tools_159753_token_copy_{tableName}")
 
-    def tableToCSV(self, tableName, databPath=""):
-        try:
-            tools.Tools().tableToCSV(data=self.execute(f"SELECT * FROM {tableName}")[0], tableName=tableName, databPath=databPath)
-            return True
-        except Exception as e:
-            raise e
+        # PENDING SUPPORT FOR MULTIPLE DATABASES.
+
+    def tableToCSV(self, tableName, databPath="", returnDict=False):
+        if not databPath:
+            databPath = self.databPath
+        else:
+            __temp_lst__ = []
+            __temp_lst__.append(databPath)
+            if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+                __temp_lst__ = __temp_lst__[0]
+            elif isinstance(__temp_lst__[0], str):
+                pass
+            else:
+                raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            databPath = __temp_lst__.copy()
+            del __temp_lst__
+        
+        __temp_lst__ = []
+        __temp_lst__.append(tableName)
+        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+            __temp_lst__ = __temp_lst__[0]
+        elif isinstance(__temp_lst__[0], str):
+            pass
+        else:
+            raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        tableName = __temp_lst__.copy()
+        del __temp_lst__
+        
+        if len(tableName) != len(databPath):
+            raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+        
+        final = []
+        for i in range(len(databPath)):
+            try:
+                final.append(tools.Tools().tableToCSV(data=self.execute(f"SELECT * FROM {tableName[i]}")[0], tableName=tableName, databPath=databPath[i]))
+            except Exception as e:
+                raise e
+        
+        if returnDict:
+            final = dict(zip(tableName, final))
+
+        return final
         
         # PENDING TO CONVERT INTO MASS
 
@@ -571,6 +607,7 @@ if __name__ == "__main__":
     #     print(f.read())
     datab = Sqlite3(databPath="test.db")
     # RESULT = datab.execute(f"SELECT * FROM pwordHack")
-    RESULT = datab.sortColumns(tableName="pwordHack", databPath="test.db", order="ASC")
+    # RESULT = datab.sortColumns(tableName="pwordHack", databPath="test.db", order="ASC")
+    RESULT = datab.tableToCSV(tableName="pwordHack", databPath=["test.db"])
     print(RESULT)
 
