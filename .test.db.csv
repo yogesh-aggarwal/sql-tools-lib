@@ -1,3 +1,0 @@
-0,1,2,3,4
-table,pwords,pwords,2,CREATE TABLE pwords(pword TEXT)
-table,pwordHack,pwordHack,4,"CREATE TABLE ""pwordHack"" (  name TEXT,  id TEXT )"
