@@ -4,3 +4,5 @@ test.*
 garbage.*
 *garbase/
 __pycache__/
+plan/
+plan.*

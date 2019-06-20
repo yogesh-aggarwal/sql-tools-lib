@@ -5,11 +5,12 @@ import os
 import shutil
 import pathlib
 import sqlite3
-
+# from . import tools
+import tools
 import numpy as np
 
 # DATA
-__version__ = "SQL Tools version 0.1.6"
+__version__ = "SQL Tools version 0.1.7"
 __sqliteVersion__ = f"SQL Tools: Sqlite3 version {sqlite3.sqlite_version}"
 __mySQLVersion__ = f"SQL Tools: MySQL version 2.2.9"
 __SqliteFunctions__ = ["Create database: Sqlite3.createDatabase()",
@@ -474,7 +475,10 @@ class Sqlite3:
                 if result == [[""]]:
                     raise ValueError(f"The table doesn't exists. ({tableName[i]})")
                 else:
-                    final.append(result[0][0])
+                    try:
+                        final.append(result[0][0])
+                    except Exception as e:
+                        raise e
             else:
                 raise ValueError(self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath, matrix=False, inlineData=True))
 
@@ -482,6 +486,71 @@ class Sqlite3:
             result = dict(zip(tableName, result))
 
         return final
+
+    """================================================================================================================"""
+
+    def sortColumns(self, tableName, databPath="", order="ASC"):  # PENDING
+        order = order.lower()
+        command = self.getTableCommand(tableName=tableName, databPath=databPath)[0][0].replace("\n", " ").replace("\t"," ").replace("`", "").split(" ")
+        oldColumns = self.getColumnNames(tableName=tableName, databPath=databPath)[0]  # REMOVE 0 FOR MULTIPLE DATABASES
+        oldIndex = [command.index(x) for x in oldColumns]
+
+        newColumns = oldColumns.copy()
+        newColumns.sort()
+
+        if order == "desc":
+            newColumns.reverse()
+        elif order == "asc":
+            pass
+        else:
+            raise AttributeError(f"Invalid order \"{order}\". Accepted orders are \"ASC\" (for ascending) or \"DESC\" (for descending).")
+
+
+        for i in range(len(newColumns)):
+            command[oldIndex[i]] = newColumns[i]
+        
+
+        command = " ".join(command).replace(tableName, f"temp_sql_tools_159753_token_copy_{tableName}")
+
+        done = []
+        try:
+            self.execute(command, databPath=databPath)
+            self.execute(f"INSERT INTO temp_sql_tools_159753_token_copy_{tableName} SELECT * FROM {tableName}")
+            for i in range(len(oldColumns)):
+                if oldColumns[i] not in done and newColumns[i] not in done:
+                    self.execute(f"UPDATE temp_sql_tools_159753_token_copy_{tableName} SET {oldColumns[i]} = {newColumns[i]} , {newColumns[i]} = {oldColumns[i]}")
+                    done.append(oldColumns[i])
+            self.execute(f"DROP TABLE {tableName}", databPath=databPath)
+            self.execute(f"ALTER TABLE temp_sql_tools_159753_token_copy_{tableName} RENAME TO {tableName}")
+            
+            del oldColumns, oldIndex, newColumns
+            return True
+        except Exception as e:
+            try:
+                self.execute(f"DROP TABLE temp_sql_tools_159753_token_copy_{tableName}", databPath=databPath)
+            except:
+                pass
+            raise e
+
+        command = " ".join(command).replace(tableName, f"temp_sql_tools_159753_token_copy_{tableName}")
+
+    def tableToCSV(self, tableName, databPath=""):
+        try:
+            tools.Tools().tableToCSV(data=self.execute(f"SELECT * FROM {tableName}")[0], tableName=tableName, databPath=databPath)
+            return True
+        except Exception as e:
+            raise e
+        
+        # PENDING TO CONVERT INTO MASS
+
+    def databaseToCSV(self, databPath):
+        result = tools.Tools().tableToCSV(data=self.execute("SELECT * FROM sqlite_master")[0], tableName=databPath, databPath="")
+        return result
+    
+    def getDatabaseSize(self, databPath, returnDict=False):
+        return f"{os.stat(databPath).st_size} bytes ({os.stat(databPath).st_size * 10**(-6)} MB)"
+    
+    
 
 
 class MySql():
@@ -497,7 +566,11 @@ class MySql():
 
 
 if __name__ == "__main__":
-    print("Welcome to the SQL Tools package.")
-    with open("HELP", "r") as f:
-        print(f.read())
+    # print("Welcome to the SQL Tools package.")
+    # with open("HELP", "r") as f:
+    #     print(f.read())
+    datab = Sqlite3(databPath="test.db")
+    # RESULT = datab.execute(f"SELECT * FROM pwordHack")
+    RESULT = datab.sortColumns(tableName="pwordHack", databPath="test.db", order="ASC")
+    print(RESULT)
 

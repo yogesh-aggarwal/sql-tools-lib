@@ -6,7 +6,7 @@ with open("README.md", "r") as readMe:
 setup(
   name = 'sql_tools',         # How you named your package folder (MyLib)
   packages = ['sql_tools'],   # Chose the same as "name"
-  version = '0.1.6',      # Start with a small number and increase it with every change you make
+  version = '0.1.7',      # Start with a small number and increase it with every change you make
   license='GNU',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'An integrative library that contains tools for performing various tasks related to the relations (table records).',   # Give a short description about your library
   long_description = longDesc,
@@ -19,6 +19,7 @@ setup(
           'mysql-connector',
           'db-sqlite3',
           "numpy",
+          "pandas",
           "pathlib",
       ],
   classifiers=[
