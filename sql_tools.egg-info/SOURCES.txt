@@ -1,8 +1,0 @@
-README.md
-setup.py
-sql_tools/__init__.py
-sql_tools.egg-info/PKG-INFO
-sql_tools.egg-info/SOURCES.txt
-sql_tools.egg-info/dependency_links.txt
-sql_tools.egg-info/requires.txt
-sql_tools.egg-info/top_level.txt

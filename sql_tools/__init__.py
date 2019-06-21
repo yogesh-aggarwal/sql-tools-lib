@@ -89,7 +89,7 @@ class Sqlite3:
         if __execMethod:
             startTime = time.time()
             self.__status("Starting execution")
-        
+
         if not databPath:
             if pathJSON:
                 databPath = []
@@ -104,9 +104,6 @@ class Sqlite3:
                     for j in data[i]:
                         command.append(data[i][j][0])
                     databPath.append(i)
-            
-                print(databPath)
-                print(command)
             else:
                 databPath = self.databPath
         else:
@@ -327,7 +324,7 @@ class Sqlite3:
                     result.append(len(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, _Sqlite3__execMethod=False)[0]))
                 else:
                     raise ValueError(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, _Sqlite3__execMethod=False)[0])
-            except:
+            except Exception:
                 result.append(0)
 
         if returnDict:
@@ -639,8 +636,24 @@ class Sqlite3:
         self.execTime = stopTime-startTime
         return final
 
-    def __tableToCSV(self, data, tableName, databPath, table=True, database=True):
+    def __tableToCSV(self, data, tableName, databPath="", table=True, database=True):
         startTime = time.time()
+        if not databPath:
+            databPath = self.databPath
+        else:
+            __temp_lst__ = []
+            __temp_lst__.append(databPath)
+            if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+                __temp_lst__ = __temp_lst__[0]
+            elif isinstance(__temp_lst__[0], str):
+                pass
+            else:
+                raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            databPath = __temp_lst__.copy()
+            del __temp_lst__
+        
+        databPath = databPath[0]  # REMOVE THIS FOR MULTIPLE DATABASES AS IT WILL FETCH THE FIRST DATABASE ONLY
+
         if table and database:
             pd.DataFrame(data).to_csv(f"{os.path.basename(databPath)}.{tableName}.csv", index=False)
         elif table:
@@ -700,7 +713,7 @@ class Sqlite3:
         self.execTime = stopTime-startTime
         return final
 
-    def databaseToCSV(self, databPath, returnDict=False):
+    def databaseToCSV(self, databPath="", returnDict=False):
         startTime = time.time()
         if not databPath:
             databPath = self.databPath
@@ -731,7 +744,7 @@ class Sqlite3:
         self.execTime = stopTime-startTime
         return final
 
-    def getDatabaseSize(self, databPath, returnDict=False):
+    def getDatabaseSize(self, databPath="", returnDict=False):
         startTime = time.time()
         if not databPath:
             databPath = self.databPath

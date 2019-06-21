@@ -1,4 +1,0 @@
-mysql-connector
-db-sqlite3
-numpy
-pathlib
