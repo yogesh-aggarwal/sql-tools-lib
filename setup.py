@@ -4,18 +4,18 @@ with open("README.md", "r") as readMe:
     longDesc = readMe.read()
 
 setup(
-  name = 'sql_tools',         # How you named your package folder (MyLib)
-  packages = ['sql_tools'],   # Chose the same as "name"
-  version = '0.1.7',      # Start with a small number and increase it with every change you make
-  license='GNU',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
-  description = 'An integrative library that contains tools for performing various tasks related to the relations (table records).',   # Give a short description about your library
+  name = 'sql_tools',
+  packages = ['sql_tools'],
+  version = '0.1.7',
+  license='GNU',
+  description = 'An integrative library that contains tools for performing various tasks related to the relations (table records).',
   long_description = longDesc,
-  author = 'Yogesh Aggarwal',                   # Type in your name
-  author_email = 'developeryogeshgit@gmail.com',      # Type in your E-Mail
-  url = 'https://github.com/yogesh-developer/sql-tools-lib',   # Provide either the link to your github or to your website
-  download_url = 'https://github.com/yogesh-developer/sql-tools-lib/dist/sql_operation-0.1.6.tar.gz',    # I explain this later on
-  keywords = ['SQL', 'DATABASES', 'RECORDS'],   # Keywords that define your package best
-  install_requires=[            # I get to this in a second
+  author = 'Yogesh Aggarwal',
+  author_email = 'developeryogeshgit@gmail.com',
+  url = 'https://github.com/yogesh-developer/sql-tools-lib',
+  download_url = 'https://github.com/yogesh-developer/sql-tools-lib/dist/sql_operation-0.1.6.tar.gz',
+  keywords = ['SQL', 'DATABASES', 'RECORDS'],
+  install_requires=[
           'mysql-connector',
           'db-sqlite3',
           "numpy",
@@ -23,9 +23,9 @@ setup(
           "pathlib",
       ],
   classifiers=[
-    'Development Status :: 5 - Production/Stable',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
-    'Intended Audience :: Developers',      # Define that your audience are developers
-    'Programming Language :: Python :: 3',      #Specify which pyhton versions that you want to support
+    'Development Status :: 5 - Production/Stable',      # "3 - Alpha", "4 - Beta" or "5 - Production/Stable"
+    'Intended Audience :: Developers',
+    'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',

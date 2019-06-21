@@ -1,13 +1,15 @@
 """
 An integrative library that contains tools for performing various tasks related to the relations (table records).
 """
+import json
 import os
-import shutil
 import pathlib
+import shutil
 import sqlite3
-# from . import tools
-import tools
+import time
+
 import numpy as np
+import pandas as pd
 
 # DATA
 __version__ = "SQL Tools version 0.1.7"
@@ -24,6 +26,7 @@ __SqliteFunctions__ = ["Create database: Sqlite3.createDatabase()",
                        "Get table names of database(s): Sqlite3.getTableNames()",
                        "Get table(s) creation command: Sqlite3.getTableCommand()"]
 __help__ = "Visit the documentation for more help or type \"help(sql_tools)\""
+
 
 class Sqlite3:
     def __init__(self, databPath=""):
@@ -58,7 +61,7 @@ class Sqlite3:
         self.__history__.append(status)
         self.status = status
 
-    def execute(self, command, databPath="", matrix=True, inlineData=False, splitByColumns=False, __execMethod=True):
+    def execute(self, command="", databPath="", matrix=True, inlineData=False, splitByColumns=False, pathJSON=False, __execMethod=True):
         """
         Executes the given command to the specified database(s).
         Attributes
@@ -83,14 +86,29 @@ class Sqlite3:
         ---
         Whether to return the values column-wise. By default it return the data record-wise.
         """
-        import time
-        startTime = time.time()
-
-        if _Sqlite3__execMethod:
+        if __execMethod:
+            startTime = time.time()
             self.__status("Starting execution")
         
         if not databPath:
-            databPath = self.databPath
+            if pathJSON:
+                databPath = []
+                command = []
+                with open(pathJSON, "r") as f:
+                    try:
+                        data = json.loads(f.read())
+                    except Exception:
+                        raise ValueError("JSON file error. Could be the syntax problem.")
+                keys = data.keys()
+                for i in keys:
+                    for j in data[i]:
+                        command.append(data[i][j][0])
+                    databPath.append(i)
+            
+                print(databPath)
+                print(command)
+            else:
+                databPath = self.databPath
         else:
             __temp_lst__ = []
             __temp_lst__.append(databPath)
@@ -116,6 +134,7 @@ class Sqlite3:
             raise ValueError("Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a square matrix.")
         del __temp_lst__
 
+
         data = []
         for i in range(len(databPath)):
             conn = sqlite3.connect(databPath[i])
@@ -135,14 +154,15 @@ class Sqlite3:
             conn.close()
             data.append(result)
 
-        stopTime = time.time()
-        self.execTime = stopTime-startTime
+        if __execMethod:
+            stopTime = time.time()
+            self.execTime = stopTime-startTime
 
         # FOR INLINE DATA
         inlineData = False
         __temp = []
         if inlineData:
-            if _Sqlite3__execMethod:
+            if __execMethod:
                 self.__status("Inlining data")
             for values in data:
                 for value in values:
@@ -154,7 +174,7 @@ class Sqlite3:
         # FOR SPLITBYCOLUMNS
         __temp = []
         if splitByColumns:
-            if _Sqlite3__execMethod:
+            if __execMethod:
                 self.__status("Spliting by columns")
             __temp = []
             for database in data:
@@ -165,12 +185,12 @@ class Sqlite3:
 
         # FOR MATRIX
         if matrix:
-            if _Sqlite3__execMethod:
+            if __execMethod:
                 self.__status("Converting to matrix")
                 self.__status("Returning results")
             return np.array(data)
         else:
-            if _Sqlite3__execMethod:
+            if __execMethod:
                 self.__status("Returning results")
             return data
 
@@ -186,7 +206,7 @@ class Sqlite3:
                 databPath = f"{os.getcwd()}\\datab.db"
             else:
                 databPath = self.databPath[0]
-        
+
         self.__status("Creating database")
         self.execute("", databPath=databPath, _Sqlite3__execMethod=False)
         self.__status("Fetching byte results")
@@ -225,7 +245,7 @@ class Sqlite3:
                     self.createDatabase(databPath=newPath)
                     if not os.path.isfile(newPath):
                         raise FileNotFoundError("The specified file/directory doesn't exists")
-                except:
+                except Exception:
                     raise FileNotFoundError("The specified file/directory doesn't exists")
             newPath = os.path._getfullpathname(newPath)
         else:
@@ -264,12 +284,13 @@ class Sqlite3:
             databPath = self.databPath
 
         os.remove(os.path._getfullpathname(databPath))
-    
+
     def getNoOfRecords(self, tableName, databPath="", returnDict=False):
         """
         Returns the no. of records in the provided table.
         You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
         """
+        startTime = time.time()
         if not databPath:
             databPath = self.databPath
         else:
@@ -283,7 +304,7 @@ class Sqlite3:
                 raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
             databPath = __temp_lst__.copy()
             del __temp_lst__
-        
+
         __temp_lst__ = []
         __temp_lst__.append(tableName)
         if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
@@ -294,10 +315,10 @@ class Sqlite3:
             raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         tableName = __temp_lst__.copy()
         del __temp_lst__
-        
+
         if len(tableName) != len(databPath):
             raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
-        
+
         result = []
         for i in range(len(tableName)):
             try:
@@ -308,12 +329,15 @@ class Sqlite3:
                     raise ValueError(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, _Sqlite3__execMethod=False)[0])
             except:
                 result.append(0)
-        
+
         if returnDict:
             self.__status("Packing into dictionary")
             result = dict(zip(tableName, result))
 
         self.__status("Returning results")
+
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
         return result
 
     def getNoOfColumns(self, tableName, databPath="", returnDict=False):
@@ -321,6 +345,7 @@ class Sqlite3:
         Returns the no. of columns in the provided table.
         You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
         """
+        startTime = time.time()
         if not databPath:
             databPath = self.databPath
         else:
@@ -334,7 +359,7 @@ class Sqlite3:
                 raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
             databPath = __temp_lst__.copy()
             del __temp_lst__
-        
+
         __temp_lst__ = []
         __temp_lst__.append(tableName)
         if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
@@ -345,17 +370,17 @@ class Sqlite3:
             raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         tableName = __temp_lst__.copy()
         del __temp_lst__
-        
+
         if len(tableName) != len(databPath):
             raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
-        
+
         result = []
         for i in range(len(tableName)):
             try:
                 queryResult = self.getColumnNames(tableName=tableName[i], databPath=databPath[i])
             except Exception as e:
                 raise e
-            
+
             try:
                 if "ERROR IN SQL QUERY --->" not in queryResult:
                     result.append(len(queryResult[0]))
@@ -367,6 +392,8 @@ class Sqlite3:
             self.__status("Packing into dictionary")
             result = dict(zip(tableName, result))
 
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
         return result
 
     def getColumnNames(self, tableName="", databPath="", returnDict=False):
@@ -374,6 +401,7 @@ class Sqlite3:
         Returns the column names of the provided table.
         You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
         """
+        startTime = time.time()
         if not databPath:
             databPath = self.databPath
         else:
@@ -387,7 +415,7 @@ class Sqlite3:
                 raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
             databPath = __temp_lst__.copy()
             del __temp_lst__
-        
+
         __temp_lst__ = []
         __temp_lst__.append(tableName)
         if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
@@ -398,7 +426,7 @@ class Sqlite3:
             raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         tableName = __temp_lst__.copy()
         del __temp_lst__
-        
+
         if len(tableName) != len(databPath):
             raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
 
@@ -415,16 +443,18 @@ class Sqlite3:
                 final = []
                 for table in __info__:
                     final.append(table[1])
-                
+
                 result.append(final)
             else:
                 raise ValueError(queryResult)
-        
+
         if returnDict:
             self.__status("Packing into dictionary")
             result = dict(zip(databPath, result))
 
         self.__status("Returning results")
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
         return result
 
     def getTableNames(self, databPath="", returnDict=False):
@@ -432,6 +462,7 @@ class Sqlite3:
         Returns the table names in the provided database.
         You can provided multiple database paths..
         """
+        startTime = time.time()
         if not databPath:
             databPath = self.databPath
         else:
@@ -445,7 +476,7 @@ class Sqlite3:
                 raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
             databPath = __temp_lst__.copy()
             del __temp_lst__
-        
+
         result = []
         for i in range(len(databPath)):
             self.__status(f"Getting table names for {databPath[i]}")
@@ -458,12 +489,14 @@ class Sqlite3:
                 result.append(final)
             else:
                 raise ValueError(queryResult)
-        
+
         if returnDict:
             self.__status("Packing into dictionary")
             result = dict(zip(databPath, result))
 
         self.__status("Returning results")
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
         return result
 
     def getTableCommand(self, tableName="", databPath="", returnDict=False):
@@ -471,6 +504,7 @@ class Sqlite3:
         Returns the command for creating the provided table in the database accordingly.
         You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
         """
+        startTime = time.time()
         if not databPath:
             databPath = self.databPath
         else:
@@ -484,7 +518,7 @@ class Sqlite3:
                 raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
             databPath = __temp_lst__.copy()
             del __temp_lst__
-        
+
         __temp_lst__ = []
         __temp_lst__.append(tableName)
         if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
@@ -495,7 +529,7 @@ class Sqlite3:
             raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         tableName = __temp_lst__.copy()
         del __temp_lst__
-        
+
         if len(tableName) != len(databPath):
             raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
 
@@ -520,9 +554,12 @@ class Sqlite3:
             result = dict(zip(tableName, result))
 
         self.__status("Returning results")
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
         return final
 
     def sortColumns(self, tableName, databPath="", order="ASC"):  # DO NOT SORT SECOND DATABASE
+        startTime = time.time()
         order = order.lower()
         if not databPath:
             databPath = self.databPath
@@ -537,7 +574,7 @@ class Sqlite3:
                 raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
             databPath = __temp_lst__.copy()
             del __temp_lst__
-        
+
         __temp_lst__ = []
         __temp_lst__.append(tableName)
         if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
@@ -548,7 +585,7 @@ class Sqlite3:
             raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         tableName = __temp_lst__.copy()
         del __temp_lst__
-        
+
         if len(tableName) != len(databPath):
             raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
 
@@ -558,7 +595,7 @@ class Sqlite3:
             oldColumns = self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]  # REMOVE 0 FOR MULTIPLE DATABASES
             oldIndex = [command.index(x) for x in oldColumns]
 
-            self.__status("Getting table schema")
+            self.__status(f"Getting schema for {tableName[i]}")
             newColumns = oldColumns.copy()
             newColumns.sort()
 
@@ -572,7 +609,7 @@ class Sqlite3:
 
             for j in range(len(newColumns)):
                 command[oldIndex[j]] = newColumns[j]
-    
+
             self.__status(f"Creating a shallow copy of database {databPath[i]}")
             command = " ".join(command).replace(tableName[i], f"temp_sql_tools_159753_token_copy_{tableName[i]}")
 
@@ -583,7 +620,6 @@ class Sqlite3:
                 self.execute(f"INSERT INTO temp_sql_tools_159753_token_copy_{tableName[i]} SELECT * FROM {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
                 for j in range(len(oldColumns)):
                     if oldColumns[j] not in done and newColumns[j] not in done:
-                        print(oldColumns[j], newColumns[j])
                         self.execute(f"UPDATE temp_sql_tools_159753_token_copy_{tableName[i]} SET {oldColumns[j]} = {newColumns[j]} , {newColumns[j]} = {oldColumns[j]}", databPath=databPath[i], _Sqlite3__execMethod=False)
                         done.append(oldColumns[i])
                 self.execute(f"DROP TABLE {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
@@ -599,9 +635,26 @@ class Sqlite3:
                 raise e
 
         self.__status("Returning results")
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
         return final
 
+    def __tableToCSV(self, data, tableName, databPath, table=True, database=True):
+        startTime = time.time()
+        if table and database:
+            pd.DataFrame(data).to_csv(f"{os.path.basename(databPath)}.{tableName}.csv", index=False)
+        elif table:
+            pd.DataFrame(data).to_csv(f"{tableName}.csv", index=False)
+        elif database:
+            pd.DataFrame(data).to_csv(f'{os.path.basename(databPath).replace(".db", "").replace(".db3", "").replace(".sqlite", "").replace(".sqlite3", "")}.csv', index=False)
+        else:
+            raise AttributeError("One attribute must be provided.")
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
+        return True
+
     def tableToCSV(self, tableName, databPath="", returnDict=False):
+        startTime = time.time()
         if not databPath:
             databPath = self.databPath
         else:
@@ -634,7 +687,7 @@ class Sqlite3:
         for i in range(len(databPath)):
             self.__status(f"Converting database to dataframe ({databPath[i]})")
             try:
-                final.append(tools.Tools().tableToCSV(data=self.execute(f"SELECT * FROM {tableName[i]}")[0], tableName=tableName[i], databPath=databPath[i]))
+                final.append(self.tableToCSV(data=self.execute(f"SELECT * FROM {tableName[i]}")[0], tableName=tableName[i], databPath=databPath[i]))
             except Exception as e:
                 raise e
         
@@ -643,9 +696,12 @@ class Sqlite3:
             final = dict(zip(tableName, final))
 
         self.__status("Returning results")
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
         return final
 
     def databaseToCSV(self, databPath, returnDict=False):
+        startTime = time.time()
         if not databPath:
             databPath = self.databPath
         else:
@@ -663,7 +719,7 @@ class Sqlite3:
         final = []
         for i in range(len(databPath)):
             self.__status(f"Creating CSV of {databPath[i]}")
-            final.append(tools.Tools().tableToCSV(data=self.execute("SELECT * FROM sqlite_master")[0], tableName="", databPath=databPath[i], table=False))
+            final.append(self.__tableToCSV(data=self.execute("SELECT * FROM sqlite_master")[0], tableName="", databPath=databPath[i], table=False))
 
 
         if returnDict:
@@ -671,9 +727,12 @@ class Sqlite3:
             final = dict(zip(databPath, final))
 
         self.__status("Returning results")
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
         return final
 
     def getDatabaseSize(self, databPath, returnDict=False):
+        startTime = time.time()
         if not databPath:
             databPath = self.databPath
         else:
@@ -697,8 +756,16 @@ class Sqlite3:
             self.__status("Packing into dictionary")
             final = dict(zip(databPath, final))
 
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
         return final
-    
+
+    def getSampleDatabase(self, databPath):
+        startTime = time.time()
+        self.copyDatabase(newPath=databPath, oldPath=os.path._getfullpathname('sql_tools/sampleDatabase.db'))
+        stopTime = time.time()
+        self.execTime = stopTime-startTime
+
 
 
 class MySql():
@@ -718,10 +785,10 @@ if __name__ == "__main__":
     # with open("HELP", "r") as f:
     #     print(f.read())
     datab = Sqlite3(databPath="test.db")
-    # RESULT = datab.execute(f"SELECT * FROM pwordHack")
-    # RESULT = datab.sortColumns(tableName=["pwordHack", "pwordHack"], databPath=["test.db", "hello.db"], order="ASC")
+    # RESULT = datab.execute(f"", pathJSON=r"F:\Python\Packages (Modules)\sql-tools-lib\sql_tools\testCommand.json")
+    # RESULT = datab.sortColumns(tableName=["pwordHack", "pwordHack"], databPath=["test.db", "hello.db"], order="DESC")
     # RESULT = datab.databaseToCSV(databPath=["test.db", "hello.db"])
-    RESULT = datab.getColumnNames(tableName=["pwordHack", "pwords"], databPath=["test.db", "test.db"])
-    print(datab.status)
-    print(RESULT)
-
+    # RESULT = datab.getColumnNames(tableName=["pwordHack", "pwords"], databPath=["test.db", "test.db"])
+    # RESULT = datab.createDatabase(databPath="helloSample.sqlite3")
+    # print(datab.status)
+    # print(RESULT)
