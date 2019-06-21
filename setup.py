@@ -10,6 +10,8 @@ setup(
   license='GNU',
   description = 'An integrative library that contains tools for performing various tasks related to the relations (table records).',
   long_description = longDesc,
+  long_description_content_type='text/markdown',
+  include_package_data=True,
   author = 'Yogesh Aggarwal',
   author_email = 'developeryogeshgit@gmail.com',
   url = 'https://github.com/yogesh-developer/sql-tools-lib',
@@ -23,7 +25,7 @@ setup(
           "pathlib",
       ],
   classifiers=[
-    'Development Status :: 5 - Production/Stable',      # "3 - Alpha", "4 - Beta" or "5 - Production/Stable"
+    'Development Status :: 3 - Alpha',      # "3 - Alpha", "4 - Beta" or "5 - Production/Stable"
     'Intended Audience :: Developers',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.4',

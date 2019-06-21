@@ -6,3 +6,5 @@ garbage.*
 __pycache__/
 plan/
 plan.*
+/*.egg-info
+/*.egg
