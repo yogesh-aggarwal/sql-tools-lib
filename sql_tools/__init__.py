@@ -556,6 +556,11 @@ class Sqlite3:
         return final
 
     def sortColumns(self, tableName, databPath="", order="ASC"):  # DO NOT SORT SECOND DATABASE
+        if isinstance(tableName, list):
+            raise ValueError("Multiple table names aren't supported for this method at the moment.")
+        if isinstance(databPath, list):
+            raise ValueError("Multiple databases aren't supported for this method at the moment.")
+
         startTime = time.time()
         order = order.lower()
         if not databPath:
@@ -589,23 +594,23 @@ class Sqlite3:
         final = []
         for i in range(len(databPath)):
             command = self.getTableCommand(tableName=tableName[i], databPath=databPath[i])[0][0].replace("\n", " ").replace("\t"," ").replace("`", "").split(" ")
-            oldColumns = self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]  # REMOVE 0 FOR MULTIPLE DATABASES
-            oldIndex = [command.index(x) for x in oldColumns]
+            oldCName = self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]  # REMOVE 0 FOR MULTIPLE DATABASES
+            oldIndex = [command.index(x) for x in oldCName]
 
             self.__status(f"Getting schema for {tableName[i]}")
-            newColumns = oldColumns.copy()
-            newColumns.sort()
+            newCname = oldCName.copy()
+            newCname.sort()
 
             if order == "desc":
-                newColumns.reverse()
+                newCname.reverse()
             elif order == "asc":
                 pass
             else:
                 raise AttributeError(f"Invalid order \"{order}\". Accepted orders are \"ASC\" (for ascending) or \"DESC\" (for descending).")
 
 
-            for j in range(len(newColumns)):
-                command[oldIndex[j]] = newColumns[j]
+            for j in range(len(newCname)):
+                command[oldIndex[j]] = newCname[j]
 
             self.__status(f"Creating a shallow copy of database {databPath[i]}")
             command = " ".join(command).replace(tableName[i], f"temp_sql_tools_159753_token_copy_{tableName[i]}")
@@ -615,14 +620,14 @@ class Sqlite3:
                 self.__status("Preparing databases for operation")
                 self.execute(command, databPath=databPath[i], _Sqlite3__execMethod=False)
                 self.execute(f"INSERT INTO temp_sql_tools_159753_token_copy_{tableName[i]} SELECT * FROM {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
-                for j in range(len(oldColumns)):
-                    if oldColumns[j] not in done and newColumns[j] not in done:
-                        self.execute(f"UPDATE temp_sql_tools_159753_token_copy_{tableName[i]} SET {oldColumns[j]} = {newColumns[j]} , {newColumns[j]} = {oldColumns[j]}", databPath=databPath[i], _Sqlite3__execMethod=False)
-                        done.append(oldColumns[i])
+                for j in range(len(oldCName)):
+                    if oldCName[j] not in done and newCname[j] not in done:
+                        self.execute(f"UPDATE temp_sql_tools_159753_token_copy_{tableName[i]} SET {oldCName[j]} = {newCname[j]} , {newCname[j]} = {oldCName[j]}", databPath=databPath[i], _Sqlite3__execMethod=False)
+                        done.append(oldCName[i])
                 self.execute(f"DROP TABLE {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
                 self.execute(f"ALTER TABLE temp_sql_tools_159753_token_copy_{tableName[i]} RENAME TO {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
                 
-                del oldColumns, oldIndex, newColumns
+                del oldCName, oldIndex, newCname
                 final.append(True)
             except Exception as e:
                 try:
@@ -779,6 +784,78 @@ class Sqlite3:
         stopTime = time.time()
         self.execTime = stopTime-startTime
 
+    def swapColumns(self, tableName, oldCName, newCname, databPath="", returnDict=False):
+        if isinstance(tableName, list):
+            raise ValueError("Multiple table names aren't supported for this method at the moment.")
+        if isinstance(databPath, list):
+            raise ValueError("Multiple databases aren't supported for this method at the moment.")
+        startTime = time.time()
+        if not databPath:
+            databPath = self.databPath
+        else:
+            __temp_lst__ = []
+            __temp_lst__.append(databPath)
+            if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+                __temp_lst__ = __temp_lst__[0]
+            elif isinstance(__temp_lst__[0], str):
+                pass
+            else:
+                raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            databPath = __temp_lst__.copy()
+            del __temp_lst__
+
+        __temp_lst__ = []
+        __temp_lst__.append(tableName)
+        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+            __temp_lst__ = __temp_lst__[0]
+        elif isinstance(__temp_lst__[0], str):
+            pass
+        else:
+            raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        tableName = __temp_lst__.copy()
+        del __temp_lst__
+
+        if len(tableName) != len(databPath):
+            raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+
+        final = []
+        for i in range(len(databPath)):
+            command = self.getTableCommand(tableName=tableName[i], databPath=databPath[i])[0][0].replace("\n", " ").replace("\t"," ").replace("`", "").split(" ")
+            oldIndex = [command.index(x) for x in oldCName]
+
+            self.__status(f"Getting schema for {tableName[i]}")
+
+            for j in range(len(newCname)):
+                command[oldIndex[j]] = newCname[j]
+
+            self.__status(f"Creating a shallow copy of database {databPath[i]}")
+            command = " ".join(command).replace(tableName[i], f"temp_sql_tools_159753_token_copy_{tableName[i]}")
+
+            done = []
+            print(newCname)
+            print(oldCName)
+            try:
+                self.__status("Preparing databases for operation")
+                self.execute(command, databPath=databPath[i], _Sqlite3__execMethod=False)
+                self.execute(f"INSERT INTO temp_sql_tools_159753_token_copy_{tableName[i]} SELECT * FROM {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
+                for j in range(len(oldCName)):
+                    print(newCname[j])
+                    if oldCName[j] not in done and newCname[j] not in done:
+                        self.execute(f"UPDATE temp_sql_tools_159753_token_copy_{tableName[i]} SET {oldCName[j]} = {newCname[j]} , {newCname[j]} = {oldCName[j]}", databPath=databPath[i], _Sqlite3__execMethod=False)
+                        done.append(oldCName[i])
+                self.execute(f"DROP TABLE {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
+                self.execute(f"ALTER TABLE temp_sql_tools_159753_token_copy_{tableName[i]} RENAME TO {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
+                
+                del oldCName, oldIndex, newCname
+                final.append(True)
+            except Exception as e:
+                try:
+                    self.execute(f"DROP TABLE temp_sql_tools_159753_token_copy_{tableName[i]}", databPath=databPath[i])
+                except:
+                    pass
+                raise e
+        return final
+
 
 
 class MySql():
@@ -803,5 +880,5 @@ if __name__ == "__main__":
     # RESULT = datab.databaseToCSV(databPath=["test.db", "hello.db"])
     # RESULT = datab.getColumnNames(tableName=["pwordHack", "pwords"], databPath=["test.db", "test.db"])
     # RESULT = datab.createDatabase(databPath="helloSample.sqlite3")
-    # print(datab.status)
-    # print(RESULT)
+    RESULT = datab.swapColumns(tableName="pwordHack", databPath="test.db", oldCName=["id", "name"], newCname=["name", "id"])
+    print(RESULT)
