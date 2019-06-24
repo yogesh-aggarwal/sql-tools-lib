@@ -1,10 +1,11 @@
-.vscode
-test.*
-*test/
+.vscode/
+test
 garbage.*
-*garbase/
+*garbage/
 __pycache__/
 plan/
 plan.*
 /*.egg-info
 /*.egg
+pending.*
+pending/
