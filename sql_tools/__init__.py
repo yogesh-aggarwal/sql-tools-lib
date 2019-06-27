@@ -917,4 +917,4 @@ class MySql():
 if __name__ == "__main__":
     print("Welcome to the SQL Tools package.")
     with open("HELP", "r") as f:
-        print(f.read()
+        print(f.read())

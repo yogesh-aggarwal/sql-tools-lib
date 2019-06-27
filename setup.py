@@ -6,7 +6,7 @@ with open("README.md", "r") as readMe:
 setup(
   name = 'sql_tools',
   packages = ['sql_tools'],
-  version = '0.1.8a0',
+  version = '0.1.8b0',
   license='GNU',
   description = 'An integrative library that contains tools for performing various tasks related to the relations (table records).',
   long_description = longDesc,
