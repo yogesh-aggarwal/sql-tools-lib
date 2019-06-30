@@ -15,6 +15,6 @@ This python package uses the ```sqlite3``` functionality to store databases on t
 
 > pip install sql-tools
 
-You can contribute to it through <a href="https://github.com/yogesh-developer/sql-tools-lib">GitHub</a>.
+You can contribute to it through <a href="https://github.com/yogesh-aggarwal/sql-tools-lib">GitHub</a>.
 
 ---
