@@ -903,6 +903,9 @@ class Sqlite3:
 
 
 class MySql():
+    """
+    The Development on this class is not started yet. Don't use it.
+    """
     def __init__(self):
         pass
 
