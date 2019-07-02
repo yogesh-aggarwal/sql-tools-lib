@@ -7,7 +7,7 @@ setup(
   name = 'sql_tools',
   packages = ['sql_tools'],
   version = '0.1.8',
-  license='GNU 3.0',
+  license='AGPL 3.0',
   description = 'An integrative library that contains tools for performing various tasks related to the table relations.',
   long_description = longDesc,
   long_description_content_type='text/markdown',
