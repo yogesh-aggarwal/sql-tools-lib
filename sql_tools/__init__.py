@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 # DATA
-__version__ = "SQL Tools version 0.1.8"
+__version__ = "SQL Tools version 0.1.9"
 __sqliteVersion__ = f"SQL Tools: Sqlite3 version {sqlite3.sqlite_version}"
 __mySQLVersion__ = f"SQL Tools: MySQL version 2.2.9"
 __SqliteFunctions__ = ["Create database: Sqlite3.createDatabase()",
@@ -796,6 +796,7 @@ class Sqlite3:
         - Small database will contain 2 tables with small dataset.
         - Big database will contain 3 tables with big dataset.
         """
+        from pathlib import Path
         startTime = time.time()
         try:
             open(databPath, "a+")
@@ -803,10 +804,10 @@ class Sqlite3:
             raise FileNotFoundError("The specified path doesn't exists")
         
         if bigData:
-            with open("bigSample.sql", "r") as f:
+            with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/bigSample.sql", "r") as f:
                 query=f.read()
         else:
-            with open("smallSample.sql", "r") as f:
+            with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/smallSample.sql", "r") as f:
                 query=f.read()
         if openLog:
             f = open("sampleData.log", "a+")
@@ -918,6 +919,8 @@ class MySql():
 
 
 if __name__ == "__main__":
+    from pathlib import Path
     print("Welcome to the SQL Tools package.")
-    with open("HELP", "r") as f:
+    with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/HELP", "r") as f:
         print(f.read())
+        input()
