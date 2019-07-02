@@ -6,13 +6,8 @@ with open("README.md", "r") as readMe:
 setup(
   name = 'sql_tools',
   packages = ['sql_tools'],
-<<<<<<< HEAD
   version = '0.1.9',
-  license='GNU 3.0',
-=======
-  version = '0.1.8',
   license='AGPL 3.0',
->>>>>>> 58d44a444009dc7d7dd12cf3c709411c30550ad5
   description = 'An integrative library that contains tools for performing various tasks related to the table relations.',
   long_description = longDesc,
   long_description_content_type='text/markdown',
