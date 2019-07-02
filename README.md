@@ -18,5 +18,5 @@ This python package uses the ```sqlite3``` functionality to store databases on t
 ### For more help visit the <a href="https://github.com/yogesh-aggarwal/sql-tools-lib/wiki">documentation</a>.
 
 You can contribute to it through <a href="https://github.com/yogesh-aggarwal/sql-tools-lib">GitHub</a>.
-
+### View project at <a href="https://github.com/users/yogesh-aggarwal/projects/2">GiHub</a>.
 ---
