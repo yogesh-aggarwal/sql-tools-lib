@@ -18,8 +18,9 @@ setup(
   download_url = 'https://github.com/yogesh-aggarwal/sql-tools-lib/dist/sql_tools-0.2.0-py3-none-any.whl',
   keywords = ['SQL', 'DATABASES', "TABLES", 'RECORDS'],
   install_requires=[
-          'mysql-connector',
-          'db-sqlite3',
+          "mysql-connector",  # For mysql related operations
+          "db-sqlite3",  # For sqlite related operations
+          "mongo-connector",  # For mongodb related operations
           "numpy",
           "pandas",
           "pathlib",
