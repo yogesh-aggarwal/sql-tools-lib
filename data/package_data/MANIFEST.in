@@ -1,0 +1,3 @@
+include bigSample.sql
+include smallSample.sql
+include HELP
