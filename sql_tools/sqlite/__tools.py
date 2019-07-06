@@ -7,13 +7,17 @@ import logging
 
 from . import constants
 
-__history__ = []
-
 
 def setStatus(arg, logConsole=False):
     if logConsole:
         # logging.basicConfig(format=f"SQL_CURRENT: ")
         logging.error(arg)  # Change the logging style
     else:
-        __history__.append(arg)
+        constants.__history__.append(arg)
     constants.__status__ = arg
+
+
+if __name__ == "__main__":
+    print("Execute extension for SQL-Tools library.")
+    print("Note: Don't use it seperately otherwise MAY CAUSE THE PROGRAM TO STOP.")
+    input()

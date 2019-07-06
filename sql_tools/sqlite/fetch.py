@@ -390,4 +390,6 @@ def sortColumns(tableName):
 
 
 if __name__ == "__main__":
-    print(execute("SELECT * FROM STUDENT", databPath="myDatabase.db", logConsole=True))
+    print("Fetch extension for SQL-Tools library.")
+    print("Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately.")
+    input()

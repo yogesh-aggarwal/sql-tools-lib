@@ -1,6 +1,5 @@
 """
 Connect extension for SQL-Tools library.
-# [DONE]
 """
 
 from . import constants

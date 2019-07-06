@@ -1,6 +1,5 @@
 """
 Database operation extension for SQL-Tools library.
-# [Done]
 """
 
 import os
@@ -111,5 +110,6 @@ def delDatabase(databPath=""):
 
 
 if __name__ == "__main__":
-    print("Simple functions related to location of database(s).")
+    print("Simple functions extention for SQL-Tools library.")
+    print("Helps to perform simple operations related to location of database(s).")
     input()

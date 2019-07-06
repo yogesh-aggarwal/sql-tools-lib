@@ -1,6 +1,5 @@
 """
 Execute extension for SQL-Tools library.
-# [Done]
 """
 
 import json
