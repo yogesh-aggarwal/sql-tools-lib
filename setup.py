@@ -8,7 +8,7 @@ setup(
   packages = ['sql_tools'],
   version = '0.1.9',
   license='AGPL 3.0',
-  description = 'An integrative library that contains tools for performing various tasks related to My SQL/sqlite3 databases.',
+  description = 'An integrative library that contains tools for performing various tasks related to My SQL/sqlite3/Mongodb databases.',
   long_description = longDesc,
   long_description_content_type='text/markdown',
   include_package_data=True,
