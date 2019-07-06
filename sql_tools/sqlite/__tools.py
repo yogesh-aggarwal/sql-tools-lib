@@ -4,6 +4,10 @@ Contains tools for sql-tools library to work-properly
 """
 
 import logging
+import constants
+
+__history__ = []
+
 
 def setStatus(arg, logConsole=False):
     if logConsole:
@@ -11,3 +15,4 @@ def setStatus(arg, logConsole=False):
         logging.error(arg)  # Change the logging style
     else:
         __history__.append(arg)
+    constants.__status__ = arg

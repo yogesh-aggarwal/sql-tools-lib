@@ -1,7 +1,15 @@
+"""
+Database operation extension for SQL-Tools library.
+# [Done]
+"""
+
 import os
 import pathlib
 import shutil
 import __tools
+import constants
+from execute import execute
+
 
 
 def createDatabase(databPath):
@@ -17,10 +25,10 @@ def createDatabase(databPath):
         else:
             databPath = databPath[0]
 
-    __status("Creating database")
+    __tools.setStatus("Creating database")
     execute("", databPath=databPath, _Sqlite3__execMethod=False)
-    __status("Fetching byte results")
-    __status("Database created.")
+    __tools.setStatus("Fetching byte results")
+    __tools.setStatus("Database created.")
     # LOG ---> Created database at {datab[0]} because of two path in the main instance.
     return True
 
@@ -67,7 +75,8 @@ def copyDatabase(newPath, oldPath=""):
             raise FileNotFoundError("The specified file/directory doesn't exists")
         oldPath = os.path._getfullpathname(oldPath)
     else:
-        if not databPath:
+        databPath = constants.__databPath__
+        if databPath == None:
             raise ValueError("Please provide the database path")
         else:
             oldPath = databPath

@@ -1,6 +1,13 @@
 import sqlite3
+
 from numpy import array
+
+import constants
+from connect import *
 from constants import *
+from execute import *
+from databFuncs import *
+
 
 __version__ = "SQL Tools version 0.1.9"
 __sqliteVersion__ = f"SQL Tools: Sqlite3 version {sqlite3.sqlite_version}"
@@ -17,7 +24,16 @@ __sqliteVersion__ = f"SQL Tools: Sqlite3 version {sqlite3.sqlite_version}"
 __help__ = "Visit the documentation for more help or type \"help(sql_tools)\""
 
 
-__path__ = 
+@property
+def __path__():
+    __path__ = constants.__path__
+    return __path__
+
+
+@property
+def __time__():
+    __time__ = constants.__time__
+    return __time__
 
 
 if __name__ == "__main__":
