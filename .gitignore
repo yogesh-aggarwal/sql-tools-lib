@@ -1,6 +1,7 @@
 .vscode/
 .idea/
-test
+*test*
+*test.*
 extra*/
 *extra*
 garbage.*

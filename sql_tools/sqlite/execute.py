@@ -9,7 +9,7 @@ import time
 import __tools
 import numpy as np
 import json
-from exception import *
+import sqliteException
 
 def execute(command="", databPath="", matrix=True, inlineData=False, splitByColumns=False, pathJSON=False, logConsole=False, __execMethod=True, __commit=True):
     """
@@ -48,7 +48,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
                 try:
                     data = json.loads(f.read())
                 except Exception:
-                    raise exception.JSONError("JSON file error. Could be the syntax problem.")
+                    raise sqliteException.JSONError("JSON file error. Could be the syntax problem.")
             keys = data.keys()
             for i in keys:
                 for j in data[i]:
@@ -64,7 +64,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
@@ -76,7 +76,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
     elif isinstance(__temp_lst__[0], str):
         pass
     else:
-        raise ValueError("Invalid command input. Command should be a \"str\" or \"list\" type object.")
+        raise sqliteException.CommandError("Invalid command input. Command should be a \"str\" or \"list\" type object.")
     command = __temp_lst__.copy()
 
     # For database to list
@@ -87,12 +87,12 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
     elif isinstance(__temp_lst__[0], str):
         pass
     else:
-        raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
     databPath = __temp_lst__.copy()
 
     try:
         if len(command) != len(databPath):
-            raise ValueError("Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a square matrix.")
+            raise sqliteException.MatrixError("Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a square matrix.")
     except TypeError:
         pass
     del __temp_lst__
@@ -104,13 +104,13 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         try:
             c.execute(command[i])
         except Exception as e:
-            raise QueryError(f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})")
+            raise sqliteException.QueryError(f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})")
         result = []
         try:
             for data_fetched in c.fetchall():
                 result.append(data_fetched)
         except Exception as e:
-            raise ValueError(f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})")
+            raise sqliteException.UnknownError(f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})")
         conn.commit()
         c.close()
         conn.close()
@@ -159,5 +159,3 @@ if __name__ == "__main__":
     print("Execute extension for SQL-Tools library.")
     print("Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately.")
     input()
-    
-    # raise JSONError(constants.__jsonFormat__)
