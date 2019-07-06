@@ -6,10 +6,10 @@ Database operation extension for SQL-Tools library.
 import os
 import pathlib
 import shutil
-import __tools
-import constants
-from execute import execute
 
+from . import __tools
+from . import constants
+from .execute import execute
 
 
 def createDatabase(databPath):

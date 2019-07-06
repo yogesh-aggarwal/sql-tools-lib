@@ -3,13 +3,16 @@ Execute extension for SQL-Tools library.
 # [Done]
 """
 
-import sqlite3
-import constants
-import time
-import __tools
-import numpy as np
 import json
-import sqliteException
+import sqlite3
+import time
+
+import numpy as np
+
+from . import __tools
+from . import constants
+from . import sqliteException
+
 
 def execute(command="", databPath="", matrix=True, inlineData=False, splitByColumns=False, pathJSON=False, logConsole=False, __execMethod=True, __commit=True):
     """

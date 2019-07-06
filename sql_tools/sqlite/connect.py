@@ -3,7 +3,7 @@ Connect extension for SQL-Tools library.
 # [DONE]
 """
 
-import constants
+from . import constants
 
 def connect(databPath):
     constants.__databPath__ = databPath

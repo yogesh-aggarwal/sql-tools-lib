@@ -1,13 +1,8 @@
 """
 An integrative library that contains tools for performing various tasks related to the relations (table records).
 """
-import datetime
-import os
-import time
-
-import pandas as pd
-
-
+from .sqlite import constants
+'''
 class Sqlite3:
     def __init__(self, databPath=""):
         self.databPath = databPath
@@ -41,8 +36,6 @@ class Sqlite3:
         self.__history__.append(status)
         self.status = status
 
-
-
     def __tableToCSV(self, data, tableName, databPath="", table=True, database=True):
         startTime = time.time()
         if not databPath:
@@ -75,7 +68,7 @@ class Sqlite3:
 
     def tableToCSV(self, tableName, databPath="", returnDict=False):
         """
-        Converts table records to a CSV file.
+        'Converts table records to a CSV file.'
         """
         startTime = time.time()
         if not databPath:
@@ -303,20 +296,11 @@ class Sqlite3:
                 raise e
         return final
 
+'''
 
-class MySql():
-    """
-    The Development on this class is not started yet. Don't use it.
-    """
-    def __init__(self):
-        pass
-
-    def connectDatabase(self):
-        pass
-
-    def execute(self, command):
-        pass
-
+__path__ = constants.__databPath__
+__time__ = constants.__time__
+__status__ = constants.__status__
 
 
 if __name__ == "__main__":
