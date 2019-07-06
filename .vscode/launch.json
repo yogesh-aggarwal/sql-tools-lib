@@ -10,6 +10,12 @@
       "request": "launch",
       "module": "sql_tools"
     },
+    {
+      "name": "Python: Module",
+      "type": "python",
+      "request": "launch",
+      "module": "sql_tools"
+    },
 
     {
       "name": "Python: Current File",
