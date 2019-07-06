@@ -1,11 +1,11 @@
 """
 File containing methods to fetch data.
 """
-from execute import execute
+from .execute import execute
+from . import constants
+from . import sqliteException
+from . import __tools
 import time
-
-
-__history__ = []
 
 
 def getNoOfRecords(tableName, databPath="", returnDict=False):
@@ -13,9 +13,11 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     Returns the no. of records in the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
-    startTime = time.time()
+    constants.__startTime__ = time.time()
     if not databPath:
-        databPath = self.databPath
+        databPath = constants.__databPath__
+        if databPath == None:
+            raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -45,22 +47,22 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     result = []
     for i in range(len(tableName)):
         try:
-            self.__status(f"Gtiing records for {databPath[i]}")
-            if "ERROR IN SQL QUERY --->" not in self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, _Sqlite3__execMethod=False):
-                result.append(len(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, _Sqlite3__execMethod=False)[0]))
+            __tools.setStatus(f"Gtiing records for {databPath[i]}")
+            if "ERROR IN SQL QUERY --->" not in execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, __execMethod=False):
+                result.append(len(execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, __execMethod=False)[0]))
             else:
-                raise ValueError(self.execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, _Sqlite3__execMethod=False)[0])
+                raise ValueError(execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, __execMethod=False)[0])
         except Exception:
             result.append(0)
 
     if returnDict:
-        self.__status("Packing into dictionary")
+        __tools.setStatus("Packing into dictionary")
         result = dict(zip(tableName, result))
 
-    self.__status("Returning results")
+    __tools.setStatus("Returning results")
 
-    stopTime = time.time()
-    self.execTime = stopTime-startTime
+    constants.__stopTime__ = time.time()
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
     return result
 
 def getNoOfColumns(tableName, databPath="", returnDict=False):
@@ -68,9 +70,11 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
     Returns the no. of columns in the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
-    startTime = time.time()
+    constants.__startTime__ = time.time()
     if not databPath:
-        databPath = self.databPath
+        databPath = constants.__databPath__
+        if databPath == None:
+            raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -100,7 +104,7 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
     result = []
     for i in range(len(tableName)):
         try:
-            queryResult = self.getColumnNames(tableName=tableName[i], databPath=databPath[i])
+            queryResult = getColumnNames(tableName=tableName[i], databPath=databPath[i])
         except Exception as e:
             raise e
 
@@ -112,21 +116,23 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
         except Exception:
             result.append(0)
     if returnDict:
-        self.__status("Packing into dictionary")
+        __tools.setStatus("Packing into dictionary")
         result = dict(zip(tableName, result))
 
-    stopTime = time.time()
-    self.execTime = stopTime-startTime
+    constants.__stopTime__ = time.time()
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
     return result
 
-def getColumnNames(tableName="", databPath="", returnDict=False):
+def getColumnNames(tableName, databPath="", returnDict=False):
     """
     Returns the column names of the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
-    startTime = time.time()
+    constants.__startTime__ = time.time()
     if not databPath:
-        databPath = self.databPath
+        databPath = constants.__databPath__
+        if databPath == None:
+            raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -155,9 +161,9 @@ def getColumnNames(tableName="", databPath="", returnDict=False):
 
     result = []
     for i in range(len(tableName)):
-        self.__status(f"Getting results for {tableName[i]}")
+        __tools.setStatus(f"Getting results for {tableName[i]}")
         try:
-            queryResult = self.execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath[i], matrix=False, inlineData=False, _Sqlite3__execMethod=False)
+            queryResult = execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath[i], matrix=False, inlineData=False, __execMethod=False)
         except Exception as e:
             raise e
 
@@ -172,22 +178,24 @@ def getColumnNames(tableName="", databPath="", returnDict=False):
             raise ValueError(queryResult)
 
     if returnDict:
-        self.__status("Packing into dictionary")
+        __tools.setStatus("Packing into dictionary")
         result = dict(zip(databPath, result))
 
-    self.__status("Returning results")
-    stopTime = time.time()
-    self.execTime = stopTime-startTime
+    __tools.setStatus("Returning results")
+    constants.__stopTime__ = time.time()
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
     return result
 
-def getTableNames(databPath="", returnDict=False):
+def getTableNames(databPath, returnDict=False):
     """
     Returns the table names in the provided database.
     You can provided multiple database paths..
     """
-    startTime = time.time()
+    constants.__startTime__ = time.time()
     if not databPath:
-        databPath = self.databPath
+        databPath = constants.__databPath__
+        if databPath == None:
+            raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -202,8 +210,8 @@ def getTableNames(databPath="", returnDict=False):
 
     result = []
     for i in range(len(databPath)):
-        self.__status(f"Getting table names for {databPath[i]}")
-        queryResult = self.execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True, _Sqlite3__execMethod=False)
+        __tools.setStatus(f"Getting table names for {databPath[i]}")
+        queryResult = execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True, __execMethod=False)
         if "ERROR IN SQL QUERY --->" not in queryResult:
             database = queryResult[0]
             final = []
@@ -214,22 +222,24 @@ def getTableNames(databPath="", returnDict=False):
             raise ValueError(queryResult)
 
     if returnDict:
-        self.__status("Packing into dictionary")
+        __tools.setStatus("Packing into dictionary")
         result = dict(zip(databPath, result))
 
-    self.__status("Returning results")
-    stopTime = time.time()
-    self.execTime = stopTime-startTime
+    __tools.setStatus("Returning results")
+    constants.__stopTime__ = time.time()
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
     return result
 
-def getTableCommand(tableName="", databPath="", returnDict=False):
+def getTableCommand(tableName, databPath="", returnDict=False):
     """
     Returns the command for creating the provided table in the database accordingly.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
-    startTime = time.time()
+    constants.__startTime__ = time.time()
     if not databPath:
-        databPath = self.databPath
+        databPath = constants.__databPath__
+        if databPath == None:
+            raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -238,7 +248,7 @@ def getTableCommand(tableName="", databPath="", returnDict=False):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
@@ -249,7 +259,7 @@ def getTableCommand(tableName="", databPath="", returnDict=False):
     elif isinstance(__temp_lst__[0], str):
         pass
     else:
-        raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        raise sqliteException.TableError("Invalid table input. Table should be a \"str\" or \"list\" type object.")
     tableName = __temp_lst__.copy()
     del __temp_lst__
 
@@ -258,28 +268,36 @@ def getTableCommand(tableName="", databPath="", returnDict=False):
 
     final = []
     for i in range(len(databPath)):
-        self.__status(f"Getting results for {tableName[i]}")
-        queryResult = self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True, _Sqlite3__execMethod=False)
+        __tools.setStatus(f"Getting results for {tableName[i]}")
+        queryResult = execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True, __execMethod=False)
+        if queryResult == [[]]:
+            queryResult = execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i].lower().strip()}';", databPath=databPath[i], matrix=False, inlineData=True, __execMethod=False)
+        if queryResult == [[]]:
+            queryResult = execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i].upper().strip()}';", databPath=databPath[i], matrix=False, inlineData=True, __execMethod=False)
+        if queryResult == [[]]:
+            raise sqliteException.TableError("Please provide a valid table name.")
         if "ERROR IN SQL QUERY --->" not in queryResult:
             result = queryResult
             if result == [[""]]:
                 raise ValueError(f"The table doesn't exists. ({tableName[i]})")
             else:
                 try:
-                    final.append(result[0][0])
+                    final.append(result[0])
                 except Exception as e:
                     raise e
         else:
-            raise ValueError(self.execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath, matrix=False, inlineData=True, _Sqlite3__execMethod=False))
+            raise ValueError(execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath, matrix=False, inlineData=True, __execMethod=False))
 
     if returnDict:
-        self.__status("Packing into dictionary")
+        __tools.setStatus("Packing into dictionary")
         result = dict(zip(tableName, result))
 
-    self.__status("Returning results")
-    stopTime = time.time()
-    self.execTime = stopTime-startTime
+    __tools.setStatus("Returning results")
+    constants.__stopTime__ = time.time()
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
     return final
+
+def sortColumns(tableName):
     """
     Sorts the columns according to their names in accordance to the specified order.
     """
@@ -288,10 +306,12 @@ def getTableCommand(tableName="", databPath="", returnDict=False):
     if isinstance(databPath, list):
         raise ValueError("Multiple databases aren't supported for this method at the moment.")
 
-    startTime = time.time()
     order = order.lower()
+    constants.__startTime__ = time.time()
     if not databPath:
-        databPath = self.databPath
+        databPath = constants.__databPath__
+        if databPath == None:
+            raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -320,11 +340,11 @@ def getTableCommand(tableName="", databPath="", returnDict=False):
 
     final = []
     for i in range(len(databPath)):
-        command = self.getTableCommand(tableName=tableName[i], databPath=databPath[i])[0][0].replace("\n", " ").replace("\t"," ").replace("`", "").split(" ")
-        oldCName = self.getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]  # REMOVE 0 FOR MULTIPLE DATABASES
+        command = getTableCommand(tableName=tableName[i], databPath=databPath[i])[0][0].replace("\n", " ").replace("\t"," ").replace("`", "").split(" ")
+        oldCName = getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]  # REMOVE 0 FOR MULTIPLE DATABASES
         oldIndex = [command.index(x) for x in oldCName]
 
-        self.__status(f"Getting schema for {tableName[i]}")
+        __tools.setStatus(f"Getting schema for {tableName[i]}")
         newCname = oldCName.copy()
         newCname.sort()
 
@@ -339,36 +359,36 @@ def getTableCommand(tableName="", databPath="", returnDict=False):
         for j in range(len(newCname)):
             command[oldIndex[j]] = newCname[j]
 
-        self.__status(f"Creating a shallow copy of database {databPath[i]}")
+        __tools.setStatus(f"Creating a shallow copy of database {databPath[i]}")
         command = " ".join(command).replace(tableName[i], f"temp_sql_tools_159753_token_copy_{tableName[i]}")
 
         done = []
         try:
-            self.__status("Preparing databases for operation")
-            self.execute(command, databPath=databPath[i], _Sqlite3__execMethod=False)
-            self.execute(f"INSERT INTO temp_sql_tools_159753_token_copy_{tableName[i]} SELECT * FROM {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
+            __tools.setStatus("Preparing databases for operation")
+            execute(command, databPath=databPath[i], __execMethod=False)
+            execute(f"INSERT INTO temp_sql_tools_159753_token_copy_{tableName[i]} SELECT * FROM {tableName[i]}", databPath=databPath[i], __execMethod=False)
             for j in range(len(oldCName)):
                 if oldCName[j] not in done and newCname[j] not in done:
-                    self.execute(f"UPDATE temp_sql_tools_159753_token_copy_{tableName[i]} SET {oldCName[j]} = {newCname[j]} , {newCname[j]} = {oldCName[j]}", databPath=databPath[i], _Sqlite3__execMethod=False)
+                    execute(f"UPDATE temp_sql_tools_159753_token_copy_{tableName[i]} SET {oldCName[j]} = {newCname[j]} , {newCname[j]} = {oldCName[j]}", databPath=databPath[i], __execMethod=False)
                     done.append(oldCName[i])
-            self.execute(f"DROP TABLE {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
-            self.execute(f"ALTER TABLE temp_sql_tools_159753_token_copy_{tableName[i]} RENAME TO {tableName[i]}", databPath=databPath[i], _Sqlite3__execMethod=False)
+            execute(f"DROP TABLE {tableName[i]}", databPath=databPath[i], __execMethod=False)
+            execute(f"ALTER TABLE temp_sql_tools_159753_token_copy_{tableName[i]} RENAME TO {tableName[i]}", databPath=databPath[i], __execMethod=False)
 
             del oldCName, oldIndex, newCname
             final.append(True)
         except Exception as e:
             try:
-                self.execute(f"DROP TABLE temp_sql_tools_159753_token_copy_{tableName[i]}", databPath=databPath[i])
+                execute(f"DROP TABLE temp_sql_tools_159753_token_copy_{tableName[i]}", databPath=databPath[i])
             except:
                 pass
             raise e
 
-    self.__status("Returning results")
-    stopTime = time.time()
-    self.execTime = stopTime-startTime
+    __tools.setStatus("Returning results")
+    constants.__stopTime__ = time.time()
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
     return final
 
 
 
 if __name__ == "__main__":
-    print(execute("SELECT * FROM STUDENT", databPath="hello.db", logConsole=True))
+    print(execute("SELECT * FROM STUDENT", databPath="myDatabase.db", logConsole=True))

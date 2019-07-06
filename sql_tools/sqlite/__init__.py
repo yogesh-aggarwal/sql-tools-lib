@@ -7,6 +7,7 @@ from .connect import *
 from .constants import *
 from .databFuncs import *
 from .execute import execute
+from .fetch import *
 
 __version__ = "SQL Tools version 0.1.9"
 __sqliteVersion__ = f"SQL Tools: sqlite version {sqlite3.sqlite_version}"
@@ -22,9 +23,9 @@ __sqliteFunctions__ = array(["Create database: sqlite.createDatabase()",
                              "Get table(s) creation command: sqlite.getTableCommand()"])
 __help__ = "Visit the documentation for more help or type \"help(sql_tools)\""
 
-    
-    
-    
+
+__path__ = constants.__databPath__  # NOT WORKING -> USING CATCHED VALUE AT START
+__time__ = constants.__time__  # NOT WORKING -> USING CATCHED VALUE AT START
 
 
 if __name__ == "__main__":
