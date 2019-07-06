@@ -1,6 +1,7 @@
 """
 File containing methods to fetch data.
 """
+import os
 import time
 
 from . import __tools, constants, sqliteException
@@ -387,7 +388,78 @@ def sortColumns(tableName):
     constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
     return final
 
+def getDatabaseSize(databPath="", returnDict=False):
+    """
+    Returns the database size in bytes.
+    """
+    constants.__startTime__ = time.time()
+    if not databPath:
+        databPath = constants.__databPath__
+        if databPath == None:
+            raise sqliteException.PathError("Please provide a valid database path.")
+    else:
+        __temp_lst__ = []
+        __temp_lst__.append(databPath)
+        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+            __temp_lst__ = __temp_lst__[0]
+        elif isinstance(__temp_lst__[0], str):
+            pass
+        else:
+            raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        databPath = __temp_lst__.copy()
+        del __temp_lst__
 
+    final = []
+    for i in range(len(databPath)):
+        __tools.setStatus(f"Getting size of {databPath[i]}")
+        final.append(f"{os.stat(databPath[i]).st_size} bytes ({os.stat(databPath[i]).st_size * 10**(-6)} MB)")
+
+    if returnDict:
+        __tools.setStatus("Packing into dictionary")
+        final = dict(zip(databPath, final))
+
+    constants.__stopTime__ = time.time()
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    return final
+
+def getSampleDatabase(databPath, bigData=False, openLog=False):
+    """
+    Creates a sample database in the provided location.\n
+    ##### WARNING:
+    `bigData=True` may take some time to execute.
+    - Small database will contain 2 tables with small dataset.
+    - Big database will contain 3 tables with big dataset.
+    """
+    from pathlib import Path
+    startTime = time.time()
+    try:
+        open(databPath, "a+")
+    except:
+        raise FileNotFoundError("The specified path doesn't exists")
+    
+    if bigData:
+        with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/bigSample.sql", "r") as f:
+            query=f.read()
+    else:
+        with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/smallSample.sql", "r") as f:
+            query=f.read()
+    if openLog:
+        f = open("sampleData.log", "a+")
+    query = query.split("\n")
+    for i in range(len(query)):
+        if openLog:
+            _time = datetime.datetime.now().strftime("%H:%M:%S")
+            f.write(f"[{_time}]: {query[i]}\n")
+        if i != len(query):
+            execute(query[i], databPath=databPath, _Sqlite3__execMethod=False, _Sqlite3__commit=False)
+        else:
+            execute(query[i], databPath=databPath, _Sqlite3__execMethod=False, _Sqlite3__commit=True)
+    f.close()
+    if openLog:
+        os.startfile("sampleData.log")
+    del _time
+    constants.__stopTime__ = time.time()
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
 
 if __name__ == "__main__":
     print("Fetch extension for SQL-Tools library.")
