@@ -1,4 +1,4 @@
-import sqlite
+import sqlite3
 
 from numpy import array
 
