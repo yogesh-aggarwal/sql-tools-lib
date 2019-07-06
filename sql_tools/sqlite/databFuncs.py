@@ -9,10 +9,11 @@ import shutil
 
 from . import __tools
 from . import constants
+from . import sqliteException
 from .execute import execute
 
 
-def createDatabase(databPath):
+def createDatabase(databPath=""):
     """
     Creates the databases at the path provided.
     Caution:
@@ -20,13 +21,12 @@ def createDatabase(databPath):
     Provide the name of the database in the path.
     """
     if not databPath:
-        if not databPath:
-            databPath = f"{os.getcwd()}\\datab.db"
-        else:
-            databPath = databPath[0]
+        databPath = constants.__databPath__
+        if databPath == None:
+            raise sqliteException.PathError("Please provide a valid database path.")
 
     __tools.setStatus("Creating database")
-    execute("", databPath=databPath, _Sqlite3__execMethod=False)
+    execute("", databPath=databPath, __execMethod=False)
     __tools.setStatus("Fetching byte results")
     __tools.setStatus("Database created.")
     # LOG ---> Created database at {datab[0]} because of two path in the main instance.
@@ -39,17 +39,21 @@ def moveDatabase(newPath, oldPath=""):
     ---
     Provide the name of the database in the path.
     """
-    if not oldPath:
-        oldPath = os.getcwd()
     if not newPath:
-        return "Please provide the new path of the database"
+        raise sqliteException.PathError("Please provide a valid database path (newPath).")
+    
+    if not oldPath:
+        oldPath = constants.__databPath__
+        if oldPath == None:
+            raise sqliteException.PathError("Please provide a valid database path (oldPath).")
 
     newPath = os.path._getfullpathname(newPath)
     oldPath = os.path._getfullpathname(oldPath)
 
     os.rename(oldPath, newPath)
+    return True
 
-def copyDatabase(newPath, oldPath=""):
+def copyDatabase(newPath, oldPath=""):  # Pending
     """
     Creates a copy of database from the old path to the new path.
     Caution:
@@ -100,9 +104,12 @@ def delDatabase(databPath=""):
     This action is irreversible.
     """
     if not databPath:
-        databPath = databPath
+        databPath = constants.__databPath__
+        if databPath == None:
+            raise sqliteException.PathError("Please provide a valid database path.")
 
     os.remove(os.path._getfullpathname(databPath))
+    return True
 
 
 if __name__ == "__main__":
