@@ -5,6 +5,7 @@ Connect extension for SQL-Tools library.
 
 from . import constants
 
+
 def connect(databPath):
     constants.__databPath__ = databPath
 

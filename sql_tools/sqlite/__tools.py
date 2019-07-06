@@ -4,6 +4,7 @@ Contains tools for sql-tools library to work-properly
 """
 
 import logging
+
 from . import constants
 
 __history__ = []

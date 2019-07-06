@@ -1,11 +1,10 @@
 """
 File containing methods to fetch data.
 """
-from .execute import execute
-from . import constants
-from . import sqliteException
-from . import __tools
 import time
+
+from . import __tools, constants, sqliteException
+from .execute import execute
 
 
 def getNoOfRecords(tableName, databPath="", returnDict=False):

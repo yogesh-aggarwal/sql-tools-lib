@@ -9,9 +9,7 @@ import time
 
 import numpy as np
 
-from . import __tools
-from . import constants
-from . import sqliteException
+from . import __tools, constants, sqliteException
 
 
 def execute(command="", databPath="", matrix=True, inlineData=False, splitByColumns=False, pathJSON=False, logConsole=False, __execMethod=True, __commit=True):

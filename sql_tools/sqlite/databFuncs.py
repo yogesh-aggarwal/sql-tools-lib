@@ -7,9 +7,7 @@ import os
 import pathlib
 import shutil
 
-from . import __tools
-from . import constants
-from . import sqliteException
+from . import __tools, constants, sqliteException
 from .execute import execute
 
 
