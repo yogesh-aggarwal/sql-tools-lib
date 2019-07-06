@@ -23,7 +23,7 @@ class JSONError(Exception):
         super().__init__()
 
 class Unknown(Exception):
-    def __init(self, message="Error in security."):
+    def __init(self, message="Unknown error occured."):
         super().__init__()
 
 
