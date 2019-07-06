@@ -9,7 +9,7 @@ from .databFuncs import *
 from .execute import execute
 
 __version__ = "SQL Tools version 0.1.9"
-__sqliteVersion__ = f"SQL Tools: sqlite version {sqlite.sqlite_version}"
+__sqliteVersion__ = f"SQL Tools: sqlite version {sqlite3.sqlite_version}"
 __sqliteFunctions__ = array(["Create database: sqlite.createDatabase()",
                              "Move database: sqlite.moveDatabase()",
                              "Copy database: sqlite.copyDatabase()",
