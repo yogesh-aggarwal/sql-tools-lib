@@ -104,3 +104,7 @@ def delDatabase(databPath=""):
 
     os.remove(os.path._getfullpathname(databPath))
 
+
+if __name__ == "__main__":
+    print("Simple functions related to location of database(s).")
+    input()

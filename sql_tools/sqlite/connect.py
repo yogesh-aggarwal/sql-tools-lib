@@ -11,3 +11,4 @@ def connect(databPath):
 
 if __name__ == "__main__":
     print("Connect extension for SQL-Tools library.")
+    input()

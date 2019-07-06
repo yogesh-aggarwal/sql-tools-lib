@@ -16,3 +16,8 @@ __history__ = []
 
 # FOR "execute.py"
 __databPath__ = None
+
+
+if __name__ == "__main__":
+    print("Contants for SQL-Tools library.")
+    input()

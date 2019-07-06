@@ -158,5 +158,6 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
 if __name__ == "__main__":
     print("Execute extension for SQL-Tools library.")
     print("Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately.")
+    input()
     
     # raise JSONError(constants.__jsonFormat__)
