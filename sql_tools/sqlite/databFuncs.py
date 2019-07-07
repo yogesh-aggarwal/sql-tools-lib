@@ -3,14 +3,13 @@ Database operation extension for SQL-Tools library.
 """
 
 import os
-import pathlib
 import shutil
 
 from . import __tools, constants, sqliteException
 from .execute import execute
 
 
-def createDatabase(databPath=""):
+def createDatabase(databPath="", raiseError=True):
     """
     Creates the databases at the path provided.
     Caution:
@@ -28,12 +27,21 @@ def createDatabase(databPath=""):
         if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
 
-    __tools.setStatus("Creating database")
-    execute("", databPath=databPath, __execMethod=False)
-    __tools.setStatus("Fetching byte results")
-    __tools.setStatus("Database created.")
-    # LOG ---> Created database at {datab[0]} because of two path in the main instance.
-    return True
+    final = []
+    for i in range(len(databPath)):
+        try:
+            __tools.setStatus("Creating database")
+            execute("", databPath=databPath[i], __execMethod=False)
+            __tools.setStatus("Fetching byte results")
+            __tools.setStatus("Database created.")
+            # LOG ---> Created database at {datab[0]} because of two path in the main instance.
+            final.append(True)
+        except Exception as e:
+            final.append(False)
+            if raiseError:
+                raise e
+
+    return final
 
 def moveDatabase(newPath, oldPath="", raiseError=True):
     """
