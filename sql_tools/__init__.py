@@ -3,9 +3,12 @@ An integrative library that contains tools for performing various tasks related 
 """
 from .sqlite import constants
 
-__path__ = constants.__databPath__
-__time__ = constants.__time__
-__status__ = constants.__status__
+def __path__():
+    return constants.__databPath__
+def __time__():
+    return constants.__time__
+def __status__():
+    return constants.__status__
 
 
 if __name__ == "__main__":
