@@ -368,6 +368,7 @@ def getDatabaseSize(databPath="", returnDict=False):
     constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return final
 
+"""
 def getSampleDatabase(databPath, bigData=False, openLog=False):
     """
     Creates a sample database in the provided location.\n
@@ -384,10 +385,10 @@ def getSampleDatabase(databPath, bigData=False, openLog=False):
         raise FileNotFoundError("The specified path doesn't exists")
     
     if bigData:
-        with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/bigSample.sql", "r") as f:
+        with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/data/sample_database/sqlite/bigSample.sql", "r") as f:
             query=f.read()
     else:
-        with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/smallSample.sql", "r") as f:
+        with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/data/sample_database/sqlite/smallSample.sql", "r") as f:
             query=f.read()
     if openLog:
         f = open("sampleData.log", "a+")
@@ -406,7 +407,7 @@ def getSampleDatabase(databPath, bigData=False, openLog=False):
     del _time
     constants.__stopTime__ = time.time()
     constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
-
+"""
 if __name__ == "__main__":
     print("Fetch extension for SQL-Tools library.")
     print("Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately.")

@@ -1,0 +1,4 @@
+include data/sample_database/sqlite/*
+include HELP
+include bigSample.sql
+include smallSample.sql

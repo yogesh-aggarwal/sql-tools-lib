@@ -10,7 +10,7 @@ from .execute import execute
 from .fetch import *
 # from .advTools import *
 
-__version__ = "SQL Tools version 0.1.9"
+__version__ = "SQL Tools version 0.2.0"
 __sqliteVersion__ = f"SQL Tools: sqlite version {sqlite3.sqlite_version}"
 __sqliteFunctions__ = array(["Create database: sqlite.createDatabase()",
                              "Move database: sqlite.moveDatabase()",
