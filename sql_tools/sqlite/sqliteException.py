@@ -26,6 +26,10 @@ class SecurityError(Exception):
     def __init__(self, message="Error in security."):
         super().__init__()
 
+class ColumnError(Exception):
+    def __init__(self, message="Error in columns or it may doesn't exists."):
+        super().__init__()
+
 class JSONError(Exception):
     def __init__(self, message="Error in JSON file or it may not in the specified format.\nFormat:\n\t{\n\t\t<database>:\n\t\t{\n\t\t\t<table name>:\n\t\t\t[\n\t\t\t\t<command>\n\t\t\t]\n\t\t}\n\t}"):
         super().__init__()

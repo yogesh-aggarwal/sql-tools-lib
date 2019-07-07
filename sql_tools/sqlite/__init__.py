@@ -8,6 +8,7 @@ from .constants import *
 from .databFuncs import *
 from .execute import execute
 from .fetch import *
+# from .advTools import *
 
 __version__ = "SQL Tools version 0.1.9"
 __sqliteVersion__ = f"SQL Tools: sqlite version {sqlite3.sqlite_version}"
