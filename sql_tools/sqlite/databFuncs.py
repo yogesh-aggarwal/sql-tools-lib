@@ -186,6 +186,68 @@ def delDatabase(databPath="", raiseError=True):
     
     return final
 
+def isIdentical(compareWith, databPath="", raiseError=True):
+    if not databPath:
+        databPath = constants.__databPath__
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
+            raise sqliteException.PathError("Please provide a valid database path (databPath).")
+    else:
+        if isinstance(databPath, str):
+            __temp = []
+            __temp.append(databPath)
+            databPath = __temp.copy()
+            del __temp
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            __temp = []
+            __temp.extend(databPath)
+            databPath = __temp.copy()
+            del __temp
+        if databPath == []:
+            raise sqliteException.PathError("Please provide a valid database path (databPath).")
+
+    if compareWith:
+        if isinstance(compareWith, str):
+            __temp = []
+            __temp.append(compareWith)
+            compareWith = __temp.copy()
+            del __temp
+        elif isinstance(compareWith, list) or isinstance(compareWith, tuple):
+            __temp = []
+            __temp.extend(compareWith)
+            compareWith = __temp.copy()
+            del __temp
+        if compareWith == []:
+            raise sqliteException.PathError("Please provide a valid database path (compareWith).")
+
+    if len(databPath) != len(compareWith):
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal databPath(s) and compareWith(s). Should form a matrix.")
+
+    final = []
+    for i in range(len(databPath)):
+        try:
+            data1 = open(databPath[i], "rb")
+            data2 = open(compareWith[i], "rb")
+            data1 = data1.read()
+            data2 = data2.read()
+        except Exception as e:
+            if raiseError:
+                raise e
+
+        try:
+            final.append(True) if data1 == data2 else final.append(False)
+        except Exception as e:
+            final.append(False)
+            if raiseError:
+                raise e
+    
+    return final
+
 
 if __name__ == "__main__":
     print("Simple functions extention for SQL-Tools library.")
