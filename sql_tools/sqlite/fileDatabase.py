@@ -1,3 +1,7 @@
+"""
+Contains methods related to connection(s) between database and file.
+"""
+
 import time
 
 from . import __tools, constants, sqliteException
