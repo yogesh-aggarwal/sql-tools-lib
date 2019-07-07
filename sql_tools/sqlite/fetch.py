@@ -205,7 +205,7 @@ def getColumnNames(tableName, databPath="", returnDict=False):
     constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return result
 
-def getTableNames(databPath, returnDict=False):
+def getTableNames(databPath="", returnDict=False):
     """
     Returns the table names in the provided database.
     You can provided multiple database paths..
@@ -322,103 +322,6 @@ def getTableCommand(tableName, databPath="", returnDict=False):
     if returnDict:
         __tools.setStatus("Packing into dictionary")
         result = dict(zip(tableName, result))
-
-    __tools.setStatus("Returning results")
-    constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
-    return final
-
-def sortColumns(tableName, databPath="", order="asc"):
-    """
-    Sorts the columns according to their names in accordance to the specified order.
-    """
-    if isinstance(tableName, list):
-        raise sqliteException.SupportError("Multiple table names aren't supported for this method at the moment.")
-    if isinstance(databPath, list):
-        raise sqliteException.SupportError("Multiple databases aren't supported for this method at the moment.")
-
-    order = order.lower()
-    constants.__startTime__ = time.time()
-    if not databPath:
-        databPath = constants.__databPath__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__databPath__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__databPath__)
-        if databPath == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-    else:
-        __temp_lst__ = []
-        __temp_lst__.append(databPath)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
-        databPath = __temp_lst__.copy()
-        del __temp_lst__
-
-    __temp_lst__ = []
-    __temp_lst__.append(tableName)
-    if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-        __temp_lst__ = __temp_lst__[0]
-    elif isinstance(__temp_lst__[0], str):
-        pass
-    else:
-        raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
-    tableName = __temp_lst__.copy()
-    del __temp_lst__
-
-    if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
-
-    final = []
-    for i in range(len(databPath)):
-        command = getTableCommand(tableName=tableName[i], databPath=databPath[i])[0][0][0].replace("\n", " ").replace("\t"," ").replace("`", "").replace(" (", "").replace("(", " (").replace("( ", "").replace("(", "( ").split(" ")
-        oldCName = getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]
-        oldIndex = [command.index(x) for x in oldCName]
-
-        __tools.setStatus(f"Getting schema for {tableName[i]}")
-        newCname = oldCName.copy()
-        newCname.sort()
-
-        if order == "desc":
-            newCname.reverse()
-        elif order == "asc":
-            pass
-        else:
-            raise AttributeError(f"Invalid order \"{order}\". Accepted orders are \"ASC\" (for ascending) or \"DESC\" (for descending).")
-
-
-        for j in range(len(newCname)):
-            command[oldIndex[j]] = newCname[j]
-
-        __tools.setStatus(f"Creating a shallow copy of database {databPath[i]}")
-        command = " ".join(command).replace(tableName[i], f"temp_sql_tools_159753_token_copy_{tableName[i]}")
-
-        done = []
-        try:
-            __tools.setStatus("Preparing databases for operation")
-            execute(command, databPath=databPath[i], __execMethod=False)
-            execute(f"INSERT INTO temp_sql_tools_159753_token_copy_{tableName[i]} SELECT * FROM {tableName[i]}", databPath=databPath[i], __execMethod=False)
-            for j in range(len(oldCName)):
-                if oldCName[j] not in done and newCname[j] not in done:
-                    execute(f"UPDATE temp_sql_tools_159753_token_copy_{tableName[i]} SET {oldCName[j]} = {newCname[j]} , {newCname[j]} = {oldCName[j]}", databPath=databPath[i], __execMethod=False)
-                    done.append(oldCName[i])
-            execute(f"DROP TABLE {tableName[i]}", databPath=databPath[i], __execMethod=False)
-            execute(f"ALTER TABLE temp_sql_tools_159753_token_copy_{tableName[i]} RENAME TO {tableName[i]}", databPath=databPath[i], __execMethod=False)
-
-            del oldCName, oldIndex, newCname
-            final.append(True)
-        except Exception as e:
-            try:
-                execute(f"DROP TABLE temp_sql_tools_159753_token_copy_{tableName[i]}", databPath=databPath[i])
-            except:
-                pass
-            raise e
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
