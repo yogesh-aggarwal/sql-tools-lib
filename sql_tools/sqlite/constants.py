@@ -20,7 +20,7 @@ __databPath__ = []
 __copyCount__ = 0
 
 # Global constants
-__version__ = "SQL-Tools version: 0.2.0"
+__version__ = "SQL-Tools version: 0.2.1"
 
 if __name__ == "__main__":
     print("Contants for SQL-Tools library.")
