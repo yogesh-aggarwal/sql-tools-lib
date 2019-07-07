@@ -1,5 +1,9 @@
 .vscode/
-test
+.idea/
+*test*
+*test.*
+extra*/
+*extra*
 garbage.*
 *garbage/
 __pycache__/

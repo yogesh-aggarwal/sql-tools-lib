@@ -1,25 +1,26 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as readMe:
     longDesc = readMe.read()
 
 setup(
   name = 'sql_tools',
-  packages = ['sql_tools'],
-  version = '0.1.9',
+  packages = find_packages(),
+  version = '0.2.0',
   license='AGPL 3.0',
-  description = 'An integrative library that contains tools for performing various tasks related to My SQL/sqlite3 databases.',
+  description = 'An integrative library that contains tools for performing various tasks related to My SQL/sqlite3/Mongodb databases.',
   long_description = longDesc,
   long_description_content_type='text/markdown',
   include_package_data=True,
   author = 'Yogesh Aggarwal',
   author_email = 'developeryogeshgit@gmail.com',
   url = 'https://github.com/yogesh-aggarwal/sql-tools-lib',
-  download_url = 'https://github.com/yogesh-aggarwal/sql-tools-lib/dist/sql_tools-0.2.0-py3-none-any.whl',
+  download_url = 'https://github.com/yogesh-aggarwal/sql-tools-lib/dist/sql_tools-0.2.0.tar.gz',
   keywords = ['SQL', 'DATABASES', "TABLES", 'RECORDS'],
   install_requires=[
-          'mysql-connector',
-          'db-sqlite3',
+          "mysql-connector",  # For mysql related operations
+          "db-sqlite3",  # For sqlite related operations
+          "mongo-connector",  # For mongodb related operations
           "numpy",
           "pandas",
           "pathlib",
