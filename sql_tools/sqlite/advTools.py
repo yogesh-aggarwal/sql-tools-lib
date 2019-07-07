@@ -10,13 +10,19 @@ def swapColumns(tableName, oldCName, newCname, databPath="", returnDict=False): 
     Swaps the columns provided.
     """
     if isinstance(tableName, list):
-        raise ValueError("Multiple table names aren't supported for this method at the moment.")
+        raise sqliteException.SupportError("Multiple table names aren't supported for this method at the moment.")
     if isinstance(databPath, list):
-        raise ValueError("Multiple databases aren't supported for this method at the moment.")
+        raise sqliteException.SupportError("Multiple databases aren't supported for this method at the moment.")
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -42,7 +48,7 @@ def swapColumns(tableName, oldCName, newCname, databPath="", returnDict=False): 
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
 
     final = []
     for i in range(len(databPath)):

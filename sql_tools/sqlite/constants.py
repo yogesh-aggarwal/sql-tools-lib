@@ -2,8 +2,6 @@
 File for storing constant data for sql-tools library.
 """
 
-from numpy import array
-
 # Data
 __path__ = None
 __time__ = None
@@ -15,7 +13,7 @@ __history__ = []
 
 
 # FOR "execute.py"
-__databPath__ = None
+__databPath__ = []
 
 
 if __name__ == "__main__":

@@ -56,6 +56,14 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
                 databPath.append(i)
         else:
             databPath = constants.__databPath__
+            if isinstance(databPath, str):
+                databPath = []
+                databPath.append(constants.__databPath__)
+            elif isinstance(databPath, list) or isinstance(databPath, tuple):
+                databPath = []
+                databPath.extend(constants.__databPath__)
+            if databPath == []:
+                raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -92,7 +100,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
 
     try:
         if len(command) != len(databPath):
-            raise sqliteException.MatrixError("Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a square matrix.")
+            raise sqliteException.MatrixError("Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a matrix.")
     except TypeError:
         pass
     del __temp_lst__
@@ -118,7 +126,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
 
     if __execMethod:
         constants.__stopTime__ = time.time()
-        constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+        constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
 
     # FOR INLINE DATA
     inlineData = False

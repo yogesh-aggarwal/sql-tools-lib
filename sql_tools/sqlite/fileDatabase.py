@@ -15,7 +15,13 @@ def tableToCSV(tableName, databPath="", returnDict=False):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -41,7 +47,7 @@ def tableToCSV(tableName, databPath="", returnDict=False):
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
 
     final = []
     for i in range(len(databPath)):
@@ -57,7 +63,7 @@ def tableToCSV(tableName, databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
 
 def databaseToCSV(databPath="", returnDict=False):
     """
@@ -66,7 +72,13 @@ def databaseToCSV(databPath="", returnDict=False):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -92,7 +104,7 @@ def databaseToCSV(databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return final
 
 

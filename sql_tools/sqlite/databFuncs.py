@@ -19,7 +19,13 @@ def createDatabase(databPath=""):
     """
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
 
     __tools.setStatus("Creating database")
@@ -77,7 +83,7 @@ def copyDatabase(newPath, oldPath=""):  # Pending
         oldPath = os.path._getfullpathname(oldPath)
     else:
         databPath = constants.__databPath__
-        if databPath == None:
+        if databPath == []:
             raise ValueError("Please provide the database path")
         else:
             oldPath = databPath
@@ -102,7 +108,13 @@ def delDatabase(databPath=""):
     """
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
 
     os.remove(os.path._getfullpathname(databPath))

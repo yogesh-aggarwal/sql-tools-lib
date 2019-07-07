@@ -2,11 +2,16 @@
 Connect extension for SQL-Tools library.
 """
 
-from . import constants
+from . import constants, sqliteException
 
 
 def connect(databPath):
-    constants.__databPath__ = databPath
+    if isinstance(databPath, str):
+        constants.__databPath__.append(databPath)
+    elif isinstance(databPath, list) or isinstance(databPath, tuple):
+        constants.__databPath__.extend(databPath)
+    if databPath == []:
+        raise sqliteException.PathError("Please provide a valid database path.")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 """
 File containing methods to fetch data.
 """
+import datetime
 import os
 import time
 
@@ -16,7 +17,13 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -42,7 +49,7 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
 
     result = []
     for i in range(len(tableName)):
@@ -62,7 +69,7 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     __tools.setStatus("Returning results")
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return result
 
 def getNoOfColumns(tableName, databPath="", returnDict=False):
@@ -73,7 +80,13 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -99,7 +112,7 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
 
     result = []
     for i in range(len(tableName)):
@@ -120,7 +133,7 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
         result = dict(zip(tableName, result))
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return result
 
 def getColumnNames(tableName, databPath="", returnDict=False):
@@ -131,7 +144,13 @@ def getColumnNames(tableName, databPath="", returnDict=False):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -157,7 +176,7 @@ def getColumnNames(tableName, databPath="", returnDict=False):
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
 
     result = []
     for i in range(len(tableName)):
@@ -183,7 +202,7 @@ def getColumnNames(tableName, databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return result
 
 def getTableNames(databPath, returnDict=False):
@@ -194,7 +213,13 @@ def getTableNames(databPath, returnDict=False):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -227,7 +252,7 @@ def getTableNames(databPath, returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return result
 
 def getTableCommand(tableName, databPath="", returnDict=False):
@@ -238,7 +263,13 @@ def getTableCommand(tableName, databPath="", returnDict=False):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -264,7 +295,7 @@ def getTableCommand(tableName, databPath="", returnDict=False):
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
 
     final = []
     for i in range(len(databPath)):
@@ -294,23 +325,29 @@ def getTableCommand(tableName, databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return final
 
-def sortColumns(tableName):
+def sortColumns(tableName, databPath="", order="asc"):
     """
     Sorts the columns according to their names in accordance to the specified order.
     """
     if isinstance(tableName, list):
-        raise ValueError("Multiple table names aren't supported for this method at the moment.")
+        raise sqliteException.SupportError("Multiple table names aren't supported for this method at the moment.")
     if isinstance(databPath, list):
-        raise ValueError("Multiple databases aren't supported for this method at the moment.")
+        raise sqliteException.SupportError("Multiple databases aren't supported for this method at the moment.")
 
     order = order.lower()
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -336,12 +373,12 @@ def sortColumns(tableName):
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a square matrix.")
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
 
     final = []
     for i in range(len(databPath)):
-        command = getTableCommand(tableName=tableName[i], databPath=databPath[i])[0][0].replace("\n", " ").replace("\t"," ").replace("`", "").split(" ")
-        oldCName = getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]  # REMOVE 0 FOR MULTIPLE DATABASES
+        command = getTableCommand(tableName=tableName[i], databPath=databPath[i])[0][0][0].replace("\n", " ").replace("\t"," ").replace("`", "").replace(" (", "").replace("(", " (").replace("( ", "").replace("(", "( ").split(" ")
+        oldCName = getColumnNames(tableName=tableName[i], databPath=databPath[i])[0]
         oldIndex = [command.index(x) for x in oldCName]
 
         __tools.setStatus(f"Getting schema for {tableName[i]}")
@@ -385,7 +422,7 @@ def sortColumns(tableName):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return final
 
 def getDatabaseSize(databPath="", returnDict=False):
@@ -395,7 +432,13 @@ def getDatabaseSize(databPath="", returnDict=False):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -419,7 +462,7 @@ def getDatabaseSize(databPath="", returnDict=False):
         final = dict(zip(databPath, final))
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return final
 
 def getSampleDatabase(databPath, bigData=False, openLog=False):
@@ -427,11 +470,11 @@ def getSampleDatabase(databPath, bigData=False, openLog=False):
     Creates a sample database in the provided location.\n
     ##### WARNING:
     `bigData=True` may take some time to execute.
-    - Small database will contain 2 tables with small dataset.
-    - Big database will contain 3 tables with big dataset.
+    - Small database will contain 2 tables with small dataset (~5 Minutes).
+    - Big database will contain 3 tables with big dataset (~10 Minutes).
     """
     from pathlib import Path
-    startTime = time.time()
+    constants.__startTime__ = time.time()
     try:
         open(databPath, "a+")
     except:
@@ -459,7 +502,7 @@ def getSampleDatabase(databPath, bigData=False, openLog=False):
         os.startfile("sampleData.log")
     del _time
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
 
 if __name__ == "__main__":
     print("Fetch extension for SQL-Tools library.")

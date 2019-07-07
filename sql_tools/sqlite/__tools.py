@@ -4,10 +4,12 @@ Contains tools for sql-tools library to work-properly
 """
 
 import logging
+import os
+import time
 
 import pandas as pd
 
-from . import constants
+from . import constants, sqliteException
 
 
 def setStatus(arg, logConsole=False):
@@ -22,7 +24,13 @@ def __tableToCSV(data, tableName, databPath="", table=True, database=True):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
-        if databPath == None:
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
@@ -47,7 +55,7 @@ def __tableToCSV(data, tableName, databPath="", table=True, database=True):
     else:
         raise AttributeError("One attribute must be provided.")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}"
+    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return True
 
 
