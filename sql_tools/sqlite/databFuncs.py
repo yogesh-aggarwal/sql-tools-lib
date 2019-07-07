@@ -26,6 +26,19 @@ def createDatabase(databPath="", raiseError=True):
             databPath.extend(constants.__databPath__)
         if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
+    else:
+        if isinstance(databPath, str):
+            __temp = []
+            __temp.append(databPath)
+            databPath = __temp.copy()
+            del __temp
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            __temp = []
+            __temp.extend(databPath)
+            databPath = __temp.copy()
+            del __temp
+        if databPath == []:
+            raise sqliteException.PathError("Please provide a valid database path.")
 
     final = []
     for i in range(len(databPath)):
