@@ -9,7 +9,7 @@ This python package uses the ```sqlite3``` functionality to store databases on t
 ---
 
 <!-- ### Check it out on [PyPi]("https://pypi.org/project/sql-tools/", "SQL TOOLS"). -->
-### Check it out on <a href="https://pypi.org/project/sql-tools">PyPi</a>  [![Downloads](https://pepy.tech/badge/sql-tools)](https://pepy.tech/project/sql-tools)
+### Check it out on <a href="https://pypi.org/project/sql-tools">PyPi</a>  |  [![Downloads](https://pepy.tech/badge/sql-tools)](https://pepy.tech/project/sql-tools)
 
 ### or install it directly with the package manager.
 
