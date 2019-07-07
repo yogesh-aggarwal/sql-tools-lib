@@ -31,7 +31,7 @@ def tableToCSV(tableName, databPath="", returnDict=False):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
@@ -42,7 +42,7 @@ def tableToCSV(tableName, databPath="", returnDict=False):
     elif isinstance(__temp_lst__[0], str):
         pass
     else:
-        raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
     tableName = __temp_lst__.copy()
     del __temp_lst__
 
@@ -88,7 +88,7 @@ def databaseToCSV(databPath="", returnDict=False):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise ValueError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         databPath = __temp_lst__.copy()
         del __temp_lst__
 

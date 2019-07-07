@@ -15,6 +15,8 @@ __history__ = []
 # FOR "execute.py"
 __databPath__ = []
 
+# FOR "databFuncs.py"
+__copyCount__ = 0
 
 if __name__ == "__main__":
     print("Contants for SQL-Tools library.")

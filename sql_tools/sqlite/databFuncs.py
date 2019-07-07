@@ -35,7 +35,7 @@ def createDatabase(databPath=""):
     # LOG ---> Created database at {datab[0]} because of two path in the main instance.
     return True
 
-def moveDatabase(newPath, oldPath=""):
+def moveDatabase(newPath, oldPath="", raiseError=True):
     """
     Moves the database from the old path to new path.
     Caution:
@@ -44,19 +44,49 @@ def moveDatabase(newPath, oldPath=""):
     """
     if not newPath:
         raise sqliteException.PathError("Please provide a valid database path (newPath).")
+    else:
+        if isinstance(newPath, list) or isinstance(newPath, tuple):
+            pass
+        elif isinstance(newPath, str):
+            __temp = []
+            __temp.append(newPath)
+            newPath = __temp.copy()
+            del __temp
+        else:
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object (newPath).")
     
     if not oldPath:
-        oldPath = constants.__databPath__
-        if oldPath == None:
-            raise sqliteException.PathError("Please provide a valid database path (oldPath).")
+        raise sqliteException.PathError("Please provide a valid database path (oldPath).")
+    else:
+        if isinstance(oldPath, list) or isinstance(oldPath, tuple):
+            pass
+        elif isinstance(oldPath, str):
+            __temp = []
+            __temp.append(oldPath)
+            oldPath = __temp.copy()
+            del __temp
+        else:
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object (oldPath).")
+    
+    if len(oldPath) != len(newPath):
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal oldPath(s) and newPath(s). Should form a matrix.")
 
-    newPath = os.path._getfullpathname(newPath)
-    oldPath = os.path._getfullpathname(oldPath)
+    final = []
+    for i in range(len(oldPath)):
+        if not oldPath[i]:
+            oldPath[i] = constants.__databPath__[i]
+            if oldPath[i] == None:
+                raise sqliteException.PathError("Please provide a valid database path (oldPath).")
+        try:
+            os.rename(oldPath[i], newPath[i])
+            final.append(True)
+        except Exception as e:
+            final.append(False)
+            if raiseError:
+                raise e
+    return final
 
-    os.rename(oldPath, newPath)
-    return True
-
-def copyDatabase(newPath, oldPath=""):  # Pending
+def copyDatabase(newPath, oldPath="", raiseError=True):
     """
     Creates a copy of database from the old path to the new path.
     Caution:
@@ -65,22 +95,29 @@ def copyDatabase(newPath, oldPath=""):  # Pending
     """
     # New path condition
     if newPath:
-        if not os.path.isfile(newPath):
-            try:
-                createDatabase(databPath=newPath)
-                if not os.path.isfile(newPath):
-                    raise FileNotFoundError("The specified file/directory doesn't exists")
-            except Exception:
-                raise FileNotFoundError("The specified file/directory doesn't exists")
-        newPath = os.path._getfullpathname(newPath)
+        if isinstance(newPath, list) or isinstance(newPath, tuple):
+            pass
+        elif isinstance(newPath, str):
+            __temp = []
+            __temp.append(newPath)
+            newPath = __temp.copy()
+            del __temp
+        else:
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object (newPath).")
     else:
-        newPath = os.getcwd()
+        raise sqliteException.PathError("Please provide a valid database path (newPath).")
 
     # Old path condition
     if oldPath:
-        if not os.path.isfile(oldPath):
-            raise FileNotFoundError("The specified file/directory doesn't exists")
-        oldPath = os.path._getfullpathname(oldPath)
+        if isinstance(oldPath, list) or isinstance(oldPath, tuple):
+            pass
+        elif isinstance(oldPath, str):
+            __temp = []
+            __temp.append(oldPath)
+            oldPath = __temp.copy()
+            del __temp
+        else:
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object (oldPath).")
     else:
         databPath = constants.__databPath__
         if databPath == []:
@@ -88,18 +125,28 @@ def copyDatabase(newPath, oldPath=""):  # Pending
         else:
             oldPath = databPath
 
-    try:
-        shutil.copy(oldPath, newPath)
-        return True
-    except Exception as e:
-        if " are the same file" in str(e):
-            newPath = f"{pathlib.PurePath(newPath).parents[0]}\copy_{os.path.basename(newPath)}"
-            shutil.copy(oldPath, newPath)
-            return True
-        else:
-            raise IOError(e)
+    if len(oldPath) != len(newPath):
+        raise ValueError("Cannot apply command to the provided data set. Please provide equal oldPath(s) and newPath(s). Should form a matrix.")
 
-def delDatabase(databPath=""):
+    final = []
+    for i in range(len(newPath)):
+        try:
+            shutil.copy(oldPath[i], newPath[i])
+            final.append(True)
+        except Exception as e:
+            if " are the same file" in str(e):
+                newPath = f"copy_{constants.__copyCount__}_{newPath}"
+                constants.__copyCount__ += 1
+                shutil.copy(oldPath, newPath)
+                return True
+            else:
+                final.append(False)
+                if raiseError:
+                    raise e
+
+    return final
+
+def delDatabase(databPath="", raiseError=True):
     """
     Deletes the database at the provided path.
     Caution:
@@ -116,9 +163,28 @@ def delDatabase(databPath=""):
             databPath.extend(constants.__databPath__)
         if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
-
-    os.remove(os.path._getfullpathname(databPath))
-    return True
+    else:
+        if isinstance(databPath, list) or isinstance(databPath, tuple):
+            pass
+        elif isinstance(databPath, str):
+            __temp = []
+            __temp.append(databPath)
+            databPath = __temp.copy()
+            del __temp
+        else:
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object (databPath).")
+    
+    final = []
+    for database in databPath:
+        try:
+            os.remove(database)
+            final.append(True)
+        except Exception as e:
+            final.append(False)
+            if raiseError:
+                raise e
+    
+    return final
 
 
 if __name__ == "__main__":
