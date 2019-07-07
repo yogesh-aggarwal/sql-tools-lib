@@ -368,9 +368,9 @@ def getDatabaseSize(databPath="", returnDict=False):
     constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return final
 
-'''
 def getSampleDatabase(databPath, bigData=False, openLog=False):
     """
+    # NOT FUNCTIONING PROPERLY. DO NOT USE IT.
     Creates a sample database in the provided location.\n
     ##### WARNING:
     `bigData=True` may take some time to execute.
@@ -407,7 +407,7 @@ def getSampleDatabase(databPath, bigData=False, openLog=False):
     del _time
     constants.__stopTime__ = time.time()
     constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
-'''
+
 
 if __name__ == "__main__":
     print("Fetch extension for SQL-Tools library.")
