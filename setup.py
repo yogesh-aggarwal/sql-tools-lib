@@ -15,7 +15,7 @@ setup(
   author = 'Yogesh Aggarwal',
   author_email = 'developeryogeshgit@gmail.com',
   url = 'https://github.com/yogesh-aggarwal/sql-tools-lib',
-  download_url = 'https://github.com/yogesh-aggarwal/sql-tools-lib/dist/sql_tools-0.2.2.tar.gz',
+  download_url = 'https://github.com/yogesh-aggarwal/sql-tools-lib/blob/master/dist/sql_tools-0.2.2.tar.gz',
   keywords = ['SQL', 'DATABASES', "TABLES", 'RECORDS'],
   install_requires=[
           "mysql-connector",  # For mysql related operations
