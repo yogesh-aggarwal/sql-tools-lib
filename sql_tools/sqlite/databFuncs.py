@@ -253,9 +253,49 @@ def isIdentical(compareWith, databPath="", raiseError=True):
             final.append(False)
             if raiseError:
                 raise e
-    
+    del data1
+    del data2
     return final
 
+def clearDatabase(databPath="", raiseError=True):
+    """
+    Clears the database provided.
+    """
+    if not databPath:
+        databPath = constants.__databPath__
+        if isinstance(databPath, str):
+            databPath = []
+            databPath.append(constants.__databPath__)
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            databPath = []
+            databPath.extend(constants.__databPath__)
+        if databPath == []:
+            raise sqliteException.PathError("Please provide a valid database path.")
+    else:
+        if isinstance(databPath, str):
+            __temp = []
+            __temp.append(databPath)
+            databPath = __temp.copy()
+            del __temp
+        elif isinstance(databPath, list) or isinstance(databPath, tuple):
+            __temp = []
+            __temp.extend(databPath)
+            databPath = __temp.copy()
+            del __temp
+        if databPath == []:
+            raise sqliteException.PathError("Please provide a valid database path.")
+    
+    final = []
+    for database in databPath:
+        try:
+            open(database, "w").write("")
+            final.append(True)
+        except Exception as e:
+            final.append(False)
+            if raiseError:
+                raise e
+    
+    return final
 
 if __name__ == "__main__":
     print("Simple functions extention for SQL-Tools library.")
