@@ -1,11 +1,10 @@
 """
 File containing methods to fetch data.
 """
-import datetime
 import os
 import time
 
-from . import __tools, constants, sqliteException
+from . import __tools, constants, sqliteException, sampleData
 from .execute import execute
 
 
@@ -368,16 +367,14 @@ def getDatabaseSize(databPath="", returnDict=False):
     constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return final
 
-def getSampleDatabase(databPath, bigData=False, openLog=False):
+def getSampleDatabase(databPath, bigData=False):
     """
-    # NOT FUNCTIONING PROPERLY. DO NOT USE IT.
     Creates a sample database in the provided location.\n
-    ##### WARNING:
+    WARNING:
     `bigData=True` may take some time to execute.
     - Small database will contain 2 tables with small dataset (~5 Minutes).
     - Big database will contain 3 tables with big dataset (~10 Minutes).
     """
-    from pathlib import Path
     constants.__startTime__ = time.time()
     try:
         open(databPath, "a+")
@@ -385,26 +382,16 @@ def getSampleDatabase(databPath, bigData=False, openLog=False):
         raise FileNotFoundError("The specified path doesn't exists")
     
     if bigData:
-        with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/data/sample_database/sqlite/bigSample.sql", "r") as f:
-            query=f.read()
+        query = sampleData._bigSQL
     else:
-        with open(f"{str(Path.home())}/AppData/Local/Programs/Python/Python37/lib/site-packages/sql_tools/data/sample_database/sqlite/smallSample.sql", "r") as f:
-            query=f.read()
-    if openLog:
-        f = open("sampleData.log", "a+")
+        query = sampleData._smallSQL
     query = query.split("\n")
     for i in range(len(query)):
-        if openLog:
-            _time = datetime.datetime.now().strftime("%H:%M:%S")
-            f.write(f"[{_time}]: {query[i]}\n")
         if i != len(query):
-            execute(query[i], databPath=databPath, _Sqlite3__execMethod=False, _Sqlite3__commit=False)
+            execute(query[i], databPath=databPath, __execMethod=False, __commit=False)
         else:
-            execute(query[i], databPath=databPath, _Sqlite3__execMethod=False, _Sqlite3__commit=True)
-    f.close()
-    if openLog:
-        os.startfile("sampleData.log")
-    del _time
+            execute(query[i], databPath=databPath, __execMethod=False, __commit=True)
+
     constants.__stopTime__ = time.time()
     constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
 
