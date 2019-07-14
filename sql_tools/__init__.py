@@ -10,7 +10,7 @@ def __time__():
 def __status__():
     return constants.__status__
 
-__version__ = "SQL-Tools version: 0.2.2"
+__version__ = "SQL-Tools version: 0.2.3"
 
 if __name__ == "__main__":
     from pathlib import Path
