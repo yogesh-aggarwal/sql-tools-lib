@@ -14,7 +14,7 @@ from . import constants, sqliteException
 
 def setStatus(arg, logConsole=False):
     if logConsole:
-        logging.basicConfig(format='%(process)d- SQL Tools: %(message)s')
+        logging.basicConfig(format='[%(process)d] SQL Tools: %(message)s')
         logging.warning(arg)  # Change the logging style
     else:
         constants.__history__.append(arg)
