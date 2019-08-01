@@ -31,7 +31,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -513,3 +512,6 @@ plan/
 plan.*
 pending.*
 pending/
+
+# For new structure
+sql_tool/*

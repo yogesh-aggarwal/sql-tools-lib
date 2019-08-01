@@ -6,6 +6,7 @@ Contains tools for sql-tools library to work-properly
 import logging
 import os
 import time
+from . import fetch
 
 import pandas as pd
 
@@ -20,7 +21,7 @@ def setStatus(arg, logConsole=False):
         constants.__history__.append(arg)
     constants.__status__ = arg
 
-def __tableToCSV(data, tableName, databPath="", table=True, database=True):
+def __tableToCSV(data, tableName, databPath="", table=True, database=True, index=False):
     constants.__startTime__ = time.time()
     if not databPath:
         databPath = constants.__databPath__
@@ -46,14 +47,23 @@ def __tableToCSV(data, tableName, databPath="", table=True, database=True):
 
     databPath = databPath[0]  # REMOVE THIS FOR MULTIPLE DATABASES AS IT WILL FETCH THE FIRST DATABASE ONLY
 
+    columns=fetch.getColumnNames(tableName, databPath=databPath)[0]
+    data=[["ok"]]
+    columns = ["name"]
+    print(data, columns)
     if table and database:
-        pd.DataFrame(data).to_csv(f"{os.path.basename(databPath)}.{tableName}.csv", index=False)
+        if index != False:
+            pd.DataFrame(data, columns=["columns"], index=index).to_csv(f"{os.path.basename(databPath)}.{tableName}.csv")
+        else:
+            pd.DataFrame(data, columns=["columns"]).to_csv(f"{os.path.basename(databPath)}.{tableName}.csv", index=False)
     elif table:
-        pd.DataFrame(data).to_csv(f"{tableName}.csv", index=False)
-    elif database:
-        pd.DataFrame(data).to_csv(f'{os.path.basename(databPath).replace(".db", "").replace(".db3", "").replace(".sqlite", "").replace(".sqlite3", "")}.csv', index=False)
-    else:
-        raise AttributeError("One attribute must be provided.")
+        if index != False:
+            pd.DataFrame(data, columns=columns, index=index).to_csv(f"{tableName}.csv")
+        else:
+            pd.DataFrame(data, columns=columns).to_csv(f"{tableName}.csv", index=False)
+
+    # else:
+    #     raise AttributeError("One attribute must be provided.")
     constants.__stopTime__ = time.time()
     constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
     return True

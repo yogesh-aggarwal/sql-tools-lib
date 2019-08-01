@@ -8,7 +8,7 @@ from . import __tools, constants, sqliteException
 from .execute import execute
 
 
-def tableToCSV(tableName, databPath="", returnDict=False):
+def tableToCSV(tableName, databPath="", returnDict=False, index=False):
     """
     Converts table records to a CSV file.
     """
@@ -53,7 +53,8 @@ def tableToCSV(tableName, databPath="", returnDict=False):
     for i in range(len(databPath)):
         __tools.setStatus(f"Converting database to dataframe ({databPath[i]})")
         try:
-            final.append(__tools.__tableToCSV(data=execute(f"SELECT * FROM {tableName[i]}")[0], tableName=tableName[i], databPath=databPath[i]))
+
+            final.append(__tools.__tableToCSV(data=execute(f"SELECT * FROM {tableName[i]}", splitByColumns=True)[0], tableName=tableName[i], databPath=databPath[i], index=index))
         except Exception as e:
             raise e
 

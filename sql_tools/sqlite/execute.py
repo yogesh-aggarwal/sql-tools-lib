@@ -11,7 +11,7 @@ import numpy as np
 from . import __tools, constants, sqliteException
 
 
-def execute(command="", databPath="", matrix=True, inlineData=False, splitByColumns=False, pathJSON=False, logConsole=False, __execMethod=True, __commit=True):
+def execute(command="", databPath="", matrix=True, inlineData=False, splitByColumns=False, pathJSON=False, logConsole=False, commit=True, __execMethod=True):
     """
     Executes the given command to the specified database(s).
     Attributes
@@ -35,6 +35,18 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
     splitByColumns
     ---
     Whether to return the values column-wise. By default it return the data record-wise.
+
+    pathJSON
+    ---
+    Whether to fetch the commands from a `json` file.
+
+    logConsole
+    ---
+    Whether to log the steps to the console or not.
+
+    commit
+    ---
+    Whether to commit the changes immidiately after excution of each command. It is recommended to use it when you have run multiple commands on the same database at the same time.
     """
     if __execMethod:
         constants.__startTime__ = time.time()
@@ -76,28 +88,36 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
+
     # For command to list
-    __temp_lst__ = []
-    __temp_lst__.append(command)
-    if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-        __temp_lst__ = __temp_lst__[0]
-    elif isinstance(__temp_lst__[0], str):
-        pass
-    else:
-        raise sqliteException.CommandError("Invalid command input. Command should be a \"str\" or \"list\" type object.")
-    command = __temp_lst__.copy()
+    try:
+        __temp_lst__ = []
+        __temp_lst__.append(command)
+        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+            __temp_lst__ = __temp_lst__[0]
+        elif isinstance(__temp_lst__[0], str):
+            pass
+        else:
+            raise sqliteException.CommandError("Invalid command input. Command should be a \"str\" or \"list\" type object.")
+        command = __temp_lst__.copy()
+    except Exception:
+        raise sqliteException.CommandError("Error while parsing your command")
 
     # For database to list
-    __temp_lst__ = []
-    __temp_lst__.append(databPath)
-    if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-        __temp_lst__ = __temp_lst__[0]
-    elif isinstance(__temp_lst__[0], str):
-        pass
-    else:
-        raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
-    databPath = __temp_lst__.copy()
+    try:
+        __temp_lst__ = []
+        __temp_lst__.append(databPath)
+        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+            __temp_lst__ = __temp_lst__[0]
+        elif isinstance(__temp_lst__[0], str):
+            pass
+        else:
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        databPath = __temp_lst__.copy()
+    except Exception:
+        raise sqliteException.PathError("Error while parsing your path")
 
+    # Unequal condition
     try:
         if len(command) != len(databPath):
             raise sqliteException.MatrixError("Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a matrix.")
@@ -105,6 +125,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         pass
     del __temp_lst__
 
+    # Executing the main command
     data = []
     for i in range(len(databPath)):
         conn = sqlite3.connect(databPath[i])
@@ -119,11 +140,14 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
                 result.append(data_fetched)
         except Exception as e:
             raise sqliteException.UnknownError(f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})")
-        conn.commit()
-        c.close()
-        conn.close()
+        if commit:
+            conn.commit()
+            c.close()
+            conn.close()
         data.append(result)
 
+
+    # Conditions
     if __execMethod:
         constants.__stopTime__ = time.time()
         constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
@@ -161,6 +185,16 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         if __execMethod:
             __tools.setStatus("Returning results", logConsole=logConsole)
         return data
+
+
+def commit(databPath=""):
+    """
+    Commits the changes to the database if `commit=False` is provided while executing the commands.
+    """
+    if isinstance(databPath, str):
+        execute()
+    else:
+        raise ValueError("Please provide a valid database path. It should be string.")
 
 
 if __name__ == "__main__":

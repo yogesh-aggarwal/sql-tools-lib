@@ -4,9 +4,9 @@ from . import constants
 from .advTools import *
 from .connect import connect
 from .databFuncs import *
-from .execute import execute
+from .execute import *
 from .fetch import *
-from .io import *
+from .io import tableToCSV
 
 __version__ = f"SQL-Tools: SQLite version: {sqlite3.sqlite_version}"
 __help__ = "Visit the documentation for more help or type \"help(sql_tools)\""
