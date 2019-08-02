@@ -53,8 +53,7 @@ def tableToCSV(tableName, databPath="", returnDict=False, index=False):
     for i in range(len(databPath)):
         __tools.setStatus(f"Converting database to dataframe ({databPath[i]})")
         try:
-
-            final.append(__tools.__tableToCSV(data=execute(f"SELECT * FROM {tableName[i]}", splitByColumns=True)[0], tableName=tableName[i], databPath=databPath[i], index=index))
+            final.append(__tools.__tableToCSV(data=execute(f"SELECT * FROM {tableName[i]}")[0], tableName=tableName[i], databPath=databPath[i], index=index))
         except Exception as e:
             raise e
 
@@ -63,10 +62,12 @@ def tableToCSV(tableName, databPath="", returnDict=False, index=False):
         final = dict(zip(tableName, final))
 
     __tools.setStatus("Returning results")
-    constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+    constants.__stopTime__ = time.time()                                                                    
+    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    return final
 
-def databaseToCSV(databPath="", returnDict=False):
+
+def databaseToCSV(databPath="", returnDict=False):                                                                                                                      
     """
     Converts the data infoformation to a CSV file.
     """
@@ -105,7 +106,7 @@ def databaseToCSV(databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
     return final
 
 

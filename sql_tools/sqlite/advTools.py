@@ -3,9 +3,11 @@ import time
 from . import __tools, constants, sqliteException
 from .execute import execute
 from .fetch import *
+import hashlib
 
 
-def swapColumns(tableName, oldCName, newCname, databPath="", returnDict=False):  # PENDING
+'''
+def swapColumnsClass(tableName, oldCName, newCname, databPath="", returnDict=False):  # PENDING
     """
     Swaps the columns provided.
     """
@@ -50,6 +52,7 @@ def swapColumns(tableName, oldCName, newCname, databPath="", returnDict=False): 
     if len(tableName) != len(databPath):
         raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
 
+    print(tableName, databPath, newCname, oldCName)
     final = []
     for i in range(len(databPath)):
         try:
@@ -96,6 +99,79 @@ def swapColumns(tableName, oldCName, newCname, databPath="", returnDict=False): 
                 pass
             raise e
     return final
+
+
+def swapColumns(tableName, oldCname, newCname, databPath="", returnDict=False): #PENDING
+    for i in range(len(oldCname)):
+        execute(f"UPDATE {tableName} SET {oldCname[i]} = {newCname[i]} AND {newCname[i]} = {oldCname[i]}", databPath=dat)
+'''
+
+
+def validate(databPath="", returnDict=False, raiseError=False, deep=True):
+    # For database to list
+    __tools.setStatus("Validating data")
+    try:
+        __temp_lst__ = []
+        __temp_lst__.append(databPath)
+        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+            __temp_lst__ = __temp_lst__[0]
+        elif isinstance(__temp_lst__[0], str):
+            pass
+        else:
+            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        databPath = __temp_lst__.copy()
+    except Exception:
+        raise sqliteException.PathError("Error while parsing your path.")
+
+    final = []
+    for database in databPath:
+        try:
+            tables = getTableNames(databPath=database)[0]
+            if deep:
+                for i in tables:
+                    execute(command=f"SELECT * FROM {i}")
+                    getColumnNames(i, databPath=database)
+                    getNoOfRecords(i, databPath=database)
+            else:
+                execute(command=f"SELECT * FROM {tables[0]}")
+            
+            final.append(True)
+        except Exception:
+            if raiseError:
+                raise sqliteException.DatabaseError("The provided database has some problem in it.")
+            else:
+                final.append(False)
+
+    if returnDict:
+        final = dict(zip(databPath, final))
+
+    __tools.setStatus("Returning data")
+    return final
+
+
+"""
+tools = __tools
+class GenerateChecksum(hashlib):
+    def __init__(self, databPath="", *args):
+        super().__init__()
+        # For database to list
+        tools.setStatus("Validating data")
+        try:
+            __temp_lst__ = []
+            __temp_lst__.append(databPath)
+            if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+                __temp_lst__ = __temp_lst__[0]
+            elif isinstance(__temp_lst__[0], str):
+                pass
+            else:
+                raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            databPath = __temp_lst__.copy()
+        except Exception:
+            raise sqliteException.PathError("Error while parsing your path.")
+  
+    def generateSalt(self):
+        pass
+"""
 
 
 if __name__ == "__main__":

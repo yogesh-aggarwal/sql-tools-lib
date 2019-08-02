@@ -11,7 +11,7 @@ import numpy as np
 from . import __tools, constants, sqliteException
 
 
-def execute(command="", databPath="", matrix=True, inlineData=False, splitByColumns=False, pathJSON=False, logConsole=False, commit=True, __execMethod=True):
+def execute(command="", databPath="", matrix=True, inlineData=False, splitByColumns=False, pathJSON=False, returnDict=False, logConsole=False, commit=True, __execMethod=True):
     """
     Executes the given command to the specified database(s).
     Attributes
@@ -66,6 +66,8 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
                 for j in data[i]:
                     command.append(data[i][j][0])
                 databPath.append(i)
+            print(databPath, command)
+
         else:
             databPath = constants.__databPath__
             if isinstance(databPath, str):
@@ -115,7 +117,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
             raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
         databPath = __temp_lst__.copy()
     except Exception:
-        raise sqliteException.PathError("Error while parsing your path")
+        raise sqliteException.PathError("Error while parsing your path.")
 
     # Unequal condition
     try:
@@ -150,7 +152,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
     # Conditions
     if __execMethod:
         constants.__stopTime__ = time.time()
-        constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+        constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
 
     # FOR INLINE DATA
     inlineData = False
@@ -180,11 +182,17 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         if __execMethod:
             __tools.setStatus("Converting to matrix", logConsole=logConsole)
             __tools.setStatus("Returning results", logConsole=logConsole)
-        return np.array(data)
+        if returnDict:
+            return dict(zip(databPath, np.array(data)))
+        else:
+            return np.array(data)
     else:
         if __execMethod:
             __tools.setStatus("Returning results", logConsole=logConsole)
-        return data
+        if returnDict:
+            return dict(zip(databPath, data))
+        else:
+            return data
 
 
 def commit(databPath=""):

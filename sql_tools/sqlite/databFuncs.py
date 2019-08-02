@@ -56,6 +56,7 @@ def createDatabase(databPath="", raiseError=True):
 
     return final
 
+
 def moveDatabase(newPath, oldPath="", raiseError=True):
     """
     Moves the database from the old path to new path.
@@ -106,6 +107,7 @@ def moveDatabase(newPath, oldPath="", raiseError=True):
             if raiseError:
                 raise e
     return final
+
 
 def copyDatabase(newPath, oldPath="", raiseError=True):
     """
@@ -167,6 +169,7 @@ def copyDatabase(newPath, oldPath="", raiseError=True):
 
     return final
 
+
 def delDatabase(databPath="", raiseError=True):
     """
     Deletes the database at the provided path.
@@ -206,6 +209,7 @@ def delDatabase(databPath="", raiseError=True):
                 raise e
     
     return final
+
 
 def isIdentical(compareWith, databPath="", raiseError=True):
     if not databPath:
@@ -270,6 +274,7 @@ def isIdentical(compareWith, databPath="", raiseError=True):
     del data2
     return final
 
+
 def clearDatabase(databPath="", raiseError=True):
     """
     Clears the database provided.
@@ -309,6 +314,7 @@ def clearDatabase(databPath="", raiseError=True):
                 raise e
     
     return final
+
 
 if __name__ == "__main__":
     print("Simple functions extention for SQL-Tools library.")

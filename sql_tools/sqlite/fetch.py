@@ -68,8 +68,9 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     __tools.setStatus("Returning results")
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
     return result
+
 
 def getNoOfColumns(tableName, databPath="", returnDict=False):
     """
@@ -132,8 +133,9 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
         result = dict(zip(tableName, result))
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
     return result
+
 
 def getColumnNames(tableName, databPath="", returnDict=False):
     """
@@ -201,8 +203,9 @@ def getColumnNames(tableName, databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
     return result
+
 
 def getTableNames(databPath="", returnDict=False):
     """
@@ -232,6 +235,7 @@ def getTableNames(databPath="", returnDict=False):
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
+
     result = []
     for i in range(len(databPath)):
         __tools.setStatus(f"Getting table names for {databPath[i]}")
@@ -251,8 +255,9 @@ def getTableNames(databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
     return result
+
 
 def getTableCommand(tableName, databPath="", returnDict=False):
     """
@@ -324,8 +329,9 @@ def getTableCommand(tableName, databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
     return final
+
 
 def getDatabaseSize(databPath="", returnDict=False):
     """
@@ -364,8 +370,9 @@ def getDatabaseSize(databPath="", returnDict=False):
         final = dict(zip(databPath, final))
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
     return final
+
 
 def getSampleDatabase(databPath, bigData=False):
     """
@@ -393,7 +400,7 @@ def getSampleDatabase(databPath, bigData=False):
             execute(query[i], databPath=databPath, __execMethod=False, __commit=True)
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {constants.__stopTime__ - constants.__startTime__}s"
+    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
 
 
 if __name__ == "__main__":

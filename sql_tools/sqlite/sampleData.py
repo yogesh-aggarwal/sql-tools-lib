@@ -2,6 +2,7 @@
 Sample data file containing queries for creating sample databases for SQL-Tools library.
 """
 
+# Small database: 1
 _smallSQL = """
 -- Dumping data-- MySQL dump 10.13  Distrib 5.1.51, for pc-linux-gnu (i686)
 --
@@ -1611,6 +1612,9 @@ INSERT INTO `countrylanguage` VALUES ('FSM','Yap','F',5.8);
 
 -- Dump completed on 2010-09-30 11:01:37
 """
+
+
+# Big database: 1
 _bigSQL = """
 -- Dumping data-- MySQL dump 10.13  Distrib 5.1.51, for pc-linux-gnu (i686)
 --
