@@ -66,7 +66,6 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
                 for j in data[i]:
                     command.append(data[i][j][0])
                 databPath.append(i)
-            print(databPath, command)
 
         else:
             databPath = constants.__databPath__
