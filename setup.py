@@ -23,6 +23,7 @@ setup(
           # "mongo-connector",  # For mongodb related operations
           "numpy",
           "pandas",
+          "click"
       ],
   classifiers=[
     'Development Status :: 5 - Production/Stable',      # "3 - Alpha", "4 - Beta" or "5 - Production/Stable"
