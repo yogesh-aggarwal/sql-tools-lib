@@ -2,7 +2,7 @@ import sqlite3
 
 from . import constants
 from .advTools import *
-from .connect import connect
+from .connect import *
 from .databFuncs import *
 from .execute import *
 from .fetch import *
