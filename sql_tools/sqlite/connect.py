@@ -41,6 +41,26 @@ def disconnect(databPath, raiseError=True):
         raise sqliteException.DatabaseError(f"Error in database(s) provided. {e}")
 
 
+def isConnected(databPath):
+    if isinstance(databPath, list) or isinstance(databPath, tuple) or databPath == "":
+        final = []
+        for path in constants.__databPath__:
+            if path == databPath:
+                final.append(True)
+            else:
+                final.append(False)
+        return final
+    elif isinstance(databPath, str):
+        if databPath in constants.__databPath__:
+            return [True]
+        else:
+            return [False]
+    elif isinstance(databPath, dict):
+        raise ValueError("Dictionaries are not allowed")
+    else:
+        return False
+
+
 if __name__ == "__main__":
     print("Connect extension for SQL-Tools library.")
     input()

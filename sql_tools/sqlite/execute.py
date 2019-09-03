@@ -85,7 +85,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError('Invalid path input. Path should be a "str" or "list" type object.')
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
@@ -99,7 +99,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.CommandError("Invalid command input. Command should be a \"str\" or \"list\" type object.")
+            raise sqliteException.CommandError('Invalid command input. Command should be a "str" or "list" type object.')
         command = __temp_lst__.copy()
     except Exception:
         raise sqliteException.CommandError("Error while parsing your command")
@@ -113,11 +113,10 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError('Invalid path input. Path should be a "str" or "list" type object.')
         databPath = __temp_lst__.copy()
     except Exception:
         raise sqliteException.PathError("Error while parsing your path.")
-
     # Unequal condition
     try:
         if len(command) != len(databPath):
@@ -132,6 +131,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         conn = sqlite3.connect(databPath[i])
         c = conn.cursor()
         try:
+            __tools.setStatus(f"Executing [{i}]: {command[i]}", logConsole=logConsole)
             c.execute(command[i])
         except Exception as e:
             raise sqliteException.QueryError(f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})")
@@ -143,9 +143,12 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
             raise sqliteException.UnknownError(f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})")
         if commit:
             conn.commit()
+            __tools.setStatus("Changes commited", logConsole=logConsole)
             c.close()
             conn.close()
         data.append(result)
+    
+    __tools.setStatus("Preparing results", logConsole=logConsole)
 
 
     # Conditions
@@ -178,8 +181,9 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
 
     # FOR MATRIX
     if matrix:
+        __temp__ = np.array(data)
         if __execMethod:
-            __tools.setStatus("Converting to matrix", logConsole=logConsole)
+            __tools.setStatus(f"Converting to matrix [{__temp__.shape[0]}x{__temp__.shape[1]}]", logConsole=logConsole)
             __tools.setStatus("Returning results", logConsole=logConsole)
         if returnDict:
             return dict(zip(databPath, np.array(data)))
