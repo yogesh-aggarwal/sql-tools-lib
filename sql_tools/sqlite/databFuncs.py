@@ -350,6 +350,9 @@ def clearDatabase(databPath="", raiseError=True):
 class Database:
     def __init__(self, databPath=""):
         self.databPath = databPath
+    
+    def __str__(self):
+        return f'Databases: {", ".join(constants.__databPath__)}'
 
     def path(self):
         return constants.__databPath__
