@@ -537,9 +537,15 @@ def log():
     return array(constants.__history__)
 
 
+def processId():
+    """
+    Returns the log of the process id of recent continous execution.
+    """
+    return array(constants.__processId__)
+
+
 if __name__ == "__main__":
     print("Fetch extension for SQL-Tools library.")
     print(
         "Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately."
     )
-

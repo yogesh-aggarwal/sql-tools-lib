@@ -164,11 +164,13 @@ def execute(
         )
         for i in range(len(databPath)):
             conn = sqlite3.connect(databPath[i])
+            __tools.setStatus("Connected", logConsole=logConsole)
             c = conn.cursor()
+            __tools.setStatus("Creating the pointer", logConsole=logConsole)
 
             try:
                 __tools.setStatus(
-                    f"Executing [{i}]: {command[i]}", logConsole=logConsole
+                    f"Executing [{i}]: {command[i]} ({databPath[i]})", logConsole=logConsole
                 )
                 c.execute(command[i])
             except Exception as e:
@@ -180,6 +182,7 @@ def execute(
             try:
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
+                    __tools.setStatus(f"Fetched data ({databPath[i]})", logConsole=logConsole)
             except Exception as e:
                 raise sqliteException.UnknownError(
                     f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
@@ -193,12 +196,14 @@ def execute(
             data.append(result)
     else:
         conn = sqlite3.connect(databPath[0])
+        __tools.setStatus("Connected", logConsole=logConsole)
         c = conn.cursor()
+        __tools.setStatus("Created pointer", logConsole=logConsole)
 
         for i in range(len(databPath)):
             try:
                 __tools.setStatus(
-                    f"Executing [{i}]: {command[i]}", logConsole=logConsole
+                    f"Executing [{i}]: {command[i]} ({databPath[i]})", logConsole=logConsole
                 )
                 c.execute(command[i])
             except Exception as e:
@@ -210,6 +215,7 @@ def execute(
             try:
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
+                __tools.setStatus(f"Fetched [{i}] ({databPath[i]})", logConsole=logConsole)
             except Exception as e:
                 raise sqliteException.UnknownError(
                     f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
@@ -221,12 +227,14 @@ def execute(
             __tools.setStatus("Changes commited", logConsole=logConsole)
             c.close()
             conn.close()
+            __tools.setStatus("Connection closed", logConsole=logConsole)
 
     __tools.setStatus("Preparing results", logConsole=logConsole)
 
     # Conditions
     if __execMethod:
         constants.__stopTime__ = time.time()
+        __tools.setStatus("Calculating time", logConsole=logConsole)
         constants.__time__ = (
             f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
         )
@@ -292,4 +300,3 @@ if __name__ == "__main__":
     print(
         "Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately."
     )
-
