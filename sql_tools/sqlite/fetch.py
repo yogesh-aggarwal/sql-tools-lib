@@ -6,6 +6,7 @@ import time
 
 from . import __tools, constants, sqliteException, sampleData
 from .execute import execute
+from numpy import array
 
 
 def getNoOfRecords(tableName, databPath="", returnDict=False):
@@ -32,7 +33,9 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
@@ -43,21 +46,49 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     elif isinstance(__temp_lst__[0], str):
         pass
     else:
-        raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        raise sqliteException.PathError(
+            'Invalid path input. Path should be a "str" or "list" type object.'
+        )
     tableName = __temp_lst__.copy()
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
+        raise ValueError(
+            "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
+        )
 
     result = []
     for i in range(len(tableName)):
         try:
             __tools.setStatus(f"Gtiing records for {databPath[i]}")
-            if "ERROR IN SQL QUERY --->" not in execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, __execMethod=False):
-                result.append(len(execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, __execMethod=False)[0]))
+            if "ERROR IN SQL QUERY --->" not in execute(
+                f"SELECT * FROM {tableName[i]};",
+                databPath=databPath[i],
+                matrix=False,
+                inlineData=False,
+                __execMethod=False,
+            ):
+                result.append(
+                    len(
+                        execute(
+                            f"SELECT * FROM {tableName[i]};",
+                            databPath=databPath[i],
+                            matrix=False,
+                            inlineData=False,
+                            __execMethod=False,
+                        )[0]
+                    )
+                )
             else:
-                raise ValueError(execute(f"SELECT * FROM {tableName[i]};", databPath=databPath[i], matrix=False, inlineData=False, __execMethod=False)[0])
+                raise ValueError(
+                    execute(
+                        f"SELECT * FROM {tableName[i]};",
+                        databPath=databPath[i],
+                        matrix=False,
+                        inlineData=False,
+                        __execMethod=False,
+                    )[0]
+                )
         except Exception:
             result.append(0)
 
@@ -68,7 +99,9 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     __tools.setStatus("Returning results")
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    constants.__time__ = (
+        f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    )
     return result
 
 
@@ -96,7 +129,9 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
@@ -107,12 +142,16 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
     elif isinstance(__temp_lst__[0], str):
         pass
     else:
-        raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        raise sqliteException.PathError(
+            'Invalid path input. Path should be a "str" or "list" type object.'
+        )
     tableName = __temp_lst__.copy()
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
+        raise ValueError(
+            "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
+        )
 
     result = []
     for i in range(len(tableName)):
@@ -133,7 +172,9 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
         result = dict(zip(tableName, result))
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    constants.__time__ = (
+        f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    )
     return result
 
 
@@ -161,7 +202,9 @@ def getColumnNames(tableName, databPath="", returnDict=False):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
@@ -172,18 +215,28 @@ def getColumnNames(tableName, databPath="", returnDict=False):
     elif isinstance(__temp_lst__[0], str):
         pass
     else:
-        raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+        raise sqliteException.PathError(
+            'Invalid path input. Path should be a "str" or "list" type object.'
+        )
     tableName = __temp_lst__.copy()
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
+        raise ValueError(
+            "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
+        )
 
     result = []
     for i in range(len(tableName)):
         __tools.setStatus(f"Getting results for {tableName[i]}")
         try:
-            queryResult = execute(f"PRAGMA table_info({tableName[i]});", databPath=databPath[i], matrix=False, inlineData=False, __execMethod=False)
+            queryResult = execute(
+                f"PRAGMA table_info({tableName[i]});",
+                databPath=databPath[i],
+                matrix=False,
+                inlineData=False,
+                __execMethod=False,
+            )
         except Exception as e:
             raise e
 
@@ -203,7 +256,9 @@ def getColumnNames(tableName, databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    constants.__time__ = (
+        f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    )
     return result
 
 
@@ -231,15 +286,22 @@ def getTableNames(databPath="", returnDict=False):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
         databPath = __temp_lst__.copy()
         del __temp_lst__
-
 
     result = []
     for i in range(len(databPath)):
         __tools.setStatus(f"Getting table names for {databPath[i]}")
-        queryResult = execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", databPath=databPath[i], matrix=False, inlineData=True, __execMethod=False)
+        queryResult = execute(
+            f"SELECT name FROM sqlite_master WHERE type = 'table';",
+            databPath=databPath[i],
+            matrix=False,
+            inlineData=True,
+            __execMethod=False,
+        )
         if "ERROR IN SQL QUERY --->" not in queryResult:
             database = queryResult[0]
             final = []
@@ -255,7 +317,9 @@ def getTableNames(databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    constants.__time__ = (
+        f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    )
     return result
 
 
@@ -283,7 +347,9 @@ def getTableCommand(tableName, databPath="", returnDict=False):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
@@ -294,21 +360,43 @@ def getTableCommand(tableName, databPath="", returnDict=False):
     elif isinstance(__temp_lst__[0], str):
         pass
     else:
-        raise sqliteException.TableError("Invalid table input. Table should be a \"str\" or \"list\" type object.")
+        raise sqliteException.TableError(
+            'Invalid table input. Table should be a "str" or "list" type object.'
+        )
     tableName = __temp_lst__.copy()
     del __temp_lst__
 
     if len(tableName) != len(databPath):
-        raise ValueError("Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix.")
+        raise ValueError(
+            "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
+        )
 
     final = []
     for i in range(len(databPath)):
         __tools.setStatus(f"Getting results for {tableName[i]}")
-        queryResult = execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath[i], matrix=False, inlineData=True, __execMethod=False)
+        queryResult = execute(
+            f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';",
+            databPath=databPath[i],
+            matrix=False,
+            inlineData=True,
+            __execMethod=False,
+        )
         if queryResult == [[]]:
-            queryResult = execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i].lower().strip()}';", databPath=databPath[i], matrix=False, inlineData=True, __execMethod=False)
+            queryResult = execute(
+                f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i].lower().strip()}';",
+                databPath=databPath[i],
+                matrix=False,
+                inlineData=True,
+                __execMethod=False,
+            )
         if queryResult == [[]]:
-            queryResult = execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i].upper().strip()}';", databPath=databPath[i], matrix=False, inlineData=True, __execMethod=False)
+            queryResult = execute(
+                f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i].upper().strip()}';",
+                databPath=databPath[i],
+                matrix=False,
+                inlineData=True,
+                __execMethod=False,
+            )
         if queryResult == [[]]:
             raise sqliteException.TableError("Please provide a valid table name.")
         if "ERROR IN SQL QUERY --->" not in queryResult:
@@ -321,7 +409,15 @@ def getTableCommand(tableName, databPath="", returnDict=False):
                 except Exception as e:
                     raise e
         else:
-            raise ValueError(execute(f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';", databPath=databPath, matrix=False, inlineData=True, __execMethod=False))
+            raise ValueError(
+                execute(
+                    f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';",
+                    databPath=databPath,
+                    matrix=False,
+                    inlineData=True,
+                    __execMethod=False,
+                )
+            )
 
     if returnDict:
         __tools.setStatus("Packing into dictionary")
@@ -329,7 +425,9 @@ def getTableCommand(tableName, databPath="", returnDict=False):
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    constants.__time__ = (
+        f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    )
     return final
 
 
@@ -356,21 +454,27 @@ def getDatabaseSize(databPath="", returnDict=False):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
     final = []
     for i in range(len(databPath)):
         __tools.setStatus(f"Getting size of {databPath[i]}")
-        final.append(f"{os.stat(databPath[i]).st_size} bytes ({os.stat(databPath[i]).st_size * 10**(-6)} MB)")
+        final.append(
+            f"{os.stat(databPath[i]).st_size} bytes ({os.stat(databPath[i]).st_size * 10**(-6)} MB)"
+        )
 
     if returnDict:
         __tools.setStatus("Packing into dictionary")
         final = dict(zip(databPath, final))
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    constants.__time__ = (
+        f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    )
     return final
 
 
@@ -387,7 +491,7 @@ def getSampleDatabase(databPath, bigData=False):
         open(databPath, "a+")
     except:
         raise FileNotFoundError("The specified path doesn't exists")
-    
+
     if bigData:
         query = sampleData._bigSQL
     else:
@@ -400,10 +504,42 @@ def getSampleDatabase(databPath, bigData=False):
             execute(query[i], databPath=databPath, __execMethod=False, __commit=True)
 
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    constants.__time__ = (
+        f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    )
+
+
+def execTime():
+    """
+    Returns the execution time.
+    """
+    return constants.__time__
+
+
+def status():
+    """
+    Returns the execution current status.
+    """
+    return constants.__status__
+
+
+def jsonFormat():
+    """
+    Returns the format of JSON file for the execute function.
+    """
+    return constants.__jsonFormat__
+
+
+def log():
+    """
+    Returns the log of the execution process.
+    """
+    return array(constants.__history__)
 
 
 if __name__ == "__main__":
     print("Fetch extension for SQL-Tools library.")
-    print("Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately.")
-    input()
+    print(
+        "Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately."
+    )
+

@@ -16,7 +16,7 @@ from . import constants, sqliteException
 def setStatus(arg, logConsole=False, raiseError=True):
     try:
         if logConsole:
-            logging.basicConfig(format='[%(process)d] SQL-Tools: %(message)s')
+            logging.basicConfig(format="[%(process)d] SQL-Tools: %(message)s")
             logging.warning(arg)  # Change the logging style
         else:
             constants.__history__.append(arg)
@@ -49,18 +49,26 @@ def __tableToCSV(data, tableName, databPath="", table=True, database=True, index
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
-    databPath = databPath[0]  # REMOVE THIS FOR MULTIPLE DATABASES AS IT WILL FETCH THE FIRST DATABASE ONLY
+    databPath = databPath[
+        0
+    ]  # REMOVE THIS FOR MULTIPLE DATABASES AS IT WILL FETCH THE FIRST DATABASE ONLY
 
-    columns=fetch.getColumnNames(tableName, databPath=databPath)[0]
+    columns = fetch.getColumnNames(tableName, databPath=databPath)[0]
     if table and database:
         if index != False:
-            pd.DataFrame(data, columns=columns, index=index).to_csv(f"{os.path.basename(databPath)}.{tableName}.csv")
+            pd.DataFrame(data, columns=columns, index=index).to_csv(
+                f"{os.path.basename(databPath)}.{tableName}.csv"
+            )
         else:
-            pd.DataFrame(data, columns=columns).to_csv(f"{os.path.basename(databPath)}.{tableName}.csv", index=False)
+            pd.DataFrame(data, columns=columns).to_csv(
+                f"{os.path.basename(databPath)}.{tableName}.csv", index=False
+            )
     elif table:
         if index != False:
             pd.DataFrame(data, columns=columns, index=index).to_csv(f"{tableName}.csv")
@@ -70,11 +78,12 @@ def __tableToCSV(data, tableName, databPath="", table=True, database=True, index
     # else:
     #     raise AttributeError("One attribute must be provided.")
     constants.__stopTime__ = time.time()
-    constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    constants.__time__ = (
+        f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+    )
     return True
 
 
 if __name__ == "__main__":
     print("Execute extension for SQL-Tools library.")
     print("Note: Don't use it seperately otherwise MAY CAUSE THE PROGRAM TO STOP.")
-    input()

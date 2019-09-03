@@ -34,7 +34,9 @@ def disconnect(databPath, raiseError=True):
         if isinstance(databPath, str):
             constants.__databPath__.remove(databPath)
         elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            constants.__databPath__ = [datab for datab in constants.__databPath__ if datab not in databPath]
+            constants.__databPath__ = [
+                datab for datab in constants.__databPath__ if datab not in databPath
+            ]
         if databPath == []:
             raise sqliteException.PathError("Please provide a valid database(s) path.")
     except ValueError as e:
@@ -63,4 +65,3 @@ def isConnected(databPath):
 
 if __name__ == "__main__":
     print("Connect extension for SQL-Tools library.")
-    input()

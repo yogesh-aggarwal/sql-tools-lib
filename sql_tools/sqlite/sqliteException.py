@@ -78,4 +78,4 @@ class UnknownError(Exception):
 
 if __name__ == "__main__":
     print("Extention of sql-tools package for raising error(s).")
-    input()
+    

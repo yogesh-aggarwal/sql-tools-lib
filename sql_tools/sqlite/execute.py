@@ -11,7 +11,19 @@ import numpy as np
 from . import __tools, constants, sqliteException
 
 
-def execute(command="", databPath="", matrix=True, inlineData=False, splitByColumns=False, pathJSON=False, returnDict=False, logConsole=False, commit=True, __execMethod=True):
+def execute(
+    command="",
+    databPath="",
+    matrix=True,
+    inlineData=False,
+    splitByColumns=False,
+    pathJSON=False,
+    splitExec=False,
+    returnDict=False,
+    logConsole=False,
+    commit=True,
+    __execMethod=True,
+):
     """
     Executes the given command to the specified database(s).
     Attributes
@@ -60,7 +72,10 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
                 try:
                     data = json.loads(f.read())
                 except Exception:
-                    raise sqliteException.JSONError("JSON file error. Could be the syntax problem.")
+                    raise sqliteException.JSONError(
+                        "JSON file error. Could be the syntax problem."
+                    )
+                    exit(1)
             keys = data.keys()
             for i in keys:
                 for j in data[i]:
@@ -77,6 +92,7 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
                 databPath.extend(constants.__databPath__)
             if databPath == []:
                 raise sqliteException.PathError("Please provide a valid database path.")
+                exit(1)
     else:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -85,10 +101,12 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError('Invalid path input. Path should be a "str" or "list" type object.')
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
+            exit(1)
         databPath = __temp_lst__.copy()
         del __temp_lst__
-
 
     # For command to list
     try:
@@ -99,10 +117,14 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.CommandError('Invalid command input. Command should be a "str" or "list" type object.')
+            raise sqliteException.CommandError(
+                'Invalid command input. Command should be a "str" or "list" type object.'
+            )
+            exit(1)
         command = __temp_lst__.copy()
     except Exception:
         raise sqliteException.CommandError("Error while parsing your command")
+        exit(1)
 
     # For database to list
     try:
@@ -113,48 +135,101 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError('Invalid path input. Path should be a "str" or "list" type object.')
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
+            exit(1)
         databPath = __temp_lst__.copy()
+        if len(databPath) > 1:
+            splitExec = False
     except Exception:
         raise sqliteException.PathError("Error while parsing your path.")
+        exit(1)
     # Unequal condition
     try:
         if len(command) != len(databPath):
-            raise sqliteException.MatrixError("Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a matrix.")
+            raise sqliteException.MatrixError(
+                "Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a matrix."
+            )
+            exit(1)
     except TypeError:
         pass
     del __temp_lst__
 
     # Executing the main command
     data = []
-    for i in range(len(databPath)):
-        conn = sqlite3.connect(databPath[i])
+    if splitExec:
+        __tools.setStatus(
+            "Opted for splitExec (seperate execution)", logConsole=logConsole
+        )
+        for i in range(len(databPath)):
+            conn = sqlite3.connect(databPath[i])
+            c = conn.cursor()
+
+            try:
+                __tools.setStatus(
+                    f"Executing [{i}]: {command[i]}", logConsole=logConsole
+                )
+                c.execute(command[i])
+            except Exception as e:
+                raise sqliteException.QueryError(
+                    f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})"
+                )
+                exit(1)
+            result = []
+            try:
+                for data_fetched in c.fetchall():
+                    result.append(data_fetched)
+            except Exception as e:
+                raise sqliteException.UnknownError(
+                    f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
+                )
+                exit(1)
+            if commit:
+                conn.commit()
+                __tools.setStatus("Changes commited", logConsole=logConsole)
+                c.close()
+                conn.close()
+            data.append(result)
+    else:
+        conn = sqlite3.connect(databPath[0])
         c = conn.cursor()
-        try:
-            __tools.setStatus(f"Executing [{i}]: {command[i]}", logConsole=logConsole)
-            c.execute(command[i])
-        except Exception as e:
-            raise sqliteException.QueryError(f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})")
-        result = []
-        try:
-            for data_fetched in c.fetchall():
-                result.append(data_fetched)
-        except Exception as e:
-            raise sqliteException.UnknownError(f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})")
+
+        for i in range(len(databPath)):
+            try:
+                __tools.setStatus(
+                    f"Executing [{i}]: {command[i]}", logConsole=logConsole
+                )
+                c.execute(command[i])
+            except Exception as e:
+                raise sqliteException.QueryError(
+                    f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})"
+                )
+                exit(1)
+            result = []
+            try:
+                for data_fetched in c.fetchall():
+                    result.append(data_fetched)
+            except Exception as e:
+                raise sqliteException.UnknownError(
+                    f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
+                )
+                exit(1)
+            data.append(result)
         if commit:
             conn.commit()
             __tools.setStatus("Changes commited", logConsole=logConsole)
             c.close()
             conn.close()
-        data.append(result)
-    
-    __tools.setStatus("Preparing results", logConsole=logConsole)
 
+    __tools.setStatus("Preparing results", logConsole=logConsole)
 
     # Conditions
     if __execMethod:
         constants.__stopTime__ = time.time()
-        constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+        constants.__time__ = (
+            f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
+        )
 
     # FOR INLINE DATA
     inlineData = False
@@ -183,7 +258,10 @@ def execute(command="", databPath="", matrix=True, inlineData=False, splitByColu
     if matrix:
         __temp__ = np.array(data)
         if __execMethod:
-            __tools.setStatus(f"Converting to matrix [{__temp__.shape[0]}x{__temp__.shape[1]}]", logConsole=logConsole)
+            __tools.setStatus(
+                f"Converting to matrix [{__temp__.shape[0]}x{__temp__.shape[1]}]",
+                logConsole=logConsole,
+            )
             __tools.setStatus("Returning results", logConsole=logConsole)
         if returnDict:
             return dict(zip(databPath, np.array(data)))
@@ -206,9 +284,12 @@ def commit(databPath=""):
         execute()
     else:
         raise ValueError("Please provide a valid database path. It should be string.")
+        exit(1)
 
 
 if __name__ == "__main__":
     print("Execute extension for SQL-Tools library.")
-    print("Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately.")
-    input()
+    print(
+        "Note: It can be used seperately to save memory rather than to import full library.\n\t* Provide database name if used seperately."
+    )
+

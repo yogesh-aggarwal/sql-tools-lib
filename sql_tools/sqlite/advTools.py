@@ -118,7 +118,9 @@ def validate(databPath="", returnDict=False, raiseError=False, deep=True):
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
         databPath = __temp_lst__.copy()
     except Exception:
         raise sqliteException.PathError("Error while parsing your path.")
@@ -134,11 +136,13 @@ def validate(databPath="", returnDict=False, raiseError=False, deep=True):
                     getNoOfRecords(i, databPath=database)
             else:
                 execute(command=f"SELECT * FROM {tables[0]}")
-            
+
             final.append(True)
         except Exception:
             if raiseError:
-                raise sqliteException.DatabaseError("The provided database has some problem in it.")
+                raise sqliteException.DatabaseError(
+                    "The provided database has some problem in it."
+                )
             else:
                 final.append(False)
 
@@ -164,7 +168,7 @@ class GenerateChecksum(hashlib):
             elif isinstance(__temp_lst__[0], str):
                 pass
             else:
-                raise sqliteException.PathError("Invalid path input. Path should be a \"str\" or \"list\" type object.")
+                raise sqliteException.PathError("Invalid path input. Path should be a "str\" or \"list\" type object.")
             databPath = __temp_lst__.copy()
         except Exception:
             raise sqliteException.PathError("Error while parsing your path.")
