@@ -5,6 +5,7 @@ Execute extension for SQL-Tools library.
 import json
 from . import driver
 import time
+import os
 
 import numpy as np
 
@@ -60,6 +61,7 @@ def execute(
     ---
     Whether to commit the changes immidiately after excution of each command. It is recommended to use it when you have run multiple commands on the same database at the same time.
     """
+    constants.__processId__ = os.getpid()
     if __execMethod:
         constants.__startTime__ = time.time()
         __tools.setStatus("Starting execution", logConsole=logConsole)
@@ -170,7 +172,8 @@ def execute(
 
             try:
                 __tools.setStatus(
-                    f"Executing [{i}]: {command[i]} ({databPath[i]})", logConsole=logConsole
+                    f"Executing [{i}]: {command[i]} ({databPath[i]})",
+                    logConsole=logConsole,
                 )
                 c.execute(command[i])
             except Exception as e:
@@ -182,7 +185,9 @@ def execute(
             try:
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
-                    __tools.setStatus(f"Fetched data ({databPath[i]})", logConsole=logConsole)
+                    __tools.setStatus(
+                        f"Fetched data ({databPath[i]})", logConsole=logConsole
+                    )
             except Exception as e:
                 raise sqliteException.UnknownError(
                     f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
@@ -203,7 +208,8 @@ def execute(
         for i in range(len(databPath)):
             try:
                 __tools.setStatus(
-                    f"Executing [{i}]: {command[i]} ({databPath[i]})", logConsole=logConsole
+                    f"Executing [{i}]: {command[i]} ({databPath[i]})",
+                    logConsole=logConsole,
                 )
                 c.execute(command[i])
             except Exception as e:
@@ -215,7 +221,9 @@ def execute(
             try:
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
-                __tools.setStatus(f"Fetched [{i}] ({databPath[i]})", logConsole=logConsole)
+                __tools.setStatus(
+                    f"Fetched [{i}] ({databPath[i]})", logConsole=logConsole
+                )
             except Exception as e:
                 raise sqliteException.UnknownError(
                     f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"

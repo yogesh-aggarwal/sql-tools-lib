@@ -6,6 +6,7 @@ import time
 
 from . import __tools, constants, sqliteException
 from .execute import execute
+from .fetch import _pdatabase, _ptableName
 
 
 def tableToCSV(tableName, databPath="", returnDict=False, index=False):
@@ -13,42 +14,8 @@ def tableToCSV(tableName, databPath="", returnDict=False, index=False):
     Converts table records to a CSV file.
     """
     constants.__startTime__ = time.time()
-    if not databPath:
-        databPath = constants.__databPath__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__databPath__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__databPath__)
-        if databPath == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-    else:
-        __temp_lst__ = []
-        __temp_lst__.append(databPath)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise sqliteException.PathError(
-                'Invalid path input. Path should be a "str" or "list" type object.'
-            )
-        databPath = __temp_lst__.copy()
-        del __temp_lst__
-
-    __temp_lst__ = []
-    __temp_lst__.append(tableName)
-    if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-        __temp_lst__ = __temp_lst__[0]
-    elif isinstance(__temp_lst__[0], str):
-        pass
-    else:
-        raise sqliteException.PathError(
-            'Invalid path input. Path should be a "str" or "list" type object.'
-        )
-    tableName = __temp_lst__.copy()
-    del __temp_lst__
+    databPath = _pdatabase(databPath)
+    tableName = _ptableName(tableName)
 
     if len(tableName) != len(databPath):
         raise ValueError(
@@ -87,29 +54,7 @@ def databaseToCSV(databPath="", returnDict=False):
     Converts the data infoformation to a CSV file.
     """
     constants.__startTime__ = time.time()
-    if not databPath:
-        databPath = constants.__databPath__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__databPath__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__databPath__)
-        if databPath == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-    else:
-        __temp_lst__ = []
-        __temp_lst__.append(databPath)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise sqliteException.PathError(
-                'Invalid path input. Path should be a "str" or "list" type object.'
-            )
-        databPath = __temp_lst__.copy()
-        del __temp_lst__
+    databPath = _pdatabase(databPath)
 
     final = []
     for i in range(len(databPath)):

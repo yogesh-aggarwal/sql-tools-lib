@@ -32,31 +32,11 @@ def setStatus(arg, logConsole=False, raiseError=True):
 
 def __tableToCSV(data, tableName, databPath="", table=True, database=True, index=False):
     constants.__startTime__ = time.time()
-    if not databPath:
-        databPath = constants.__databPath__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__databPath__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__databPath__)
-        if databPath == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-    else:
-        __temp_lst__ = []
-        __temp_lst__.append(databPath)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise sqliteException.PathError(
-                'Invalid path input. Path should be a "str" or "list" type object.'
-            )
-        databPath = __temp_lst__.copy()
-        del __temp_lst__
+    databPath = fetch._pdatabase(databPath)
 
-    databPath = databPath[0]  # REMOVE THIS FOR MULTIPLE DATABASES AS IT WILL FETCH THE FIRST DATABASE ONLY
+    databPath = databPath[
+        0
+    ]  # REMOVE THIS FOR MULTIPLE DATABASES AS IT WILL FETCH THE FIRST DATABASE ONLY
 
     columns = fetch.getColumnNames(tableName, databPath=databPath)[0]
     if table and database:

@@ -9,12 +9,7 @@ from .execute import execute
 from numpy import array
 
 
-def getNoOfRecords(tableName, databPath="", returnDict=False):
-    """
-    Returns the no. of records in the provided table.
-    You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
-    """
-    constants.__startTime__ = time.time()
+def _pdatabase(databPath):
     if not databPath:
         databPath = constants.__databPath__
         if isinstance(databPath, str):
@@ -38,7 +33,10 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
             )
         databPath = __temp_lst__.copy()
         del __temp_lst__
+    return databPath
 
+
+def _ptableName(tableName):
     __temp_lst__ = []
     __temp_lst__.append(tableName)
     if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
@@ -51,6 +49,17 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
         )
     tableName = __temp_lst__.copy()
     del __temp_lst__
+    return tableName
+
+
+def getNoOfRecords(tableName, databPath="", returnDict=False):
+    """
+    Returns the no. of records in the provided table.
+    You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
+    """
+    constants.__startTime__ = time.time()
+    databPath = _pdatabase(databPath)
+    tableName = _ptableName(tableName)
 
     if len(tableName) != len(databPath):
         raise ValueError(
@@ -60,7 +69,7 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     result = []
     for i in range(len(tableName)):
         try:
-            __tools.setStatus(f"Gtiing records for {databPath[i]}")
+            __tools.setStatus(f"Getting records for {databPath[i]}")
             if "ERROR IN SQL QUERY --->" not in execute(
                 f"SELECT * FROM {tableName[i]};",
                 databPath=databPath[i],
@@ -111,42 +120,8 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
-    if not databPath:
-        databPath = constants.__databPath__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__databPath__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__databPath__)
-        if databPath == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-    else:
-        __temp_lst__ = []
-        __temp_lst__.append(databPath)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise sqliteException.PathError(
-                'Invalid path input. Path should be a "str" or "list" type object.'
-            )
-        databPath = __temp_lst__.copy()
-        del __temp_lst__
-
-    __temp_lst__ = []
-    __temp_lst__.append(tableName)
-    if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-        __temp_lst__ = __temp_lst__[0]
-    elif isinstance(__temp_lst__[0], str):
-        pass
-    else:
-        raise sqliteException.PathError(
-            'Invalid path input. Path should be a "str" or "list" type object.'
-        )
-    tableName = __temp_lst__.copy()
-    del __temp_lst__
+    databPath = _pdatabase(databPath)
+    tableName = _ptableName(tableName)
 
     if len(tableName) != len(databPath):
         raise ValueError(
@@ -184,42 +159,8 @@ def getColumnNames(tableName, databPath="", returnDict=False):
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
-    if not databPath:
-        databPath = constants.__databPath__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__databPath__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__databPath__)
-        if databPath == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-    else:
-        __temp_lst__ = []
-        __temp_lst__.append(databPath)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise sqliteException.PathError(
-                'Invalid path input. Path should be a "str" or "list" type object.'
-            )
-        databPath = __temp_lst__.copy()
-        del __temp_lst__
-
-    __temp_lst__ = []
-    __temp_lst__.append(tableName)
-    if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-        __temp_lst__ = __temp_lst__[0]
-    elif isinstance(__temp_lst__[0], str):
-        pass
-    else:
-        raise sqliteException.PathError(
-            'Invalid path input. Path should be a "str" or "list" type object.'
-        )
-    tableName = __temp_lst__.copy()
-    del __temp_lst__
+    databPath = _pdatabase(databPath)
+    tableName = _ptableName(tableName)
 
     if len(tableName) != len(databPath):
         raise ValueError(
@@ -268,29 +209,7 @@ def getTableNames(databPath="", returnDict=False):
     You can provided multiple database paths..
     """
     constants.__startTime__ = time.time()
-    if not databPath:
-        databPath = constants.__databPath__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__databPath__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__databPath__)
-        if databPath == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-    else:
-        __temp_lst__ = []
-        __temp_lst__.append(databPath)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise sqliteException.PathError(
-                'Invalid path input. Path should be a "str" or "list" type object.'
-            )
-        databPath = __temp_lst__.copy()
-        del __temp_lst__
+    databPath = _pdatabase(databPath)
 
     result = []
     for i in range(len(databPath)):
@@ -329,29 +248,7 @@ def getTableCommand(tableName, databPath="", returnDict=False):
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
-    if not databPath:
-        databPath = constants.__databPath__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__databPath__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__databPath__)
-        if databPath == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-    else:
-        __temp_lst__ = []
-        __temp_lst__.append(databPath)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise sqliteException.PathError(
-                'Invalid path input. Path should be a "str" or "list" type object.'
-            )
-        databPath = __temp_lst__.copy()
-        del __temp_lst__
+    databPath = _pdatabase(databPath)
 
     __temp_lst__ = []
     __temp_lst__.append(tableName)
@@ -436,29 +333,7 @@ def getDatabaseSize(databPath="", returnDict=False):
     Returns the database size in bytes.
     """
     constants.__startTime__ = time.time()
-    if not databPath:
-        databPath = constants.__databPath__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__databPath__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__databPath__)
-        if databPath == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-    else:
-        __temp_lst__ = []
-        __temp_lst__.append(databPath)
-        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-            __temp_lst__ = __temp_lst__[0]
-        elif isinstance(__temp_lst__[0], str):
-            pass
-        else:
-            raise sqliteException.PathError(
-                'Invalid path input. Path should be a "str" or "list" type object.'
-            )
-        databPath = __temp_lst__.copy()
-        del __temp_lst__
+    databPath = _pdatabase(databPath)
 
     final = []
     for i in range(len(databPath)):
