@@ -3,7 +3,7 @@ Execute extension for SQL-Tools library.
 """
 
 import json
-import sqlite3
+from . import driver
 import time
 
 import numpy as np
@@ -163,7 +163,7 @@ def execute(
             "Opted for splitExec (seperate execution)", logConsole=logConsole
         )
         for i in range(len(databPath)):
-            conn = sqlite3.connect(databPath[i])
+            conn = driver.connect(databPath[i])
             __tools.setStatus("Connected", logConsole=logConsole)
             c = conn.cursor()
             __tools.setStatus("Creating the pointer", logConsole=logConsole)
@@ -195,7 +195,7 @@ def execute(
                 conn.close()
             data.append(result)
     else:
-        conn = sqlite3.connect(databPath[0])
+        conn = driver.connect(databPath[0])
         __tools.setStatus("Connected", logConsole=logConsole)
         c = conn.cursor()
         __tools.setStatus("Created pointer", logConsole=logConsole)

@@ -1,5 +1,5 @@
-import sqlite3
 
+from . import driver
 from . import constants
 from .advTools import *
 from .connect import *
@@ -8,7 +8,7 @@ from .execute import *
 from .fetch import *
 from .io import tableToCSV
 
-__version__ = f"SQL-Tools: SQLite version: {sqlite3.sqlite_version}"
+__version__ = f"SQL-Tools: SQLite version: {driver.sqlite_version}"
 __help__ = 'Visit the documentation for more help or type "help(sql_tools)"'
 
 

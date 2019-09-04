@@ -18,9 +18,6 @@ setup(
     download_url="https://raw.githubusercontent.com/yogesh-aggarwal/sql-tools-lib/master/dist/sql_tools-0.2.6.tar.gz",
     keywords=["SQL", "DATABASES", "TABLES", "RECORDS"],
     install_requires=[
-        # "mysql-connector",  # For mysql related operations
-        "db-sqlite3",  # For sqlite related operations
-        # "mongo-connector",  # For mongodb related operations
         "numpy",
         "pandas",
     ],
