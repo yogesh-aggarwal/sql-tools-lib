@@ -163,7 +163,7 @@ def validate(databPath="", returnDict=False, raiseError=False, deep=True):
 tools = __tools
 
 
-class GenerateChecksum(hashlib):
+class GenerateChecksum():
     """
     Under development stage, do not use it.
     """

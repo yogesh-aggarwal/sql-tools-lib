@@ -1,6 +1,6 @@
 
 def start():
-    import analyse
+    from . import analyse
     analyse.start()
 
 if __name__ == "__main__":
