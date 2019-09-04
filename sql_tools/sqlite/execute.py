@@ -19,6 +19,7 @@ def execute(
     inlineData=False,
     splitByColumns=False,
     pathJSON=False,
+    asyncExec=False,
     splitExec=False,
     returnDict=False,
     logConsole=False,
