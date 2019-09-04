@@ -1,3 +1,7 @@
+"""
+Advanced tools extension for SQL-Tools library.
+"""
+
 import time
 
 from . import __tools, constants, sqliteException
@@ -108,6 +112,9 @@ def swapColumns(tableName, oldCname, newCname, databPath="", returnDict=False): 
 
 
 def validate(databPath="", returnDict=False, raiseError=False, deep=True):
+    """
+    Vaidates the database whether the database is properly operable or not.
+    """
     # For database to list
     __tools.setStatus("Validating data")
     try:
@@ -153,29 +160,19 @@ def validate(databPath="", returnDict=False, raiseError=False, deep=True):
     return final
 
 
-"""
 tools = __tools
+
+
 class GenerateChecksum(hashlib):
+    """
+    Under development stage, do not use it.
+    """
+
     def __init__(self, databPath="", *args):
         super().__init__()
-        # For database to list
-        tools.setStatus("Validating data")
-        try:
-            __temp_lst__ = []
-            __temp_lst__.append(databPath)
-            if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
-                __temp_lst__ = __temp_lst__[0]
-            elif isinstance(__temp_lst__[0], str):
-                pass
-            else:
-                raise sqliteException.PathError("Invalid path input. Path should be a "str\" or \"list\" type object.")
-            databPath = __temp_lst__.copy()
-        except Exception:
-            raise sqliteException.PathError("Error while parsing your path.")
-  
+
     def generateSalt(self):
         pass
-"""
 
 
 if __name__ == "__main__":

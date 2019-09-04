@@ -84,5 +84,5 @@ def __tableToCSV(data, tableName, databPath="", table=True, database=True, index
 
 
 if __name__ == "__main__":
-    print("Execute extension for SQL-Tools library.")
+    print("Tools extension for SQL-Tools library.")
     print("Note: Don't use it seperately otherwise MAY CAUSE THE PROGRAM TO STOP.")

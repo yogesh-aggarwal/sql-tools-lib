@@ -44,6 +44,9 @@ def disconnect(databPath, raiseError=True):
 
 
 def isConnected(databPath):
+    """
+    Checks whether the database(s) is connected or not.
+    """
     if isinstance(databPath, list) or isinstance(databPath, tuple) or databPath == "":
         final = []
         for path in constants.__databPath__:

@@ -235,6 +235,9 @@ def delDatabase(databPath="", raiseError=True):
 
 
 def isIdentical(compareWith, databPath="", raiseError=True):
+    """
+    Returns whether the database(s) are identical or not.
+    """
     if not databPath:
         databPath = constants.__databPath__
         if isinstance(databPath, str):
@@ -348,6 +351,9 @@ def clearDatabase(databPath="", raiseError=True):
 
 
 class Database:
+    """
+    Class for database configuration related operations.
+    """
     def __init__(self, databPath=""):
         self.databPath = databPath
 
@@ -355,9 +361,15 @@ class Database:
         return f'Databases: {", ".join(constants.__databPath__)}'
 
     def path(self):
+        """
+        Returns the path of all the connected databases.
+        """
         return constants.__databPath__
 
     def add(self, databPath=""):
+        """
+        Adds the database in the connect scope (Connects the database).
+        """
         databPath = databPath if len(databPath) != 0 else self.databPath
 
         raise sqliteException.DatabaseError(
@@ -374,6 +386,9 @@ class Database:
             )
 
     def remove(self, databPath):
+        """
+        Removes the database from connect scope (disconnects the database).
+        """
         if isinstance(databPath, list) or isinstance(databPath, tuple):
             constants.__databPath__ = [
                 path for path in constants.__databPath__ if path not in databPath
@@ -385,10 +400,16 @@ class Database:
                 "Invalid value provided. Path must be of type list, tuple or str"
             )
 
-    def clear(self, databPath):
+    def clear(self):
+        """
+        Clears the database operation scope i.e. disconnect all the connected databases.
+        """
         constants.__databPath__ = []
 
     def validate(self, databPath=""):
+        """
+        Validates whether the database is valid for opeations.
+        """
         databPath = databPath if len(databPath) != 0 else self.databPath
 
         databPath = constants.__databPath__ if len(databPath) == 0 else True
@@ -396,6 +417,9 @@ class Database:
         return advTools.validate(databPath)
 
     def getInfo(self, databPath):
+        """
+        Returns the information about the database.
+        """
         pass
 
 

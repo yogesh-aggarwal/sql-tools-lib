@@ -518,7 +518,7 @@ def execTime():
 
 def status():
     """
-    Returns the execution current status.
+    Returns the current execution status.
     """
     return constants.__status__
 

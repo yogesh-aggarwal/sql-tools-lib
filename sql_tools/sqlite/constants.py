@@ -1,6 +1,7 @@
 """
 File for storing constant data for sql-tools library.
 """
+
 from sqlite3 import sqlite_version
 
 # Data
@@ -18,7 +19,7 @@ __databPath__ = []
 __copyCount__ = 0
 
 # Global constants
-__version__ = "SQL-Tools version: 0.2.5"
+__version__ = f"SQL-Tools (sqlite) version: {sqlite_version}"
 
 if __name__ == "__main__":
-    print("Contants for SQL-Tools library.")
+    print("Contants for SQL-Tools (sqlite) library.")
