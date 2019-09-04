@@ -6,7 +6,7 @@
         {
             "label": "Build python package",
             "type": "shell",
-            "command": "python3 setup.py sdist bdist",
+            "command": "python3 setup.py sdist",
             "presentation": {
                 "echo": true,
                 "reveal": "always",
