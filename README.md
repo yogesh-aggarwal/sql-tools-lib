@@ -18,7 +18,7 @@ This python package uses the `sqlite` functionality to store databases on the lo
 
 # USAGE
 
-## `sqlite`
+## <u>**`sqlite`**</u>
 
 Sometimes the sqlite databases are very useful when we have to store the data in some separate files for separate works. There are many features in this library which will help you out in easy & fast operation of SQL queries for this kind of work.
 
@@ -74,6 +74,7 @@ The above code will execute the command on the connected database and return the
 You can also run multiple commands for multiple databases as well:
 
 > #Example 1
+
 ``` python
 # Connect the databases
 sqlite.connect(["users.db", "staff.db"])
