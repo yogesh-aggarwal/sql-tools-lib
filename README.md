@@ -79,7 +79,9 @@ You can also run multiple commands for multiple databases as well:
 sqlite.connect(["users.db", "staff.db"])
 
 # Executing the command
-sqlite.execute(["SELECT first_name FROM user WHERE username LIKE '%uname%'", "SELECT first_name FROM staff WHERE id<2"])
+sqlite.execute(
+  ["SELECT first_name FROM user WHERE username LIKE '%uname%'", "SELECT first_name FROM staff WHERE id<2"]
+)
 ```
 
 Will return something like:
@@ -97,11 +99,11 @@ Will return something like:
 ``` python
 # Result for first database (At 0 index of execution result)
 [["user 1"]
-  ["user 2"]]
+ ["user 2"]]
 
 # Result for the second database (At 1 index of execution result)
 [["member 1"]
-  ["member 2"]]
+ ["member 2"]]
 ```
 
 The execute function converts the result to a numpy array for faster data analysis with the result. Result as an array which positions the result of execution(s) as its elements.
@@ -110,7 +112,7 @@ The execute function converts the result to a numpy array for faster data analys
 
 - **`command`**: The command to be executed. It can be a string for a single command & an array for multiple commands.
 
-- **`datapath`**: When we want to operate a specific database apart from the connected ones, then we provide it the name of the database(s). Accepts string for single database & an array for multiple databases. By default, it sets to the connected databases.
+- **`databPath`**: When we want to operate a specific database apart from the connected ones, then we provide it the name of the database(s). Accepts string for single database & an array for multiple databases. By default, it sets to the connected databases.
 
 - **`matrix`**: Whether to convert the result to a numpy array. Accepts a boolean value. Default is `True`
 
@@ -118,7 +120,7 @@ The execute function converts the result to a numpy array for faster data analys
 
 - **`splitByColumns`**: Whether to split the data column-wise or not. We have noticed that the result is row-wise. Accepts boolean value. Default is `False`.
 
-- **`pathJSON`**: Accepts the path of the JSON file which contains the information about the execution of the command(s).
+- **`pathJSON`**: Accepts the path of the JSON file which contains the information about the execution of the command(s). Accepts only one path at a time.
 
 - **`asyncExec`**: Whether to perform the execution asynchronously or not. This will help us to avoid the block time of the program & run the SQL queries in the background. Accepts boolean value. Default is `False`.
 
