@@ -131,6 +131,8 @@ The execute function converts the result to a numpy array for faster data analys
 
 - **`logConsole`**: Whether to log the execution steps to the console with process id. Accepts boolean value. Default is `False`.
 
+- **`raiseError`**: Whether to raise error if something goes wrong during execution. Accepts boolean value. Default is `True`.
+
 - **`commit`**: Whether to commit the changes after the execution of a command. Accepts boolean value. Default is `True`.
 
 **Note**: If we want to manually commit the changes then there is a function in the library called `commit` which will commit the changes to the provided database.

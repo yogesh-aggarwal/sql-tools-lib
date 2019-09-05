@@ -23,6 +23,7 @@ def execute(
     splitExec=False,
     returnDict=False,
     logConsole=False,
+    raiseError=True,
     commit=True,
     __execMethod=True,
 ):
@@ -77,7 +78,7 @@ def execute(
                 except Exception:
                     raise sqliteException.JSONError(
                         "JSON file error. Could be the syntax problem."
-                    )
+                    ) if raiseError else False
                     exit(1)
             keys = data.keys()
             for i in keys:
@@ -94,7 +95,7 @@ def execute(
                 databPath = []
                 databPath.extend(constants.__databPath__)
             if databPath == []:
-                raise sqliteException.PathError("Please provide a valid database path.")
+                raise sqliteException.PathError("Please provide a valid database path.") if raiseError else False
                 exit(1)
     else:
         __temp_lst__ = []
@@ -106,7 +107,7 @@ def execute(
         else:
             raise sqliteException.PathError(
                 'Invalid path input. Path should be a "str" or "list" type object.'
-            )
+            ) if raiseError else False
             exit(1)
         databPath = __temp_lst__.copy()
         del __temp_lst__
@@ -122,11 +123,11 @@ def execute(
         else:
             raise sqliteException.CommandError(
                 'Invalid command input. Command should be a "str" or "list" type object.'
-            )
+            ) if raiseError else False
             exit(1)
         command = __temp_lst__.copy()
     except Exception:
-        raise sqliteException.CommandError("Error while parsing your command")
+        raise sqliteException.CommandError("Error while parsing your command") if raiseError else False
         exit(1)
 
     # For database to list
@@ -140,20 +141,20 @@ def execute(
         else:
             raise sqliteException.PathError(
                 'Invalid path input. Path should be a "str" or "list" type object.'
-            )
+            ) if raiseError else False
             exit(1)
         databPath = __temp_lst__.copy()
         if len(databPath) > 1:
             splitExec = False
     except Exception:
-        raise sqliteException.PathError("Error while parsing your path.")
+        raise sqliteException.PathError("Error while parsing your path.") if raiseError else False
         exit(1)
     # Unequal condition
     try:
         if len(command) != len(databPath):
             raise sqliteException.MatrixError(
                 "Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a matrix."
-            )
+            ) if raiseError else False
             exit(1)
     except TypeError:
         pass
@@ -180,7 +181,7 @@ def execute(
             except Exception as e:
                 raise sqliteException.QueryError(
                     f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})"
-                )
+                ) if raiseError else False
                 exit(1)
             result = []
             try:
@@ -192,7 +193,7 @@ def execute(
             except Exception as e:
                 raise sqliteException.UnknownError(
                     f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
-                )
+                ) if raiseError else False
                 exit(1)
             if commit:
                 conn.commit()
@@ -216,7 +217,7 @@ def execute(
             except Exception as e:
                 raise sqliteException.QueryError(
                     f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})"
-                )
+                ) if raiseError else False
                 exit(1)
             result = []
             try:
@@ -228,7 +229,7 @@ def execute(
             except Exception as e:
                 raise sqliteException.UnknownError(
                     f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
-                )
+                ) if raiseError else False
                 exit(1)
             data.append(result)
         if commit:
@@ -300,7 +301,7 @@ def commit(databPath=""):
     if isinstance(databPath, str):
         execute()
     else:
-        raise ValueError("Please provide a valid database path. It should be string.")
+        raise ValueError("Please provide a valid database path. It should be string.") if raiseError else False
         exit(1)
 
 
