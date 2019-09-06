@@ -18,7 +18,7 @@ This python package uses the `sqlite` functionality to store databases on the lo
 
 # USAGE
 
-## <u>**`sqlite`**</u>
+## **sqlite**
 
 Sometimes the sqlite databases are very useful when we have to store the data in some separate files for separate works. There are many features in this library which will help you out in easy & fast operation of SQL queries for this kind of work.
 
