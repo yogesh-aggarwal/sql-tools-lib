@@ -159,6 +159,8 @@ sqlite.disconnect(["users.db", "staff.db"])
 
 ## Resources
 
-You can contribute to it through <a href="https://github.com/yogesh-aggarwal/sql-tools-lib">GitHub</a>.
+Read the full [Documentation](https://yogesh-aggarwal.github.io/sql-tools-lib) for more information
+
+You can contribute to it through [GitHub](https://github.com/yogesh-aggarwal/sql-tools-lib)
 
 ## View project at [GitHub](https://github.com/users/yogesh-aggarwal/projects/2)
