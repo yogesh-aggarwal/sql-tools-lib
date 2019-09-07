@@ -1,6 +1,6 @@
 # SQL-TOOLS
 
-<img alt="SQL-Tools" src="https://raw.githubusercontent.com/yogesh-aggarwal/sql-tools-lib/master/docs/media/brand.png" style="width: 200px; display: block; margin-left: auto; margin-right: auto;" />
+<p align="center"><img alt="SQL-Tools" src="https://raw.githubusercontent.com/yogesh-aggarwal/sql-tools-lib/master/docs/media/brand.png" width="250"/></p>
 
 **Python package to help out in working with SQL database-related operation.**
 
