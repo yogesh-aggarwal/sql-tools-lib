@@ -1,5 +1,7 @@
 # SQL-TOOLS
 
+<img alt="SQL-Tools" src="https://raw.githubusercontent.com/yogesh-aggarwal/sql-tools-lib/master/docs/media/brand.png" style="width: 200px; display: block; margin-left: auto; margin-right: auto;" />
+
 **Python package to help out in working with SQL database-related operation.**
 
 It is a python package which uses database (SQL) functionality to help the developer to perform SQL operations on their desired database. This project _aims_ the developer ring to focus on their main code rather than focusing on the database related headaches.
