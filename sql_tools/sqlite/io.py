@@ -5,8 +5,33 @@ Contains methods related to connection(s) between database and file.
 import time
 
 from . import __tools, constants, sqliteException
+from pandas import DataFrame, read_csv
+from numpy import array
+# import numpy.str
 from .execute import execute
-from .fetch import _pdatabase, _ptableName
+from .fetch import _pdatabase, _ptableName, getTableNames
+from .databFuncs import Database
+from tools_lib import bprint, cprint
+
+
+
+def _ppath(databPath):
+    if not databPath:
+        raise sqliteException.PathError("Please provide a valid csv path.")
+    else:
+        __temp_lst__ = []
+        __temp_lst__.append(databPath)
+        if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
+            __temp_lst__ = __temp_lst__[0]
+        elif isinstance(__temp_lst__[0], str):
+            pass
+        else:
+            raise sqliteException.PathError(
+                'Invalid path input. Path should be a "str" or "list" type object.'
+            )
+        databPath = __temp_lst__.copy()
+        del __temp_lst__
+    return databPath
 
 
 def tableToCSV(tableName, databPath="", returnDict=False, index=False):
@@ -48,6 +73,60 @@ def tableToCSV(tableName, databPath="", returnDict=False, index=False):
     )
     return final
 
+
+def csvToTable(csv, tableName, databPath="", returnDict=False):
+    databPath = _pdatabase(databPath)
+    tableName = _ptableName(tableName)
+    csv = _ppath(csv)
+
+    for i in range(len(databPath)):
+        try:
+            getTableNames(databPath, returnDict=True)[databPath[i]].index(tableName[i])
+        except:
+            raise sqliteException.TableError(f"Table ({tableName[i]}) doesn't exists. Create it first to import the data")
+
+    if len(databPath) != len(tableName) or len(tableName) != len(csv):
+        raise sqliteException.PathError("Please provide equal no. of csv path, table names, and database paths")
+
+    final = []
+    for i in range(len(databPath)):
+        try:
+            data = read_csv(csv[i])
+        except:
+            raise sqliteException.PathError(f"Invalid csv or doesn't exists ({csv[i]})")
+        # if data == [[]]:
+        #     exit()
+
+        columns = list(data.columns)
+
+        cData = []
+        for j in columns:
+            cData.append(list(data[j]))
+
+        cData = array(cData).T
+
+        sqlData = []
+        for j in cData:
+            value = []
+            for record in j:
+                if __tools.dataType(record) == "str":
+                    value.append(f"'{record}'")
+                else:
+                    value.append(record)
+
+            sqlData.append(f'({", ".join(value)})')
+
+        query = f'INSERT INTO {tableName[i]} VALUES {", ".join(sqlData)}'
+        if query == f"INSERT INTO {tableName[i]} VALUES ":
+            raise sqliteException.UnknownError(f"Error in csv file ({csv[i]})")
+        bprint(query)
+        execute(query, databPath=databPath[i])
+        final.append(True)
+    
+    if returnDict:
+        return dict(zip(databPath, final))
+    else:
+        return final
 
 def databaseToCSV(databPath="", returnDict=False):
     """

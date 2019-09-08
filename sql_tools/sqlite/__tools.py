@@ -9,6 +9,7 @@ import time
 from . import fetch
 
 import pandas as pd
+import numpy as np
 
 from . import constants, sqliteException
 
@@ -61,6 +62,32 @@ def __tableToCSV(data, tableName, databPath="", table=True, database=True, index
         f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
     )
     return True
+
+
+def dataType(data):
+    try:
+        dtype = np.array(data).dtype
+        print(dtype)
+        if (
+            dtype == "O"
+            or dtype == "<U1"
+            or dtype == "<U5"
+            or dtype == "<U6"
+            or dtype == "<U7"
+            or dtype == "<U11"
+            or dtype == "<U21"
+        ):
+            return "str"
+        elif (
+            dtype == "int64"
+            or dtype == "<U2"
+        ):
+            return "int"
+        else:
+            return "None"
+
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":
