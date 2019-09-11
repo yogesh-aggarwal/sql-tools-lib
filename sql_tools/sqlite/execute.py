@@ -105,7 +105,7 @@ def execute(
                     )
                     exit(1)
                 __tools.setStatus(
-                    "Please provide a valid database path.", logConsole=True1
+                    "Please provide a valid database path.", logConsole=True
                 )
     else:
         __temp_lst__ = []
