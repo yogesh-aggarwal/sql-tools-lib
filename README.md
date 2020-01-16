@@ -14,7 +14,7 @@ Sometimes the sqlite databases are very useful when we have to store the data in
 
 `sqlite` is a sub-module of `sql-tools` package which includes many types of functionality which include the fast execution of command & also some tools for `on-the-fly` result generation to get rid of writing SQL queries for small works. This library is divided into some separate files so that you can only import what you need and get performance as well as speed in your program\(s\).
 
-#### **Importing the library**
+### **Importing the library**
 
 `sqlite` is a submodule of `sql-tools` which can be imported in your program as follows:
 
@@ -22,8 +22,9 @@ Sometimes the sqlite databases are very useful when we have to store the data in
 >>> from sql_tools import sqlite
 ```
 
-In this way, all the functionalities of the library get imported into your program.  
-**Connecting the database**
+In this way, all the functionalities of the library get imported into your program.
+
+### **Connecting the database**
 
 Before the execution of any command, the database\(s\) should be connected. There is a function in connect file called `connect` which will connect the database\(s\).
 
@@ -39,7 +40,7 @@ Not only one, but you can also connect as many databases as you want by providin
 
 > Keep in mind that you should execute the same no. of command as the database\(s\) connected.
 
-#### **Execution of command**
+### **Execution of command**
 
 The library includes a function called `execute` which resides in the execute file, helps you to execute the desired command.
 
@@ -82,7 +83,7 @@ Will return something like:
   ["member 2"]]]
 ```
 
-**Analyzing the result**
+### **Analyzing the result**
 
 ```text
 # Result for first database (At 0 index of execution result)
@@ -96,7 +97,7 @@ Will return something like:
 
 The execute function converts the result to a numpy array for faster data analysis with the result. Result as an array which positions the result of execution\(s\) as its elements.
 
-**Parameters**
+### **Parameters**
 
 * **`command`**: The command to be executed. It can be a string for a single command & an array for multiple commands.
 * **`databPath`**: When we want to operate a specific database apart from the connected ones, then we provide it the name of the database\(s\). Accepts string for single database & an array for multiple databases. By default, it sets to the connected databases.
@@ -117,7 +118,7 @@ The execute function converts the result to a numpy array for faster data analys
 sqlite.commit("users.db")
 ```
 
-#### **Disconnecting the database**
+### **Disconnecting the database**
 
 To free up the memory & run programs faster, it's a good practice to disconnect the database that is not in use.
 
