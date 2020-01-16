@@ -2,7 +2,7 @@
 description: Python package to help out in working with SQL database-related operation.
 ---
 
-# SQL-TOOLS
+# Overview
 
  It is a python package which uses database \(SQL\) functionality to help the developer to perform SQL operations on their desired database. This project _aims_ the developer ring to focus on their main code rather than focusing on the database related headaches.
 
