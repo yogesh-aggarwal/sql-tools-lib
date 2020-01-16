@@ -20,7 +20,7 @@ This python package uses the `sqlite` functionality to store databases on the lo
 
 ## Resources
 
-Read the full [documentation](https://yogesh-aggarwal.gitbook.io/sql-tools-lib) for more information
+Read the full [documentation](https://yogesh-aggarwal.gitbook.io/sql-tools) for more information
 
 You can contribute to it through [GitHub](https://github.com/yogesh-aggarwal/sql-tools-lib)
 
