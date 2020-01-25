@@ -127,7 +127,7 @@ def execute(
         databPath = __temp_lst__.copy()
         del __temp_lst__
 
-    # For command to list
+    # &For command to list
     try:
         __temp_lst__ = []
         __temp_lst__.append(command)
@@ -152,7 +152,7 @@ def execute(
             exit(1)
         __tools.setStatus("Error while parsing your command.", logConsole=True)
 
-    # For database to list
+    # &For database to list
     try:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -179,7 +179,7 @@ def execute(
             exit(1)
         __tools.setStatus("Error while parsing your path.", logConsole=True)
 
-    # Unequal condition
+    # &Unequal condition
     try:
         if len(command) != len(databPath):
             if raiseError:
@@ -196,7 +196,7 @@ def execute(
         pass
     del __temp_lst__
 
-    # Executing the main command
+    # &Executing the main command
     data = []
     if splitExec:
         __tools.setStatus(
@@ -298,7 +298,7 @@ def execute(
 
     __tools.setStatus("Preparing results", logConsole=logConsole)
 
-    # Conditions
+    # &Conditions
     if __execMethod:
         constants.__stopTime__ = time.time()
         __tools.setStatus("Calculating time", logConsole=logConsole)
@@ -306,7 +306,7 @@ def execute(
             f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
         )
 
-    # FOR INLINE DATA
+    # &FOR INLINE DATA
     inlineData = False
     __temp = []
     if inlineData:
@@ -318,7 +318,7 @@ def execute(
         data = __temp.copy()
     del __temp
 
-    # FOR SPLITBYCOLUMNS
+    # &FOR SPLITBYCOLUMNS
     __temp = []
     if splitByColumns:
         if __execMethod:
@@ -329,7 +329,7 @@ def execute(
         data = __temp.copy()
     del __temp
 
-    # FOR MATRIX
+    # &FOR MATRIX
     if matrix:
         __temp__ = np.array(data)
         if __execMethod:

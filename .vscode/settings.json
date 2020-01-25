@@ -1,9 +1,9 @@
 {
     "python.linting.pylintEnabled": false,
-    "python.linting.pep8Enabled": false,
+    "python.linting.pycodestyleEnabled": false,
     "python.linting.enabled": true,
     "python.linting.pylamaEnabled": true,
-    "python.pythonPath": "/bin/python3",
+    "python.pythonPath": "C:\\Users\\Yogesh Aggarwal\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
     "python.testing.unittestArgs": [
         "-v",
         "-s",
