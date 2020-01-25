@@ -1,4 +1,4 @@
-from . import execute, constants, mysqlException, __tools
+from . import execute, constants, mysqlException, tools
 
 
 #  TODO: Move database
@@ -7,7 +7,7 @@ from . import execute, constants, mysqlException, __tools
 
 def clearDb(db, raiseError=True):
     try:
-        db = __tools.parse(db)
+        db = tools.parse(db)
         [execute([f"DROP DATABASE {x};"], "mysql", _execute__execMethod=False).execute() for x in db]
         [execute([f"CREATE DATABASE {x};"], "mysql", _execute__execMethod=False).execute() for x in db]
     except Exception as e:
@@ -17,7 +17,7 @@ def clearDb(db, raiseError=True):
 
 
 def createDb(db, raiseError=True):
-    db = __tools.parse(db)
+    db = tools.parse(db)
     for x in db:
         try:
             execute([f"CREATE DATABASE {x};"], ["mysql"], _execute__execMethod=False).execute()
@@ -28,7 +28,7 @@ def createDb(db, raiseError=True):
 
 
 def delDb(db, raiseError=True):
-    db = __tools.parse(db)
+    db = tools.parse(db)
     for x in db:
         try:
             execute([f"DROP DATABASE {x};"], ["mysql"], _execute__execMethod=False).execute()

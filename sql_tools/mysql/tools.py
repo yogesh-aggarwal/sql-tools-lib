@@ -40,4 +40,4 @@ def timer(method, execMethod=True, logConsole=False):
 
 
 def parse(db):
-    return execute([], db, _execute__execMethod=False)._execute__parseDatabase()
+    return  execute.execute([], db, _execute__execMethod=False)._execute__parseDatabase()

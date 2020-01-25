@@ -1,8 +1,8 @@
 from .connect import *
-from .execute import *
+from .execute import execute
 from .dbTools import *
 
-__version__ = f"SQL-Tools: MySQL version: {2.3}"
+__version__ = f"SQL-Tools: MySQL version: 0.1"
 __help__ = 'Visit the documentation for more help or type "help(sql_tools)"'
 
 

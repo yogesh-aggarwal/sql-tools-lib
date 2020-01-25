@@ -4,7 +4,7 @@ Execute extension for SQL-Tools library.
 
 # TODO: Implement the remaining parameters
 
-import pymysql.cursors
+from . import driver
 import os
 
 import numpy as np
@@ -22,7 +22,7 @@ class execute:
         # splitByColumns=False,
         # asyncExec=False,
         # splitExec=False,
-        # returnDict=False,
+        returnDict=False,
         logConsole=False,
         raiseError=True,
         simplify=False,
@@ -35,7 +35,7 @@ class execute:
         # self.__inlineData = inlineData
         # self.__splitByColumns = splitByColumns
         # self.__asyncExec = asyncExec
-        # self.__returnDict = returnDict
+        self.__returnDict = returnDict
         self.__logConsole = logConsole  # For being verbose
         self.__raiseError = raiseError  # Raise error or not if something goes wrong
         self.__simplify = simplify  # Commit the changes
@@ -43,7 +43,8 @@ class execute:
         self.__execMethod = __execMethod  # Whether called user (True) or internally (False)
 
         self.__result = []
-        # self.execute()
+
+        self.execute() if self.__execMethod else True
 
     @property
     def get(self):
@@ -52,6 +53,10 @@ class execute:
     @property
     def list(self):
         return self.__result.tolist()
+
+    @property
+    def dict(self):
+        return dict(zip(self.db, self.__result))
 
     def __toCsv(self, name):
         pass
@@ -81,7 +86,7 @@ class execute:
         final = []
         for i in range(len(self.db)):
             # Connect to the database
-            connection = pymysql.connect(
+            connection = driver.connect(
                 host=host, user=user, password=password, db=self.db[i], charset=charset
             )
             data = []
@@ -109,7 +114,10 @@ class execute:
                 final = final[0]
 
         self.__result = final
-        return self.__result
+
+        # &Return dictionary
+        if self.__returnDict:
+            self.__result = self.dict
 
 
     def __parseCommands(self):
