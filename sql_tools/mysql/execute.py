@@ -64,7 +64,7 @@ class execute:
 
     def execute(self):
         self.__simplify = constants.simplify if not self.__simplify else self.__simplify
-        constants.__processId__ = os.getpid()
+        constants.__pid__ = os.getpid()
         tools.timer("start", self.__execMethod, self.__logConsole)
 
         # &For database to list

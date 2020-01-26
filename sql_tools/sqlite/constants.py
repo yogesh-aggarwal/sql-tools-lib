@@ -12,7 +12,7 @@ __stopTime__ = None
 __status__ = None
 __jsonFormat__ = "Error in JSON file or it may not in the specified format.\nFormat:\n\t{\n\t\t<database>:\n\t\t{\n\t\t\t<table name>:\n\t\t\t[\n\t\t\t\t<commands>\n\t\t\t]\n\t\t}\n\t}"
 __history__ = []
-__processId__ = None
+__pid__ = None
 
 __databPath__ = []
 

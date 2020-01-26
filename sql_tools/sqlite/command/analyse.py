@@ -12,7 +12,7 @@ class Parse:
         self.dh = []
         self.words = []
     
-    def parseDbsself):
+    def parse(self):
         command =self.command.split(" ")
         self.source = command[0]
         for index, word in enumerate(command):
@@ -106,7 +106,7 @@ class Table:
     @staticmethod
     def all():
         try:
-            tables = sqlite.getTableNames()
+            tables = sqlite.getTNames()
             databases = sqlite.constants.__databPath__
             print("Tables:")
             for i in range(len(tables)):
@@ -175,8 +175,8 @@ def start():
     try:
         while True:
             command = input(">>> ")
-            obj = parseDbscommand)
-            obj.parseDbs)
+            obj = Parse(command)
+            obj.parse()
     except:
         print("\n---> (sql-tools) Quit interactive shell with error code 0 <---")
 

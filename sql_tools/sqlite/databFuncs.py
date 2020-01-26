@@ -10,7 +10,7 @@ from . import advTools
 from .execute import execute
 
 
-def createDatabase(databPath="", raiseError=True):
+def createDb(databPath="", raiseError=True):
     """
     Creates the databases at the path provided.
     Caution:
@@ -58,7 +58,7 @@ def createDatabase(databPath="", raiseError=True):
     return final
 
 
-def moveDatabase(newPath, oldPath="", raiseError=True):
+def moveDb(newPath, oldPath="", raiseError=True):
     """
     Moves the database from the old path to new path.
     Caution:
@@ -122,7 +122,7 @@ def moveDatabase(newPath, oldPath="", raiseError=True):
     return final
 
 
-def copyDatabase(newPath, oldPath="", raiseError=True):
+def copyDb(newPath, oldPath="", raiseError=True):
     """
     Creates a copy of database from the old path to the new path.
     Caution:
@@ -191,7 +191,7 @@ def copyDatabase(newPath, oldPath="", raiseError=True):
     return final
 
 
-def delDatabase(databPath="", raiseError=True):
+def delDb(databPath="", raiseError=True):
     """
     Deletes the database at the provided path.
     Caution:
@@ -309,7 +309,7 @@ def isIdentical(compareWith, databPath="", raiseError=True):
     return final
 
 
-def clearDatabase(databPath="", raiseError=True):
+def clearDb(databPath="", raiseError=True):
     """
     Clears the database provided.
     """

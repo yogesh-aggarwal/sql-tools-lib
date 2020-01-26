@@ -19,7 +19,7 @@ def setStatus(arg, logConsole=False, raiseError=True):
         if logConsole:
             logging.basicConfig(format="[%(process)d] SQL-Tools: %(message)s")
             logging.warning(arg)  # Change the logging style
-            constants.__processId__ = os.getpid()
+            constants.__pid__ = os.getpid()
         else:
             constants.__history__.append(arg)
         constants.__status__ = arg
@@ -39,7 +39,7 @@ def __tableToCSV(data, tableName, databPath="", table=True, database=True, index
         0
     ]  # REMOVE THIS FOR MULTIPLE DATABASES AS IT WILL FETCH THE FIRST DATABASE ONLY
 
-    columns = fetch.getColumnNames(tableName, databPath=databPath)[0]
+    columns = fetch.getCNames(tableName, databPath=databPath)[0]
     if table and database:
         if index != False:
             pd.DataFrame(data, columns=columns, index=index).to_csv(

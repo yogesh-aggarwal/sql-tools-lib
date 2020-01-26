@@ -1,6 +1,5 @@
 
 from . import driver
-from . import constants
 from .advTools import *
 from .connect import *
 from .databFuncs import *

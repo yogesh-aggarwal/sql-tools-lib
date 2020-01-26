@@ -63,7 +63,7 @@ def execute(
     ---
     Whether to commit the changes immidiately after excution of each command. It is recommended to use it when you have run multiple commands on the same database at the same time.
     """
-    constants.__processId__ = os.getpid()
+    constants.__pid__ = os.getpid()
     if __execMethod:
         constants.__startTime__ = time.time()
         __tools.setStatus("Starting execution", logConsole=logConsole)

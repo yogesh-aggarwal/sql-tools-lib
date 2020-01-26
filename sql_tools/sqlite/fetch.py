@@ -52,7 +52,7 @@ def _ptableName(tableName):
     return tableName
 
 
-def getNoOfRecords(tableName, databPath="", returnDict=False):
+def getNRecords(tableName, databPath="", returnDict=False):
     """
     Returns the no. of records in the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
@@ -114,7 +114,7 @@ def getNoOfRecords(tableName, databPath="", returnDict=False):
     return result
 
 
-def getNoOfColumns(tableName, databPath="", returnDict=False):
+def getNColumns(tableName, databPath="", returnDict=False):
     """
     Returns the no. of columns in the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
@@ -131,7 +131,7 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
     result = []
     for i in range(len(tableName)):
         try:
-            queryResult = getColumnNames(tableName=tableName[i], databPath=databPath[i])
+            queryResult = getCNames(tableName=tableName[i], databPath=databPath[i])
         except Exception as e:
             raise e
 
@@ -153,7 +153,7 @@ def getNoOfColumns(tableName, databPath="", returnDict=False):
     return result
 
 
-def getColumnNames(tableName, databPath="", returnDict=False):
+def getCNames(tableName, databPath="", returnDict=False):
     """
     Returns the column names of the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
@@ -203,7 +203,7 @@ def getColumnNames(tableName, databPath="", returnDict=False):
     return result
 
 
-def getTableNames(databPath="", returnDict=False):
+def getTNames(databPath="", returnDict=False):
     """
     Returns the table names in the provided database.
     You can provided multiple database paths..
@@ -242,7 +242,7 @@ def getTableNames(databPath="", returnDict=False):
     return result
 
 
-def getTableCommand(tableName, databPath="", returnDict=False):
+def getTCommand(tableName, databPath="", returnDict=False):
     """
     Returns the command for creating the provided table in the database accordingly.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
@@ -328,7 +328,7 @@ def getTableCommand(tableName, databPath="", returnDict=False):
     return final
 
 
-def getDatabaseSize(databPath="", returnDict=False):
+def getDbSize(databPath="", returnDict=False):
     """
     Returns the database size in bytes.
     """
@@ -353,7 +353,7 @@ def getDatabaseSize(databPath="", returnDict=False):
     return final
 
 
-def getSampleDatabase(databPath, bigData=False):
+def getSampleDb(databPath, bigData=False):
     """
     Creates a sample database in the provided location.\n
     WARNING:
@@ -412,11 +412,11 @@ def log():
     return array(constants.__history__)
 
 
-def processId():
+def pid():
     """
     Returns the log of the process id of recent continous execution.
     """
-    return array(constants.__processId__)
+    return array(constants.__pid__)
 
 
 if __name__ == "__main__":

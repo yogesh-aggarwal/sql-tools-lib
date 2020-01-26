@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2020-01-26
+
+### Added
+- (MySQL) Tools for working with CSV files and .sql query files
+
+### Updates
+- (MySQL) Updated tools
+- (SQLite) Updated tools
+
+### Changed
+- Improved time complexity for sqlite, mysql operations
+- Improved time calculations
+- (MySQL, SQLite) **Function names are changed**
+
+
 ## [1.1.0] - 2020-01-26
 
 ### Added

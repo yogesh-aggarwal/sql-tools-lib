@@ -10,7 +10,7 @@ def setStatus(arg, raiseError=True, logConsole=False):
         if logConsole:
             logging.basicConfig(format="[%(process)d] SQL-Tools: %(message)s")
             logging.warning(arg)  # Change the logging style
-            constants.__processId__ = getpid()
+            constants.__pid__ = getpid()
         else:
             constants.__history__.append(arg)
         constants.__status__ = arg

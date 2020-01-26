@@ -5,14 +5,12 @@ Contains methods related to connection(s) between database and file.
 import time
 
 from . import __tools, constants, sqliteException
-from pandas import DataFrame, read_csv
+from pandas import read_csv
 from numpy import array
-# import numpy.str
-from .execute import execute
-from .fetch import _pdatabase, _ptableName, getTableNames
-from .databFuncs import Database
-from tools_lib import bprint, cprint
 
+from .execute import execute
+from .fetch import _pdatabase, _ptableName, getTNames
+from tools_lib import bprint
 
 
 def _ppath(databPath):
@@ -81,12 +79,16 @@ def csvToTable(csv, tableName, databPath="", returnDict=False):
 
     for i in range(len(databPath)):
         try:
-            getTableNames(databPath, returnDict=True)[databPath[i]].index(tableName[i])
+            getTNames(databPath, returnDict=True)[databPath[i]].index(tableName[i])
         except:
-            raise sqliteException.TableError(f"Table ({tableName[i]}) doesn't exists. Create it first to import the data")
+            raise sqliteException.TableError(
+                f"Table ({tableName[i]}) doesn't exists. Create it first to import the data"
+            )
 
     if len(databPath) != len(tableName) or len(tableName) != len(csv):
-        raise sqliteException.PathError("Please provide equal no. of csv path, table names, and database paths")
+        raise sqliteException.PathError(
+            "Please provide equal no. of csv path, table names, and database paths"
+        )
 
     final = []
     for i in range(len(databPath)):
@@ -122,13 +124,14 @@ def csvToTable(csv, tableName, databPath="", returnDict=False):
         bprint(query)
         execute(query, databPath=databPath[i])
         final.append(True)
-    
+
     if returnDict:
         return dict(zip(databPath, final))
     else:
         return final
 
-def databaseToCSV(databPath="", returnDict=False):
+
+def dbToCSV(databPath="", returnDict=False):
     """
     Converts the data infoformation to a CSV file.
     """
