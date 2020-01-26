@@ -4,7 +4,6 @@ import warnings
 
 #  TODO: Move database
 #  TODO: Copy database
-#  TODO: Is identical
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
@@ -44,6 +43,10 @@ def delDb(db, raiseError=True):
             if raiseError:
                 raise e
     return True
+
+
+def showDbs(raiseError=True):
+    return [x[0] for x in execute(["SHOW DATABASES;"], ["mysql"]).list[0][0]]
 
 
 def isIdentical(db, raiseError=True):
