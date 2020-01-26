@@ -10,7 +10,6 @@ from numpy import array
 
 from .execute import execute
 from .fetch import _pdatabase, _ptableName, getTNames
-from tools_lib import bprint
 
 
 def _ppath(databPath):
@@ -121,7 +120,7 @@ def csvToTable(csv, tableName, databPath="", returnDict=False):
         query = f'INSERT INTO {tableName[i]} VALUES {", ".join(sqlData)}'
         if query == f"INSERT INTO {tableName[i]} VALUES ":
             raise sqliteException.UnknownError(f"Error in csv file ({csv[i]})")
-        bprint(query)
+
         execute(query, databPath=databPath[i])
         final.append(True)
 

@@ -512,6 +512,3 @@ plan/
 plan.*
 pending.*
 pending/
-
-# For new structure
-sql_tool/*
