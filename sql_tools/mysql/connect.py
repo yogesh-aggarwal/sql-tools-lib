@@ -10,9 +10,11 @@ def connect(host, user, pword, db=[], charset="", validate=True, raiseError=True
     elif tools.checkInstance(db, str):
         constants.__db__.append(db)
     else:
-        raise mysqlException.DatabaseError("Invalid database dtype, it should be str or array")
+        raise mysqlException.DatabaseError(
+            "Invalid database dtype, it should be str or array"
+        )
 
 
 def disconnect(db=[], raiseError=True):
-    db = tools.parse(db)
+    db = tools.parseDbs(db)
     constants.__db__ = [x for x in constants.__db__ if x not in db]

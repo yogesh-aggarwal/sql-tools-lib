@@ -39,5 +39,10 @@ def timer(method, execMethod=True, logConsole=False):
         return constants.__stopTime__ - constants.__startTime__
 
 
-def parse(db):
-    return  execute.execute([], db, _execute__execMethod=False)._execute__parseDatabase()
+def parseDbs(db):
+    return execute.execute([], db, _execute__execMethod=False)._execute__parseDatabase()
+
+
+def parseTables(tables, db):
+    # print(tables)
+    return execute.execute(tables, db, _execute__execMethod=False)._execute__parseCommands()

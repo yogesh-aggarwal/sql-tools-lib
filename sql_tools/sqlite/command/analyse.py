@@ -12,7 +12,7 @@ class Parse:
         self.dh = []
         self.words = []
     
-    def parse(self):
+    def parseDbsself):
         command =self.command.split(" ")
         self.source = command[0]
         for index, word in enumerate(command):
@@ -158,16 +158,16 @@ class Disconnect:
         sqlite.disconnect(path)
 
 
-# Parse("python3 manage.py runserver --root -f").parse()
+# parseDbs"python3 manage.py runserver --root -f").parseDbs)
 # command = "table show -all"
 """
 command = "connect -f sample.db users.db"
-obj = Parse(command)
-obj.parse()
+obj = parseDbscommand)
+obj.parseDbs)
 
 command = "table all"
-obj = Parse(command)
-obj.parse()
+obj = parseDbscommand)
+obj.parseDbs)
 """
 
 def start():
@@ -175,8 +175,8 @@ def start():
     try:
         while True:
             command = input(">>> ")
-            obj = Parse(command)
-            obj.parse()
+            obj = parseDbscommand)
+            obj.parseDbs)
     except:
         print("\n---> (sql-tools) Quit interactive shell with error code 0 <---")
 

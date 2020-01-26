@@ -58,6 +58,13 @@ class ColumnError(Exception):
     def __init__(self, message="Error in columns or it may doesn't exists."):
         super(ColumnError).__init__()
 
+class KeyError(Exception):
+    """
+    Column exception for SQL-Tools.
+    """
+    def __init__(self, message="Error in key configurations."):
+        super(KeyError).__init__()
+
 class JSONError(Exception):
     """
     JSON exception for SQL-Tools.

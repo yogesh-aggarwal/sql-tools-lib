@@ -20,6 +20,18 @@ __db__ = []
 
 __copyCount__ = 0
 
+__query__ = None
+
+dtypeMap = {
+    "float64": "FLOAT",
+    "float32": "FLOAT",
+    "int64": "INT(64)",
+    "int32": "INT(32)",
+    "object": "TEXT",
+    "datetime64[ns]": "DATE",
+    "datetime32[ns]": "DATE"
+}
+
 # Global constants
 __version__ = f"SQL-Tools (sqlite) version: {sqlite_version}"
 

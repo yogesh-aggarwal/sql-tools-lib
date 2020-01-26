@@ -1,6 +1,6 @@
-from . import execute, tools
 import warnings
 
+from . import execute, tools
 
 #  TODO: Move database
 #  TODO: Copy database
@@ -10,7 +10,7 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 def clearDb(db, raiseError=True):
     try:
-        db = tools.parse(db)
+        db = tools.parseDbs(db)
         delDb(db)
         createDb(db)
     except Exception as e:
@@ -20,7 +20,7 @@ def clearDb(db, raiseError=True):
 
 
 def createDb(db, raiseError=True):
-    db = tools.parse(db)
+    db = tools.parseDbs(db)
     for x in db:
         try:
             execute(
@@ -33,7 +33,7 @@ def createDb(db, raiseError=True):
 
 
 def delDb(db, raiseError=True):
-    db = tools.parse(db)
+    db = tools.parseDbs(db)
     for x in db:
         try:
             execute(
@@ -50,7 +50,7 @@ def showDbs(raiseError=True):
 
 
 def isIdentical(db, raiseError=True):
-    db = tools.parse(db)
+    db = tools.parseDbs(db)
     tables = [execute(["SHOW TABLES"], x).list for x in db]
     tables = list(filter(lambda x: x != tables[0], tables))
     if len(tables) != 0:

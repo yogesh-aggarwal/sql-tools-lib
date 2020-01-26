@@ -119,22 +119,25 @@ class execute:
         if self.__returnDict:
             self.__result = self.dict
 
-    def __parseCommands(self):
-        tools.setStatus("Parsing commands", self.__raiseError, self.__logConsole)
+    def __parseCommands(self, command="", db=""):
+        command = command if command else self.__command
+        if self.__execMethod:
+            tools.setStatus("Parsing commands", self.__raiseError, self.__logConsole)
         try:
-            if len(self.db) == 1:
-                if tools.checkInstance(self.__command, str):
-                    self.__command = [[self.__command]]
-                elif tools.checkInstance(self.__command[0], str):
-                    self.__command = [[self.__command[0]]]
-                elif tools.checkInstance(self.__command[0], list, tuple):
-                    if not tools.checkInstance(self.__command[0], list, tuple) or tools.checkInstance(self.__command[0][0], list, tuple):
+            db = tools.parseDbs(db) if db else tools.parseDbs(self.db)
+            if len(db) == 1:
+                if tools.checkInstance(command, str):
+                    command = [[command]]
+                elif tools.checkInstance(command[0], str):
+                    command = [command]
+                elif tools.checkInstance(command[0], list, tuple):
+                    if tools.checkInstance(command[0][0], list, tuple):
                         raise mysqlException.UnknownError("Database and commands are not commuting, n(commands) != n(database)")
                 else:
                     raise mysqlException.CommandError()
             else:
-                if tools.checkInstance(self.__command, list, tuple):
-                    if not tools.checkInstance(self.__command[0], list, tuple) or tools.checkInstance(self.__command[0][0], list, tuple):
+                if tools.checkInstance(command, list, tuple):
+                    if not tools.checkInstance(command[0], list, tuple) or tools.checkInstance(command[0][0], list, tuple):
                         raise mysqlException.UnknownError("Database and commands are not commuting, n(commands) != n(database)")
                 else:
                     raise mysqlException.CommandError()
@@ -144,7 +147,7 @@ class execute:
         except Exception as e:
             if self.__raiseError:
                 raise e
-        return self.__command
+        return command
 
     def __parseDatabase(self, db=""):
         db = db if db else self.db

@@ -570,7 +570,7 @@ def _parse_insert(toks):
         values = Values(value_val, values_list)
 
     elif toks[i]._type == Token.SELECT:
-        for x, j in _parse(toks[i:]):
+        for x, j in _parseDbstoks[i:]):
             select.append(x)
             i += j
 
@@ -800,7 +800,7 @@ def _parse_conditions(toks):
 
                 if toks[i]._type == Token.SELECT:
                     values = []
-                    for x, j in _parse(toks[i:]):
+                    for x, j in _parseDbstoks[i:]):
                         values.append(x)
                         i += j
                     objects = SubSelect(values)
@@ -843,7 +843,7 @@ def _parse_identifier(toks):
     raise InvalidIdentifier(toks)
 
 
-def _parse(toks):
+def _parseDbstoks):
     structures = {
         Token.GROUP_BY: _parse_group_by,
         Token.FROM: _parse_from,
@@ -870,6 +870,6 @@ def _parse(toks):
         yield statement, count
 
 
-def parse(toks):
-    for statement, unused_count in _parse(toks):
+def parseDbstoks):
+    for statement, unused_count in _parseDbstoks):
         yield statement

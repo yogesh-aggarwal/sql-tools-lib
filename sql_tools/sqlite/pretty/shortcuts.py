@@ -13,7 +13,7 @@ def format_sql(s, debug=False):
     tokens = list(tokenize(s))
     if debug:
         print_non_data('Tokens: %s' % tokens)
-    parsed = list(parse(tokens))
+    parsed = list(parseDbstokens))
     if debug:
         print_non_data('Statements: %s' % parsed)
     styled = style(parsed)
