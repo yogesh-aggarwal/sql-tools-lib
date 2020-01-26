@@ -1,5 +1,5 @@
 import logging
-import time
+from datetime import datetime
 from os import getpid
 
 from . import constants, mysqlException, execute
@@ -27,16 +27,16 @@ def checkInstance(value, *args):
 
 def timer(method, execMethod=True, logConsole=False):
     if method == "start":
-        constants.__startTime__ = time.time()
+        constants.__startTime__ = datetime.now()
         setStatus("Starting execution", logConsole=logConsole)
     elif method == "stop":
-        constants.__stopTime__ = time.time()
+        constants.__stopTime__ = datetime.now()
         setStatus("Calculating time", logConsole=logConsole)
-        constants.__time__ = (
-            f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
-        )
     elif method == "result":
-        return constants.__stopTime__ - constants.__startTime__
+        constants.__time__ = (
+            f"Wall time: {(constants.__stopTime__ - constants.__startTime__).total_seconds()}s"
+        )
+        return constants.__time__
 
 
 def parseDbs(db):

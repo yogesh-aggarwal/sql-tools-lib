@@ -57,9 +57,10 @@ class execute:
     @property
     def dict(self):
         return dict(zip(self.db, self.__result))
-
-    def __toCsv(self, name):
-        pass
+        
+    @property
+    def time(self):
+        return tools.timer("result")
 
     def execute(self):
         self.__simplify = constants.simplify if not self.__simplify else self.__simplify
