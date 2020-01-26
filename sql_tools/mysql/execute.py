@@ -119,9 +119,8 @@ class execute:
         if self.__returnDict:
             self.__result = self.dict
 
-
     def __parseCommands(self):
-        tools.setStatus("Parsing commands", self.__logConsole, self.__raiseError)
+        tools.setStatus("Parsing commands", self.__raiseError, self.__logConsole)
         try:
             if len(self.db) == 1:
                 if tools.checkInstance(self.__command, str):
@@ -149,7 +148,7 @@ class execute:
 
     def __parseDatabase(self, db=""):
         db = db if db else self.db
-        tools.setStatus("Parsing database(s)", self.__logConsole, self.__raiseError)
+        tools.setStatus("Parsing database(s)", self.__raiseError, self.__logConsole)
         try:
             if tools.checkInstance(db, str):
                 db = [db]

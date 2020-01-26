@@ -6,4 +6,4 @@ You can read the full documentation on https://github.com/yogesh-aggarwal/sql-to
 Thanks for using the package.
 """
 
-__version__ = "SQL-Tools version: 1.0"
+__version__ = "SQL-Tools version: 1.1.0"
