@@ -83,3 +83,27 @@ def csvToTable(
                 else:
                     print(3, f"ALTER TABLE {table} MODIFY COLUMN {column} {dtypes[f'{dataDtypes[column]}']}")
                     execute(f"ALTER TABLE {table} MODIFY COLUMN {column} {dtypes[f'{dataDtypes[column]}']}", db=db)
+
+
+def execFile(db, file, out=True, raiseError=True, logConsole=False):
+    datab = tools.parseDbs(db)
+    files = tools.parseTables(file, datab)
+
+    for i, db in enumerate(datab):
+        for file in files[i]:
+            try:
+                file = open(file)
+                sql = file.read().replace("\n", "").split(";")
+                try:
+                    sql.remove("")
+                except:
+                    pass
+                file.close()
+                result = execute([sql], db).get
+                if out:
+                    print(result)
+            except Exception as e:
+                if raiseError:
+                    raise mysqlException.UnknownError(e)
+                return False
+    return True
