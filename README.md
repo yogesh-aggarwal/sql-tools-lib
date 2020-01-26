@@ -24,4 +24,4 @@ Read the full [documentation](https://yogesh-aggarwal.gitbook.io/sql-tools) for 
 
 You can contribute to it through [GitHub](https://github.com/yogesh-aggarwal/sql-tools-lib)
 
-## View project at [GitHub](https://github.com/users/yogesh-aggarwal/projects/2)
+## View project at [GitHub](https://github.com/yogesh-aggarwal/sql-tools-lib/projects/1)
