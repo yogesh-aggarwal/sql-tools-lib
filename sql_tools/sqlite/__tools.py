@@ -14,9 +14,9 @@ import numpy as np
 from . import constants, sqliteException
 
 
-def setStatus(arg, verbose=False, raiseError=True):
+def setStatus(arg, logConsole=False, raiseError=True):
     try:
-        if verbose:
+        if logConsole:
             logging.basicConfig(format="[%(process)d] SQL-Tools: %(message)s")
             logging.warning(arg)  # Change the logging style
             constants.__pid__ = os.getpid()
@@ -31,7 +31,7 @@ def setStatus(arg, verbose=False, raiseError=True):
             return False
 
 
-def __tbToCsv(data, tableName, databPath="", tbl=True, database=True, index=False):
+def __tbToCsv(data, tblName, databPath="", tbl=True, database=True, index=False):
     constants.__startTime__ = time.time()
     databPath = fetch._pdatabase(databPath)
 
@@ -39,21 +39,21 @@ def __tbToCsv(data, tableName, databPath="", tbl=True, database=True, index=Fals
         0
     ]  # REMOVE THIS FOR MULTIPLE DATABASES AS IT WILL FETCH THE FIRST DATABASE ONLY
 
-    columns = fetch.getCNames(tableName, databPath=databPath)[0]
-    if table and database:
+    columns = fetch.getCNames(tblName, databPath=databPath)[0]
+    if tbl and database:
         if index != False:
             pd.DataFrame(data, columns=columns, index=index).to_csv(
-                f"{os.path.basename(databPath)}.{tableName}.csv"
+                f"{os.path.basename(databPath)}.{tblName}.csv"
             )
         else:
             pd.DataFrame(data, columns=columns).to_csv(
-                f"{os.path.basename(databPath)}.{tableName}.csv", index=False
+                f"{os.path.basename(databPath)}.{tblName}.csv", index=False
             )
-    elif table:
+    elif tbl:
         if index != False:
-            pd.DataFrame(data, columns=columns, index=index).to_csv(f"{tableName}.csv")
+            pd.DataFrame(data, columns=columns, index=index).to_csv(f"{tblName}.csv")
         else:
-            pd.DataFrame(data, columns=columns).to_csv(f"{tableName}.csv", index=False)
+            pd.DataFrame(data, columns=columns).to_csv(f"{tblName}.csv", index=False)
 
     # else:
     #     raise AttributeError("One attribute must be provided.")

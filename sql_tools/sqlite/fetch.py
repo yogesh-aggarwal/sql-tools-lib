@@ -36,9 +36,9 @@ def _pdatabase(databPath):
     return databPath
 
 
-def _ptableName(tableName):
+def _ptableName(tblName):
     __temp_lst__ = []
-    __temp_lst__.append(tableName)
+    __temp_lst__.append(tblName)
     if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
         __temp_lst__ = __temp_lst__[0]
     elif isinstance(__temp_lst__[0], str):
@@ -47,31 +47,31 @@ def _ptableName(tableName):
         raise sqliteException.PathError(
             'Invalid path input. Path should be a "str" or "list" type object.'
         )
-    tableName = __temp_lst__.copy()
+    tblName = __temp_lst__.copy()
     del __temp_lst__
-    return tableName
+    return tblName
 
 
-def getNRecords(tableName, databPath="", returnDict=False):
+def getNRecords(tblName, databPath="", returnDict=False):
     """
     Returns the no. of records in the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
     databPath = _pdatabase(databPath)
-    tableName = _ptableName(tableName)
+    tblName = _ptableName(tblName)
 
-    if len(tableName) != len(databPath):
+    if len(tblName) != len(databPath):
         raise ValueError(
             "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
         )
 
     result = []
-    for i in range(len(tableName)):
+    for i in range(len(tblName)):
         try:
             __tools.setStatus(f"Getting records for {databPath[i]}")
             if "ERROR IN SQL QUERY --->" not in execute(
-                f"SELECT * FROM {tableName[i]};",
+                f"SELECT * FROM {tblName[i]};",
                 databPath=databPath[i],
                 matrix=False,
                 inlineData=False,
@@ -80,7 +80,7 @@ def getNRecords(tableName, databPath="", returnDict=False):
                 result.append(
                     len(
                         execute(
-                            f"SELECT * FROM {tableName[i]};",
+                            f"SELECT * FROM {tblName[i]};",
                             databPath=databPath[i],
                             matrix=False,
                             inlineData=False,
@@ -91,7 +91,7 @@ def getNRecords(tableName, databPath="", returnDict=False):
             else:
                 raise ValueError(
                     execute(
-                        f"SELECT * FROM {tableName[i]};",
+                        f"SELECT * FROM {tblName[i]};",
                         databPath=databPath[i],
                         matrix=False,
                         inlineData=False,
@@ -103,7 +103,7 @@ def getNRecords(tableName, databPath="", returnDict=False):
 
     if returnDict:
         __tools.setStatus("Packing into dictionary")
-        result = dict(zip(tableName, result))
+        result = dict(zip(tblName, result))
 
     __tools.setStatus("Returning results")
 
@@ -114,24 +114,24 @@ def getNRecords(tableName, databPath="", returnDict=False):
     return result
 
 
-def getNColumns(tableName, databPath="", returnDict=False):
+def getNColumns(tblName, databPath="", returnDict=False):
     """
     Returns the no. of columns in the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
     databPath = _pdatabase(databPath)
-    tableName = _ptableName(tableName)
+    tblName = _ptableName(tblName)
 
-    if len(tableName) != len(databPath):
+    if len(tblName) != len(databPath):
         raise ValueError(
             "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
         )
 
     result = []
-    for i in range(len(tableName)):
+    for i in range(len(tblName)):
         try:
-            queryResult = getCNames(tableName=tableName[i], databPath=databPath[i])
+            queryResult = getCNames(tblName=tblName[i], databPath=databPath[i])
         except Exception as e:
             raise e
 
@@ -144,7 +144,7 @@ def getNColumns(tableName, databPath="", returnDict=False):
             result.append(0)
     if returnDict:
         __tools.setStatus("Packing into dictionary")
-        result = dict(zip(tableName, result))
+        result = dict(zip(tblName, result))
 
     constants.__stopTime__ = time.time()
     constants.__time__ = (
@@ -153,26 +153,26 @@ def getNColumns(tableName, databPath="", returnDict=False):
     return result
 
 
-def getCNames(tableName, databPath="", returnDict=False):
+def getCNames(tblName, databPath="", returnDict=False):
     """
     Returns the column names of the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
     databPath = _pdatabase(databPath)
-    tableName = _ptableName(tableName)
+    tblName = _ptableName(tblName)
 
-    if len(tableName) != len(databPath):
+    if len(tblName) != len(databPath):
         raise ValueError(
             "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
         )
 
     result = []
-    for i in range(len(tableName)):
-        __tools.setStatus(f"Retrieving records for {tableName[i]}")
+    for i in range(len(tblName)):
+        __tools.setStatus(f"Retrieving records for {tblName[i]}")
         try:
             queryResult = execute(
-                f"PRAGMA table_info({tableName[i]});",
+                f"PRAGMA table_info({tblName[i]});",
                 databPath=databPath[i],
                 matrix=False,
                 inlineData=False,
@@ -242,7 +242,7 @@ def getTNames(databPath="", returnDict=False):
     return result
 
 
-def getTCommand(tableName, databPath="", returnDict=False):
+def getTCommand(tblName, databPath="", returnDict=False):
     """
     Returns the command for creating the provided table in the database accordingly.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
@@ -251,7 +251,7 @@ def getTCommand(tableName, databPath="", returnDict=False):
     databPath = _pdatabase(databPath)
 
     __temp_lst__ = []
-    __temp_lst__.append(tableName)
+    __temp_lst__.append(tblName)
     if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
         __temp_lst__ = __temp_lst__[0]
     elif isinstance(__temp_lst__[0], str):
@@ -260,19 +260,19 @@ def getTCommand(tableName, databPath="", returnDict=False):
         raise sqliteException.TableError(
             'Invalid table input. Table should be a "str" or "list" type object.'
         )
-    tableName = __temp_lst__.copy()
+    tblName = __temp_lst__.copy()
     del __temp_lst__
 
-    if len(tableName) != len(databPath):
+    if len(tblName) != len(databPath):
         raise ValueError(
             "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
         )
 
     final = []
     for i in range(len(databPath)):
-        __tools.setStatus(f"Retrieving records for {tableName[i]}")
+        __tools.setStatus(f"Retrieving records for {tblName[i]}")
         queryResult = execute(
-            f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';",
+            f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tblName[i]}';",
             databPath=databPath[i],
             matrix=False,
             inlineData=True,
@@ -280,7 +280,7 @@ def getTCommand(tableName, databPath="", returnDict=False):
         )
         if queryResult == [[]]:
             queryResult = execute(
-                f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i].lower().strip()}';",
+                f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tblName[i].lower().strip()}';",
                 databPath=databPath[i],
                 matrix=False,
                 inlineData=True,
@@ -288,7 +288,7 @@ def getTCommand(tableName, databPath="", returnDict=False):
             )
         if queryResult == [[]]:
             queryResult = execute(
-                f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i].upper().strip()}';",
+                f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tblName[i].upper().strip()}';",
                 databPath=databPath[i],
                 matrix=False,
                 inlineData=True,
@@ -299,7 +299,7 @@ def getTCommand(tableName, databPath="", returnDict=False):
         if "ERROR IN SQL QUERY --->" not in queryResult:
             result = queryResult
             if result == [[""]]:
-                raise ValueError(f"The table doesn't exists. ({tableName[i]})")
+                raise ValueError(f"The table doesn't exists. ({tblName[i]})")
             else:
                 try:
                     final.append(result[0])
@@ -308,7 +308,7 @@ def getTCommand(tableName, databPath="", returnDict=False):
         else:
             raise ValueError(
                 execute(
-                    f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';",
+                    f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tblName[i]}';",
                     databPath=databPath,
                     matrix=False,
                     inlineData=True,
@@ -318,7 +318,7 @@ def getTCommand(tableName, databPath="", returnDict=False):
 
     if returnDict:
         __tools.setStatus("Packing into dictionary")
-        result = dict(zip(tableName, result))
+        result = dict(zip(tblName, result))
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
