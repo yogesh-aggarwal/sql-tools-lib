@@ -25,7 +25,6 @@ def execute(
     simplify=False,
 ):
     obj = tools.Exec(command, db, returnDict, verbose, err, simplify)
-    print(constants.__credentials__)
-    obj._Exec__setParams(driver, mysqlException, "mysql", (constants.__credentials__))
+    obj._Exec__setParams(driver, "mysql", (constants.__credentials__))
     obj.execute()
     return obj

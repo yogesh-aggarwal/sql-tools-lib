@@ -11,7 +11,8 @@ from sql_tools import exception
 
 def fetchSQL(url, file="", err=True, verbose=False):
     if not url:
-        raise exception.ParameterError("Invalid URL provided") if err else False
+        if err:
+            raise exception.ParameterError("Invalid URL provided")
         return False
     else:
         file = file if file else f"{str(time.time())}.sql"

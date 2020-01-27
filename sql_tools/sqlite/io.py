@@ -83,7 +83,10 @@ from . import execute
 #                 tools.setStatus(f"Creating table: {table}", verbose=verbose, err=err)
 #                 execute(f"CREATE TABLE {table} ({attributes});", db=db)
 #             except Exception as e:
-#                 raise e if err else tools.setStatus(e, verbose=True, err=err)
+#                 if err:
+#                     raise e
+#                 else:
+#                     tools.setStatus(e, verbose=True, err=err)
 #             del attributes
 
 #             # Inejecting the records

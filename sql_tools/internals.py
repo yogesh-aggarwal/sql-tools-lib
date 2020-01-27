@@ -88,7 +88,6 @@ def __tbToCsv(data, tblName, db="", tbl=True, database=True, index=False):
 def dataType(data):
     try:
         dtype = array(data).dtype
-        print(dtype)
         if (
             dtype == "O"
             or dtype == "<U1"
@@ -137,6 +136,7 @@ class Exec:
         # self.__commit = commit
         self.__result = []
         self._driver = None
+        self.base = "mysql"
         self.property = ()
 
     @property
@@ -172,6 +172,7 @@ class Exec:
 
     def __setParams(self, driver, type, *args):
         self._driver = driver
+        self.base = type
         self.property = () if type == "sqlite" else args
 
     def execute(self):
@@ -281,7 +282,8 @@ class Exec:
         except Exception:
             pass
 
-        db = constants.__dbSqlite__ if not db else db
+        if not db:
+            db = constants.__dbSqlite__ if self.base == "sqlite" else constants.__dbMysql__
         if not db:
             if self.__raiseError:
                 raise exception.DatabaseError()

@@ -31,8 +31,7 @@ def createDb(db, err=True, verbose=False):
                 [f"CREATE DATABASE {x};"],
                 ["mysql"],
                 verbose=verbose,
-                _execute__execMethod=False,
-            ).execute()
+            )
         except Exception as e:
             if err:
                 raise e
@@ -48,8 +47,7 @@ def delDb(db="", err=True, verbose=False):
                 [f"DROP DATABASE {x};"],
                 ["mysql"],
                 verbose=verbose,
-                _execute__execMethod=False,
-            ).execute()
+            )
         except Exception as e:
             if err:
                 raise e
@@ -76,7 +74,6 @@ def isIdentical(db="", err=True, verbose=False):
             "Comparing tables properties", verbose=verbose, err=err
         )
         if len(tables) != 0:
-            print(False)
             return False
         else:
             tools.setStatus(

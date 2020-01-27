@@ -3,7 +3,6 @@ Database operation extension for SQL-Tools library.
 """
 
 import os
-import shutil
 
 import sql_tools.internals as tools
 
@@ -62,7 +61,12 @@ def copyDb(newPath, oldPath="", err=True):
     else:
         for path in tuple(zip(oldPath, newPath)):
             try:
-                shutil.copy(path[0], path[1])
+                file = open(path[0])
+                data1 = file.read()
+                file.close()
+                file = open(path[1], "w+")
+                file.write(data1)
+                file.close()
             except Exception as e:
                 if err:
                     raise e

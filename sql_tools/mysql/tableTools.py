@@ -47,7 +47,10 @@ def csvToTbl(
                 tools.setStatus(f"Creating table: {table}", verbose=verbose, err=err)
                 execute(f"CREATE TABLE {table} ({attributes});", db=db)
             except Exception as e:
-                raise e if err else tools.setStatus(e, verbose=True, err=err)
+                if err:
+                    raise e
+                else:
+                    tools.setStatus(e, verbose=True, err=err)
             del attributes
 
             # Inejecting the records
@@ -63,7 +66,6 @@ def csvToTbl(
             tools.setStatus("Inserting records", verbose=verbose, err=err)
             for record in final:
                 record = record.replace("nan", "NULL")
-                print(f"INSERT INTO {table} VALUES ({record})")
                 execute([f"INSERT INTO {table} VALUES ({record})"], verbose=verbose, db=db)
 
             tools.setStatus("Manipulating table for end use", verbose=verbose, err=err)
@@ -80,29 +82,17 @@ def csvToTbl(
                     )
                     # &Checking whether the dtype is changed to VARCHAR or not
                     raw = True if dtypeColumn in dtypes.keys() else False
-                    print(
-                        1,
-                        f"ALTER TABLE {table} MODIFY COLUMN {column} {dtypes[f'{dtypeColumn}'] if raw else dtypeColumn} PRIMARY KEY",
-                    )
                     # &Generating the query
                     execute(
                         f"ALTER TABLE {table} MODIFY COLUMN {column} {dtypes[f'{dtypeColumn}'] if raw else dtypeColumn} PRIMARY KEY",
                         db=db,
                     )
                 elif column.lower() == foreignKey.lower():
-                    print(
-                        2,
-                        f"ALTER TABLE {table} MODIFY COLUMN {column} {dtypes[f'{dataDtypes[column]}']} FOREIGN KEY",
-                    )
                     execute(
                         f"ALTER TABLE {table} MODIFY COLUMN {column} {dtypes[f'{dataDtypes[column]}']} FOREIGN KEY",
                         db=db,
                     )
                 else:
-                    print(
-                        3,
-                        f"ALTER TABLE {table} MODIFY COLUMN {column} {dtypes[f'{dataDtypes[column]}']}",
-                    )
                     execute(
                         f"ALTER TABLE {table} MODIFY COLUMN {column} {dtypes[f'{dataDtypes[column]}']}",
                         db=db,
@@ -131,7 +121,10 @@ def execFile(file, db="", out=True, err=True, verbose=False):
                     tools.setStatus("Printing results", verbose=verbose, err=err)
                     print(result)
             except Exception as e:
-                raise exception.UnknownError(e) if err else tools.setStatus(e, verbose=True, err=err)
+                if err:
+                    raise exception.UnknownError(e)
+                else:
+                    tools.setStatus(e, verbose=True, err=err)
                 return False
     return True
 
