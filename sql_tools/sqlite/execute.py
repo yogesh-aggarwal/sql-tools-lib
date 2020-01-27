@@ -9,13 +9,14 @@ import time
 import numpy as np
 
 import sql_tools.internals as tools
+from sql_tools import constants
 
-from . import constants, driver, sqliteException
+from . import driver, sqliteException
 
 
 def execute(
     command="",
-    databPath="",
+    db="",
     matrix=True,
     inlineData=False,
     splitByColumns=False,
@@ -36,7 +37,7 @@ def execute(
     ---
     The command to be executed. Can execute multiple commands for multiple databases accordingly. Provide a list containing the command for multiple databases.
 
-    databPath
+    db
     ---
     The database path. Can cooperate with command list operation accordingly. Provide a list of database path(s) to execute the commands accordingly.
 
@@ -69,9 +70,9 @@ def execute(
         constants.__startTime__ = time.time()
         tools.setStatus("Starting execution", verbose=verbose)
 
-    if not databPath:
+    if not db:
         if pathJSON:
-            databPath = []
+            db = []
             command = []
             with open(pathJSON, "r") as f:
                 try:
@@ -89,17 +90,17 @@ def execute(
             for i in keys:
                 for j in data[i]:
                     command.append(data[i][j][0])
-                databPath.append(i)
+                db.append(i)
 
         else:
-            databPath = constants.__dbSqlite__
-            if isinstance(databPath, str):
-                databPath = []
-                databPath.append(constants.__dbSqlite__)
-            elif isinstance(databPath, list) or isinstance(databPath, tuple):
-                databPath = []
-                databPath.extend(constants.__dbSqlite__)
-            if databPath == []:
+            db = constants.__dbSqlite__
+            if isinstance(db, str):
+                db = []
+                db.append(constants.__dbSqlite__)
+            elif isinstance(db, list) or isinstance(db, tuple):
+                db = []
+                db.extend(constants.__dbSqlite__)
+            if db == []:
                 if err:
                     raise sqliteException.PathError(
                         "Please provide a valid database path."
@@ -108,7 +109,7 @@ def execute(
                 tools.setStatus("Please provide a valid database path.", verbose=True)
     else:
         __temp_lst__ = []
-        __temp_lst__.append(databPath)
+        __temp_lst__.append(db)
         if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
             __temp_lst__ = __temp_lst__[0]
         elif isinstance(__temp_lst__[0], str):
@@ -123,7 +124,7 @@ def execute(
                 'Invalid path input. Path should be a "str" or "list" type object.',
                 verbose=True,
             )
-        databPath = __temp_lst__.copy()
+        db = __temp_lst__.copy()
         del __temp_lst__
 
     # &For command to list
@@ -154,7 +155,7 @@ def execute(
     # &For database to list
     try:
         __temp_lst__ = []
-        __temp_lst__.append(databPath)
+        __temp_lst__.append(db)
         if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
             __temp_lst__ = __temp_lst__[0]
         elif isinstance(__temp_lst__[0], str):
@@ -169,8 +170,8 @@ def execute(
                 'Invalid path input. Path should be a "str" or "list" type object.',
                 verbose=True,
             )
-        databPath = __temp_lst__.copy()
-        if len(databPath) > 1:
+        db = __temp_lst__.copy()
+        if len(db) > 1:
             splitExec = False
     except Exception:
         if err:
@@ -180,7 +181,7 @@ def execute(
 
     # &Unequal condition
     try:
-        if len(command) != len(databPath):
+        if len(command) != len(db):
             if err:
                 raise sqliteException.MatrixError(
                     "Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a matrix."
@@ -199,25 +200,25 @@ def execute(
     data = []
     if splitExec:
         tools.setStatus("Opted for splitExec (seperate execution)", verbose=verbose)
-        for i in range(len(databPath)):
-            conn = driver.connect(databPath[i])
+        for i in range(len(db)):
+            conn = driver.connect(db[i])
             tools.setStatus("Connected", verbose=verbose)
             c = conn.cursor()
             tools.setStatus("Creating the pointer", verbose=verbose)
 
             try:
                 tools.setStatus(
-                    f"Executing [{i}]: {command[i]} ({databPath[i]})", verbose=verbose,
+                    f"Executing [{i}]: {command[i]} ({db[i]})", verbose=verbose,
                 )
                 c.execute(command[i])
             except Exception as e:
                 if err:
                     raise sqliteException.QueryError(
-                        f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})"
+                        f"ERROR IN SQL QUERY ---> {e} (From database {db[i]})"
                     )
                     exit(1)
                 tools.setStatus(
-                    f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})",
+                    f"ERROR IN SQL QUERY ---> {e} (From database {db[i]})",
                     verbose=True,
                 )
 
@@ -225,15 +226,15 @@ def execute(
             try:
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
-                    tools.setStatus(f"Fetched data ({databPath[i]})", verbose=verbose)
+                    tools.setStatus(f"Fetched data ({db[i]})", verbose=verbose)
             except Exception as e:
                 if err:
                     raise sqliteException.UnknownError(
-                        f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
+                        f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {db[i]})"
                     )
                     exit(1)
                 tools.setStatus(
-                    f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})",
+                    f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {db[i]})",
                     verbose=True,
                 )
             if commit:
@@ -243,40 +244,40 @@ def execute(
                 conn.close()
             data.append(result)
     else:
-        conn = driver.connect(databPath[0])
+        conn = driver.connect(db[0])
         tools.setStatus("Connected", verbose=verbose)
         c = conn.cursor()
         tools.setStatus("Created pointer", verbose=verbose)
 
-        for i in range(len(databPath)):
+        for i in range(len(db)):
             try:
                 tools.setStatus(
-                    f"Executing [{i}]: {command[i]} ({databPath[i]})", verbose=verbose,
+                    f"Executing [{i}]: {command[i]} ({db[i]})", verbose=verbose,
                 )
                 c.execute(command[i])
             except Exception as e:
                 if err:
                     raise sqliteException.QueryError(
-                        f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})"
+                        f"ERROR IN SQL QUERY ---> {e} (From database {db[i]})"
                     )
                     exit(1)
                 tools.setStatus(
-                    f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})",
+                    f"ERROR IN SQL QUERY ---> {e} (From database {db[i]})",
                     verbose=True,
                 )
             result = []
             try:
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
-                tools.setStatus(f"Fetched [{i}] ({databPath[i]})", verbose=verbose)
+                tools.setStatus(f"Fetched [{i}] ({db[i]})", verbose=verbose)
             except Exception as e:
                 if err:
                     raise sqliteException.UnknownError(
-                        f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
+                        f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {db[i]})"
                     )
                     exit(1)
                 tools.setStatus(
-                    f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})",
+                    f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {db[i]})",
                     verbose=True,
                 )
             data.append(result)
@@ -330,23 +331,23 @@ def execute(
             )
             tools.setStatus("Returning results", verbose=verbose)
         if returnDict:
-            return dict(zip(databPath, np.array(data)))
+            return dict(zip(db, np.array(data)))
         else:
             return np.array(data)
     else:
         if __execMethod:
             tools.setStatus("Returning results", verbose=verbose)
         if returnDict:
-            return dict(zip(databPath, data))
+            return dict(zip(db, data))
         else:
             return data
 
 
-def commit(databPath=""):
+def commit(db=""):
     """
     Commits the changes to the database if `commit=False` is provided while executing the commands.
     """
-    if isinstance(databPath, str):
+    if isinstance(db, str):
         execute()
     else:
         raise ValueError("Please provide a valid database path. It should be string.")

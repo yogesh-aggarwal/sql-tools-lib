@@ -3,8 +3,9 @@ import pandas as pd
 from prettytable import PrettyTable
 
 import sql_tools.internals as tools
+from sql_tools import constants
 
-from . import constants, execute, mysqlException
+from . import execute, mysqlException
 from . import tools as mysqlTools
 
 

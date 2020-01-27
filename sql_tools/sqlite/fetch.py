@@ -7,25 +7,26 @@ import time
 from numpy import array
 
 import sql_tools.internals as tools
+from sql_tools import constants
 
-from . import constants, sampleData, sqliteException
+from . import sampleData, sqliteException
 from .execute import execute
 
 
-def _pdatabase(databPath):
-    if not databPath:
-        databPath = constants.__dbSqlite__
-        if isinstance(databPath, str):
-            databPath = []
-            databPath.append(constants.__dbSqlite__)
-        elif isinstance(databPath, list) or isinstance(databPath, tuple):
-            databPath = []
-            databPath.extend(constants.__dbSqlite__)
-        if databPath == []:
+def _pdatabase(db):
+    if not db:
+        db = constants.__dbSqlite__
+        if isinstance(db, str):
+            db = []
+            db.append(constants.__dbSqlite__)
+        elif isinstance(db, list) or isinstance(db, tuple):
+            db = []
+            db.extend(constants.__dbSqlite__)
+        if db == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
         __temp_lst__ = []
-        __temp_lst__.append(databPath)
+        __temp_lst__.append(db)
         if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
             __temp_lst__ = __temp_lst__[0]
         elif isinstance(__temp_lst__[0], str):
@@ -34,9 +35,9 @@ def _pdatabase(databPath):
             raise sqliteException.PathError(
                 'Invalid path input. Path should be a "str" or "list" type object.'
             )
-        databPath = __temp_lst__.copy()
+        db = __temp_lst__.copy()
         del __temp_lst__
-    return databPath
+    return db
 
 
 def _ptableName(tblName):
@@ -55,16 +56,16 @@ def _ptableName(tblName):
     return tblName
 
 
-def getNRecords(tblName, databPath="", returnDict=False):
+def getNRecords(tblName, db="", returnDict=False):
     """
     Returns the no. of records in the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
-    databPath = _pdatabase(databPath)
+    db = _pdatabase(db)
     tblName = _ptableName(tblName)
 
-    if len(tblName) != len(databPath):
+    if len(tblName) != len(db):
         raise ValueError(
             "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
         )
@@ -72,10 +73,10 @@ def getNRecords(tblName, databPath="", returnDict=False):
     result = []
     for i in range(len(tblName)):
         try:
-            tools.setStatus(f"Getting records for {databPath[i]}")
+            tools.setStatus(f"Getting records for {db[i]}")
             if "ERROR IN SQL QUERY --->" not in execute(
                 f"SELECT * FROM {tblName[i]};",
-                databPath=databPath[i],
+                db=db[i],
                 matrix=False,
                 inlineData=False,
                 __execMethod=False,
@@ -84,7 +85,7 @@ def getNRecords(tblName, databPath="", returnDict=False):
                     len(
                         execute(
                             f"SELECT * FROM {tblName[i]};",
-                            databPath=databPath[i],
+                            db=db[i],
                             matrix=False,
                             inlineData=False,
                             __execMethod=False,
@@ -95,7 +96,7 @@ def getNRecords(tblName, databPath="", returnDict=False):
                 raise ValueError(
                     execute(
                         f"SELECT * FROM {tblName[i]};",
-                        databPath=databPath[i],
+                        db=db[i],
                         matrix=False,
                         inlineData=False,
                         __execMethod=False,
@@ -117,16 +118,16 @@ def getNRecords(tblName, databPath="", returnDict=False):
     return result
 
 
-def getNColumns(tblName, databPath="", returnDict=False):
+def getNColumns(tblName, db="", returnDict=False):
     """
     Returns the no. of columns in the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
-    databPath = _pdatabase(databPath)
+    db = _pdatabase(db)
     tblName = _ptableName(tblName)
 
-    if len(tblName) != len(databPath):
+    if len(tblName) != len(db):
         raise ValueError(
             "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
         )
@@ -134,7 +135,7 @@ def getNColumns(tblName, databPath="", returnDict=False):
     result = []
     for i in range(len(tblName)):
         try:
-            queryResult = getCNames(tblName=tblName[i], databPath=databPath[i])
+            queryResult = getCNames(tblName=tblName[i], db=db[i])
         except Exception as e:
             raise e
 
@@ -156,16 +157,16 @@ def getNColumns(tblName, databPath="", returnDict=False):
     return result
 
 
-def getCNames(tblName, databPath="", returnDict=False):
+def getCNames(tblName, db="", returnDict=False):
     """
     Returns the column names of the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
-    databPath = _pdatabase(databPath)
+    db = _pdatabase(db)
     tblName = _ptableName(tblName)
 
-    if len(tblName) != len(databPath):
+    if len(tblName) != len(db):
         raise ValueError(
             "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
         )
@@ -176,7 +177,7 @@ def getCNames(tblName, databPath="", returnDict=False):
         try:
             queryResult = execute(
                 f"PRAGMA table_info({tblName[i]});",
-                databPath=databPath[i],
+                db=db[i],
                 matrix=False,
                 inlineData=False,
                 __execMethod=False,
@@ -196,7 +197,7 @@ def getCNames(tblName, databPath="", returnDict=False):
 
     if returnDict:
         tools.setStatus("Packing into dictionary")
-        result = dict(zip(databPath, result))
+        result = dict(zip(db, result))
 
     tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
@@ -206,20 +207,20 @@ def getCNames(tblName, databPath="", returnDict=False):
     return result
 
 
-def getTNames(databPath="", returnDict=False):
+def getTNames(db="", returnDict=False):
     """
     Returns the table names in the provided database.
     You can provided multiple database paths..
     """
     constants.__startTime__ = time.time()
-    databPath = _pdatabase(databPath)
+    db = _pdatabase(db)
 
     result = []
-    for i in range(len(databPath)):
-        tools.setStatus(f"Getting table names for {databPath[i]}")
+    for i in range(len(db)):
+        tools.setStatus(f"Getting table names for {db[i]}")
         queryResult = execute(
             f"SELECT name FROM sqlite_master WHERE type = 'table';",
-            databPath=databPath[i],
+            db=db[i],
             matrix=False,
             inlineData=True,
             __execMethod=False,
@@ -235,7 +236,7 @@ def getTNames(databPath="", returnDict=False):
 
     if returnDict:
         tools.setStatus("Packing into dictionary")
-        result = dict(zip(databPath, result))
+        result = dict(zip(db, result))
 
     tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
@@ -245,13 +246,13 @@ def getTNames(databPath="", returnDict=False):
     return result
 
 
-def getTCommand(tblName, databPath="", returnDict=False):
+def getTCommand(tblName, db="", returnDict=False):
     """
     Returns the command for creating the provided table in the database accordingly.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
     constants.__startTime__ = time.time()
-    databPath = _pdatabase(databPath)
+    db = _pdatabase(db)
 
     __temp_lst__ = []
     __temp_lst__.append(tblName)
@@ -266,17 +267,17 @@ def getTCommand(tblName, databPath="", returnDict=False):
     tblName = __temp_lst__.copy()
     del __temp_lst__
 
-    if len(tblName) != len(databPath):
+    if len(tblName) != len(db):
         raise ValueError(
             "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
         )
 
     final = []
-    for i in range(len(databPath)):
+    for i in range(len(db)):
         tools.setStatus(f"Retrieving records for {tblName[i]}")
         queryResult = execute(
             f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tblName[i]}';",
-            databPath=databPath[i],
+            db=db[i],
             matrix=False,
             inlineData=True,
             __execMethod=False,
@@ -284,7 +285,7 @@ def getTCommand(tblName, databPath="", returnDict=False):
         if queryResult == [[]]:
             queryResult = execute(
                 f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tblName[i].lower().strip()}';",
-                databPath=databPath[i],
+                db=db[i],
                 matrix=False,
                 inlineData=True,
                 __execMethod=False,
@@ -292,7 +293,7 @@ def getTCommand(tblName, databPath="", returnDict=False):
         if queryResult == [[]]:
             queryResult = execute(
                 f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tblName[i].upper().strip()}';",
-                databPath=databPath[i],
+                db=db[i],
                 matrix=False,
                 inlineData=True,
                 __execMethod=False,
@@ -312,7 +313,7 @@ def getTCommand(tblName, databPath="", returnDict=False):
             raise ValueError(
                 execute(
                     f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tblName[i]}';",
-                    databPath=databPath,
+                    db=db,
                     matrix=False,
                     inlineData=True,
                     __execMethod=False,
@@ -331,23 +332,23 @@ def getTCommand(tblName, databPath="", returnDict=False):
     return final
 
 
-def getDbSize(databPath="", returnDict=False):
+def getDbSize(db="", returnDict=False):
     """
     Returns the database size in bytes.
     """
     constants.__startTime__ = time.time()
-    databPath = _pdatabase(databPath)
+    db = _pdatabase(db)
 
     final = []
-    for i in range(len(databPath)):
-        tools.setStatus(f"Getting size of {databPath[i]}")
+    for i in range(len(db)):
+        tools.setStatus(f"Getting size of {db[i]}")
         final.append(
-            f"{os.stat(databPath[i]).st_size} bytes ({os.stat(databPath[i]).st_size * 10**(-6)} MB)"
+            f"{os.stat(db[i]).st_size} bytes ({os.stat(db[i]).st_size * 10**(-6)} MB)"
         )
 
     if returnDict:
         tools.setStatus("Packing into dictionary")
-        final = dict(zip(databPath, final))
+        final = dict(zip(db, final))
 
     constants.__stopTime__ = time.time()
     constants.__time__ = (
@@ -356,7 +357,7 @@ def getDbSize(databPath="", returnDict=False):
     return final
 
 
-def getSampleDb(databPath, bigData=False):
+def getSampleDb(db, bigData=False):
     """
     Creates a sample database in the provided location.\n
     WARNING:
@@ -366,7 +367,7 @@ def getSampleDb(databPath, bigData=False):
     """
     constants.__startTime__ = time.time()
     try:
-        open(databPath, "a+")
+        open(db, "a+")
     except:
         raise FileNotFoundError("The specified path doesn't exists")
 
@@ -377,9 +378,9 @@ def getSampleDb(databPath, bigData=False):
     query = query.split("\n")
     for i in range(len(query)):
         if i != len(query):
-            execute(query[i], databPath=databPath, __execMethod=False, __commit=False)
+            execute(query[i], db=db, __execMethod=False, __commit=False)
         else:
-            execute(query[i], databPath=databPath, __execMethod=False, __commit=True)
+            execute(query[i], db=db, __execMethod=False, __commit=True)
 
     constants.__stopTime__ = time.time()
     constants.__time__ = (

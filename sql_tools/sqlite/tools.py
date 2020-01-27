@@ -9,26 +9,28 @@ import time
 import numpy as np
 import pandas as pd
 
-from . import constants, fetch
+from sql_tools import constants
+
+from . import fetch
 
 
-def __tbToCsv(data, tblName, databPath="", tbl=True, database=True, index=False):
+def __tbToCsv(data, tblName, db="", tbl=True, database=True, index=False):
     constants.__startTime__ = time.time()
-    databPath = fetch._pdatabase(databPath)
+    db = fetch._pdatabase(db)
 
-    databPath = databPath[
+    db = db[
         0
     ]  # REMOVE THIS FOR MULTIPLE DATABASES AS IT WILL FETCH THE FIRST DATABASE ONLY
 
-    columns = fetch.getCNames(tblName, databPath=databPath)[0]
+    columns = fetch.getCNames(tblName, db=db)[0]
     if tbl and database:
         if index != False:
             pd.DataFrame(data, columns=columns, index=index).to_csv(
-                f"{os.path.basename(databPath)}.{tblName}.csv"
+                f"{os.path.basename(db)}.{tblName}.csv"
             )
         else:
             pd.DataFrame(data, columns=columns).to_csv(
-                f"{os.path.basename(databPath)}.{tblName}.csv", index=False
+                f"{os.path.basename(db)}.{tblName}.csv", index=False
             )
     elif tbl:
         if index != False:

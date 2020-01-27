@@ -7,8 +7,9 @@ import os
 import numpy as np
 
 import sql_tools.internals as tools
+from sql_tools import constants
 
-from . import constants, driver, mysqlException
+from . import driver, mysqlException
 from . import tools as mysqlTools
 
 # TODO: Implement the remaining parameters

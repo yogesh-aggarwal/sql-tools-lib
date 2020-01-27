@@ -1,7 +1,8 @@
 import sql_tools.internals as tools
 
-from . import constants, driver, mysqlException
+from . import driver, mysqlException
 from . import tools as mysqlTools
+from sql_tools import constants
 
 
 def connect(

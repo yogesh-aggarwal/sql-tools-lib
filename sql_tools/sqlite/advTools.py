@@ -11,7 +11,7 @@ from .fetch import getCNames, getNRecords, getTNames
 # TODO: Swap columns
 
 
-def validate(databPath="", returnDict=False, err=False, deep=True):
+def validate(db="", returnDict=False, err=False, deep=True):
     """
     Vaidates the database whether the database is properly operable or not.
     """
@@ -19,7 +19,7 @@ def validate(databPath="", returnDict=False, err=False, deep=True):
     tools.setStatus("Validating data")
     try:
         __temp_lst__ = []
-        __temp_lst__.append(databPath)
+        __temp_lst__.append(db)
         if isinstance(__temp_lst__[0], list) or isinstance(__temp_lst__[0], tuple):
             __temp_lst__ = __temp_lst__[0]
         elif isinstance(__temp_lst__[0], str):
@@ -28,19 +28,19 @@ def validate(databPath="", returnDict=False, err=False, deep=True):
             raise sqliteException.PathError(
                 'Invalid path input. Path should be a "str" or "list" type object.'
             )
-        databPath = __temp_lst__.copy()
+        db = __temp_lst__.copy()
     except Exception:
         raise sqliteException.PathError("Error while parsing your path.")
 
     final = []
-    for database in databPath:
+    for database in db:
         try:
-            tables = getTNames(databPath=database)[0]
+            tables = getTNames(db=database)[0]
             if deep:
                 for i in tables:
                     execute(command=f"SELECT * FROM {i}")
-                    getCNames(i, databPath=database)
-                    getNRecords(i, databPath=database)
+                    getCNames(i, db=database)
+                    getNRecords(i, db=database)
             else:
                 execute(command=f"SELECT * FROM {tables[0]}")
 
@@ -54,7 +54,7 @@ def validate(databPath="", returnDict=False, err=False, deep=True):
                 final.append(False)
 
     if returnDict:
-        final = dict(zip(databPath, final))
+        final = dict(zip(db, final))
 
     tools.setStatus("Returning data")
     return final
@@ -68,7 +68,7 @@ class GenerateChecksum:
     Under development stage, do not use it.
     """
 
-    def __init__(self, databPath="", *args):
+    def __init__(self, db="", *args):
         super().__init__()
 
     def generateSalt(self):
