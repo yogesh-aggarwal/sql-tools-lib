@@ -3,6 +3,7 @@ Connect extension for SQL-Tools library.
 """
 
 from sql_tools import constants
+from sql_tools import internals as tools
 
 from . import sqliteException
 from .advTools import validate
@@ -15,7 +16,7 @@ def connect(db, validateDb=True, err=True):
     try:
         if isinstance(db, str):
             constants.__dbSqlite__.append(db)
-        elif isinstance(db, list) or isinstance(db, tuple):
+        elif tools.checkInstance(db, list, tuple):
             constants.__dbSqlite__.extend(db)
         if db == []:
             raise sqliteException.PathError("Please provide a valid database path.")
@@ -36,12 +37,14 @@ def disconnect(db="", err=True):
         try:
             if isinstance(db, str):
                 constants.__dbSqlite__.remove(db)
-            elif isinstance(db, list) or isinstance(db, tuple):
+            elif tools.checkInstance(db, list, tuple):
                 constants.__dbSqlite__ = [
                     datab for datab in constants.__dbSqlite__ if datab not in db
                 ]
             if db == []:
-                raise sqliteException.PathError("Please provide a valid database(s) path.")
+                raise sqliteException.PathError(
+                    "Please provide a valid database(s) path."
+                )
         except ValueError as e:
             raise sqliteException.DatabaseError(f"Error in database(s) provided. {e}")
     else:
@@ -52,7 +55,7 @@ def isConnected(db):
     """
     Checks whether the database(s) is connected or not.
     """
-    if isinstance(db, list) or isinstance(db, tuple) or db == "":
+    if tools.checkInstance(db, list, tuple) or db == "":
         final = []
         for path in constants.__dbSqlite__:
             if path == db:

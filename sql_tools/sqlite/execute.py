@@ -97,7 +97,7 @@ def execute(
             if isinstance(db, str):
                 db = []
                 db.append(constants.__dbSqlite__)
-            elif isinstance(db, list) or isinstance(db, tuple):
+            elif tools.checkInstance(db, list, tuple):
                 db = []
                 db.extend(constants.__dbSqlite__)
             if db == []:

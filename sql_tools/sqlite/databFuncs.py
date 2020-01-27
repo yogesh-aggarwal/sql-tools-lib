@@ -24,7 +24,7 @@ def createDb(db="", err=True):
         if isinstance(db, str):
             db = []
             db.append(constants.__dbSqlite__)
-        elif isinstance(db, list) or isinstance(db, tuple):
+        elif tools.checkInstance(db, list, tuple):
             db = []
             db.extend(constants.__dbSqlite__)
         if db == []:
@@ -35,7 +35,7 @@ def createDb(db="", err=True):
             __temp.append(db)
             db = __temp.copy()
             del __temp
-        elif isinstance(db, list) or isinstance(db, tuple):
+        elif tools.checkInstance(db, list, tuple):
             __temp = []
             __temp.extend(db)
             db = __temp.copy()
@@ -205,13 +205,13 @@ def delDb(db="", err=True):
         if isinstance(db, str):
             db = []
             db.append(constants.__dbSqlite__)
-        elif isinstance(db, list) or isinstance(db, tuple):
+        elif tools.checkInstance(db, list, tuple):
             db = []
             db.extend(constants.__dbSqlite__)
         if db == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
-        if isinstance(db, list) or isinstance(db, tuple):
+        if tools.checkInstance(db, list, tuple):
             pass
         elif isinstance(db, str):
             __temp = []
@@ -245,7 +245,7 @@ def isIdentical(compareWith, db="", err=True):
         if isinstance(db, str):
             db = []
             db.append(constants.__dbSqlite__)
-        elif isinstance(db, list) or isinstance(db, tuple):
+        elif tools.checkInstance(db, list, tuple):
             db = []
             db.extend(constants.__dbSqlite__)
         if db == []:
@@ -258,7 +258,7 @@ def isIdentical(compareWith, db="", err=True):
             __temp.append(db)
             db = __temp.copy()
             del __temp
-        elif isinstance(db, list) or isinstance(db, tuple):
+        elif tools.checkInstance(db, list, tuple):
             __temp = []
             __temp.extend(db)
             db = __temp.copy()
@@ -320,7 +320,7 @@ def clearDb(db="", err=True):
         if isinstance(db, str):
             db = []
             db.append(constants.__dbSqlite__)
-        elif isinstance(db, list) or isinstance(db, tuple):
+        elif tools.checkInstance(db, list, tuple):
             db = []
             db.extend(constants.__dbSqlite__)
         if db == []:
@@ -331,7 +331,7 @@ def clearDb(db="", err=True):
             __temp.append(db)
             db = __temp.copy()
             del __temp
-        elif isinstance(db, list) or isinstance(db, tuple):
+        elif tools.checkInstance(db, list, tuple):
             __temp = []
             __temp.extend(db)
             db = __temp.copy()
@@ -379,7 +379,7 @@ class Database:
             'Invalid path input. Path should be a "str" or "list" type object.'
         ) if len(db) == 0 else True
 
-        if isinstance(db, list) or isinstance(db, tuple):
+        if tools.checkInstance(db, list, tuple):
             constants.__dbSqlite__.extend(db)
         elif isinstance(db, str):
             constants.__dbSqlite__.append(db)
@@ -392,7 +392,7 @@ class Database:
         """
         Removes the database from connect scope (disconnects the database).
         """
-        if isinstance(db, list) or isinstance(db, tuple):
+        if tools.checkInstance(db, list, tuple):
             constants.__dbSqlite__ = [
                 path for path in constants.__dbSqlite__ if path not in db
             ]
