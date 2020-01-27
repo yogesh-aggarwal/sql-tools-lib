@@ -16,23 +16,25 @@ def connect(
 ):
     charset = constants.__charset__ if not charset else charset
     tools.setStatus("Checking credentials", verbose=verbose, err=err)
-    try:
-        driver.connect(
-            host=host,
-            user=user,
-            password=pword,
-            db=db if db else "mysql",
-            charset=charset,
-        ).close()
-    except Exception:
-        raise exception.ConnectionError(
-            "Cannot connect to MySQL server, it may be server or credential problem"
+    for db in tools.parseDbs(db):
+        try:
+            driver.connect(
+                host=host,
+                user=user,
+                password=pword,
+                db=db if db else "mysql",
+                charset=charset,
+            ).close()
+        except Exception:
+            if err:
+                raise exception.ConnectionError(
+                    "Cannot connect to MySQL server, it may be server or credential problem"
+                )
+        tools.setStatus(
+            f"Credentials are correct, connecting to database: {db}",
+            verbose=verbose,
+            err=err,
         )
-    tools.setStatus(
-        "Credentials are correct, connecting to database",
-        verbose=verbose,
-        err=err,
-    )
     constants.__credentials__ = (host, user, pword)
     constants.__charset__ = charset
 
