@@ -79,6 +79,13 @@ class SupportError(Exception):
     def __init__(self, message="This method is not supported at the moment."):
         super(SupportError).__init__()
 
+class ConnectionError(Exception):
+    """
+    Support exception for SQL-Tools.
+    """
+    def __init__(self, message="This method is not supported at the moment."):
+        super(SupportError).__init__()
+
 class UnknownError(Exception):
     """
     Unknown exception for SQL-Tools.

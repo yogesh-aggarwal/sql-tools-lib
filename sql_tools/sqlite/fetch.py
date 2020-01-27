@@ -169,7 +169,7 @@ def getCNames(tableName, databPath="", returnDict=False):
 
     result = []
     for i in range(len(tableName)):
-        __tools.setStatus(f"Getting results for {tableName[i]}")
+        __tools.setStatus(f"Retrieving records for {tableName[i]}")
         try:
             queryResult = execute(
                 f"PRAGMA table_info({tableName[i]});",
@@ -270,7 +270,7 @@ def getTCommand(tableName, databPath="", returnDict=False):
 
     final = []
     for i in range(len(databPath)):
-        __tools.setStatus(f"Getting results for {tableName[i]}")
+        __tools.setStatus(f"Retrieving records for {tableName[i]}")
         queryResult = execute(
             f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tableName[i]}';",
             databPath=databPath[i],

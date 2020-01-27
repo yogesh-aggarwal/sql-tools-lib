@@ -14,9 +14,9 @@ import numpy as np
 from . import constants, sqliteException
 
 
-def setStatus(arg, logConsole=False, raiseError=True):
+def setStatus(arg, verbose=False, raiseError=True):
     try:
-        if logConsole:
+        if verbose:
             logging.basicConfig(format="[%(process)d] SQL-Tools: %(message)s")
             logging.warning(arg)  # Change the logging style
             constants.__pid__ = os.getpid()
@@ -31,7 +31,7 @@ def setStatus(arg, logConsole=False, raiseError=True):
             return False
 
 
-def __tableToCSV(data, tableName, databPath="", table=True, database=True, index=False):
+def __tbToCsv(data, tableName, databPath="", tbl=True, database=True, index=False):
     constants.__startTime__ = time.time()
     databPath = fetch._pdatabase(databPath)
 
@@ -78,10 +78,7 @@ def dataType(data):
             or dtype == "<U21"
         ):
             return "str"
-        elif (
-            dtype == "int64"
-            or dtype == "<U2"
-        ):
+        elif dtype == "int64" or dtype == "<U2":
             return "int"
         else:
             return "None"

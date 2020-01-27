@@ -31,15 +31,15 @@ def _ppath(databPath):
     return databPath
 
 
-def tableToCSV(tableName, databPath="", returnDict=False, index=False):
+def tbToCsv(tb, databPath="", returnDict=False, index=False):
     """
     Converts table records to a CSV file.
     """
     constants.__startTime__ = time.time()
     databPath = _pdatabase(databPath)
-    tableName = _ptableName(tableName)
+    tb = _ptableName(tb)
 
-    if len(tableName) != len(databPath):
+    if len(tb) != len(databPath):
         raise ValueError(
             "Cannot apply command to the provided data set. Please provide equal table names and paths. Should form a matrix."
         )
@@ -49,9 +49,9 @@ def tableToCSV(tableName, databPath="", returnDict=False, index=False):
         __tools.setStatus(f"Converting database to dataframe ({databPath[i]})")
         try:
             final.append(
-                __tools.__tableToCSV(
-                    data=execute(f"SELECT * FROM {tableName[i]}")[0],
-                    tableName=tableName[i],
+                __tools.__tbToCsv(
+                    data=execute(f"SELECT * FROM {tb[i]}")[0],
+                    tb=tb[i],
                     databPath=databPath[i],
                     index=index,
                 )
@@ -61,7 +61,7 @@ def tableToCSV(tableName, databPath="", returnDict=False, index=False):
 
     if returnDict:
         __tools.setStatus("Convering to dictionary")
-        final = dict(zip(tableName, final))
+        final = dict(zip(tb, final))
 
     __tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
@@ -71,20 +71,20 @@ def tableToCSV(tableName, databPath="", returnDict=False, index=False):
     return final
 
 
-def csvToTable(csv, tableName, databPath="", returnDict=False):
+def csvToTbl(csv, tb, databPath="", returnDict=False):
     databPath = _pdatabase(databPath)
-    tableName = _ptableName(tableName)
+    tb = _ptableName(tb)
     csv = _ppath(csv)
 
     for i in range(len(databPath)):
         try:
-            getTNames(databPath, returnDict=True)[databPath[i]].index(tableName[i])
+            getTNames(databPath, returnDict=True)[databPath[i]].index(tb[i])
         except:
             raise sqliteException.TableError(
-                f"Table ({tableName[i]}) doesn't exists. Create it first to import the data"
+                f"Table ({tb[i]}) doesn't exists. Create it first to import the data"
             )
 
-    if len(databPath) != len(tableName) or len(tableName) != len(csv):
+    if len(databPath) != len(tb) or len(tb) != len(csv):
         raise sqliteException.PathError(
             "Please provide equal no. of csv path, table names, and database paths"
         )
@@ -117,8 +117,8 @@ def csvToTable(csv, tableName, databPath="", returnDict=False):
 
             sqlData.append(f'({", ".join(value)})')
 
-        query = f'INSERT INTO {tableName[i]} VALUES {", ".join(sqlData)}'
-        if query == f"INSERT INTO {tableName[i]} VALUES ":
+        query = f'INSERT INTO {tb[i]} VALUES {", ".join(sqlData)}'
+        if query == f"INSERT INTO {tb[i]} VALUES ":
             raise sqliteException.UnknownError(f"Error in csv file ({csv[i]})")
 
         execute(query, databPath=databPath[i])
@@ -141,11 +141,11 @@ def dbToCSV(databPath="", returnDict=False):
     for i in range(len(databPath)):
         __tools.setStatus(f"Creating CSV of {databPath[i]}")
         final.append(
-            __tools.__tableToCSV(
+            __tools.__tbToCsv(
                 data=execute("SELECT * FROM sqlite_master")[0],
-                tableName="",
+                tb="",
                 databPath=databPath[i],
-                table=False,
+                tbl=False,
             )
         )
 

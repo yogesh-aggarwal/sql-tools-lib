@@ -22,7 +22,7 @@ def execute(
     asyncExec=False,
     splitExec=False,
     returnDict=False,
-    logConsole=False,
+    verbose=False,
     raiseError=True,
     commit=True,
     __execMethod=True,
@@ -55,7 +55,7 @@ def execute(
     ---
     Whether to fetch the commands from a `json` file.
 
-    logConsole
+    verbose
     ---
     Whether to log the steps to the console or not.
 
@@ -66,7 +66,7 @@ def execute(
     constants.__pid__ = os.getpid()
     if __execMethod:
         constants.__startTime__ = time.time()
-        __tools.setStatus("Starting execution", logConsole=logConsole)
+        __tools.setStatus("Starting execution", verbose=verbose)
 
     if not databPath:
         if pathJSON:
@@ -82,7 +82,7 @@ def execute(
                         )
                         exit(1)
                     __tools.setStatus(
-                        "JSON file error. Could be the syntax problem.", logConsole=True
+                        "JSON file error. Could be the syntax problem.", verbose=True
                     )
             keys = data.keys()
             for i in keys:
@@ -105,7 +105,7 @@ def execute(
                     )
                     exit(1)
                 __tools.setStatus(
-                    "Please provide a valid database path.", logConsole=True
+                    "Please provide a valid database path.", verbose=True
                 )
     else:
         __temp_lst__ = []
@@ -122,7 +122,7 @@ def execute(
                 exit(1)
             __tools.setStatus(
                 'Invalid path input. Path should be a "str" or "list" type object.',
-                logConsole=True,
+                verbose=True,
             )
         databPath = __temp_lst__.copy()
         del __temp_lst__
@@ -143,14 +143,14 @@ def execute(
                 exit(1)
             __tools.setStatus(
                 'Invalid command input. Command should be a "str" or "list" type object.',
-                logConsole=True,
+                verbose=True,
             )
         command = __temp_lst__.copy()
     except Exception:
         if raiseError:
             raise sqliteException.CommandError("Error while parsing your command.")
             exit(1)
-        __tools.setStatus("Error while parsing your command.", logConsole=True)
+        __tools.setStatus("Error while parsing your command.", verbose=True)
 
     # &For database to list
     try:
@@ -168,7 +168,7 @@ def execute(
                 exit(1)
             __tools.setStatus(
                 'Invalid path input. Path should be a "str" or "list" type object.',
-                logConsole=True,
+                verbose=True,
             )
         databPath = __temp_lst__.copy()
         if len(databPath) > 1:
@@ -177,7 +177,7 @@ def execute(
         if raiseError:
             raise sqliteException.PathError("Error while parsing your path.")
             exit(1)
-        __tools.setStatus("Error while parsing your path.", logConsole=True)
+        __tools.setStatus("Error while parsing your path.", verbose=True)
 
     # &Unequal condition
     try:
@@ -189,7 +189,7 @@ def execute(
                 exit(1)
             __tools.setStatus(
                 "Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a matrix.",
-                logConsole=True,
+                verbose=True,
             )
 
     except TypeError:
@@ -200,18 +200,18 @@ def execute(
     data = []
     if splitExec:
         __tools.setStatus(
-            "Opted for splitExec (seperate execution)", logConsole=logConsole
+            "Opted for splitExec (seperate execution)", verbose=verbose
         )
         for i in range(len(databPath)):
             conn = driver.connect(databPath[i])
-            __tools.setStatus("Connected", logConsole=logConsole)
+            __tools.setStatus("Connected", verbose=verbose)
             c = conn.cursor()
-            __tools.setStatus("Creating the pointer", logConsole=logConsole)
+            __tools.setStatus("Creating the pointer", verbose=verbose)
 
             try:
                 __tools.setStatus(
                     f"Executing [{i}]: {command[i]} ({databPath[i]})",
-                    logConsole=logConsole,
+                    verbose=verbose,
                 )
                 c.execute(command[i])
             except Exception as e:
@@ -222,7 +222,7 @@ def execute(
                     exit(1)
                 __tools.setStatus(
                     f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})",
-                    logConsole=True,
+                    verbose=True,
                 )
 
             result = []
@@ -230,7 +230,7 @@ def execute(
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
                     __tools.setStatus(
-                        f"Fetched data ({databPath[i]})", logConsole=logConsole
+                        f"Fetched data ({databPath[i]})", verbose=verbose
                     )
             except Exception as e:
                 if raiseError:
@@ -240,25 +240,25 @@ def execute(
                     exit(1)
                 __tools.setStatus(
                     f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})",
-                    logConsole=True,
+                    verbose=True,
                 )
             if commit:
                 conn.commit()
-                __tools.setStatus("Changes commited", logConsole=logConsole)
+                __tools.setStatus("Changes commited", verbose=verbose)
                 c.close()
                 conn.close()
             data.append(result)
     else:
         conn = driver.connect(databPath[0])
-        __tools.setStatus("Connected", logConsole=logConsole)
+        __tools.setStatus("Connected", verbose=verbose)
         c = conn.cursor()
-        __tools.setStatus("Created pointer", logConsole=logConsole)
+        __tools.setStatus("Created pointer", verbose=verbose)
 
         for i in range(len(databPath)):
             try:
                 __tools.setStatus(
                     f"Executing [{i}]: {command[i]} ({databPath[i]})",
-                    logConsole=logConsole,
+                    verbose=verbose,
                 )
                 c.execute(command[i])
             except Exception as e:
@@ -269,14 +269,14 @@ def execute(
                     exit(1)
                 __tools.setStatus(
                     f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})",
-                    logConsole=True,
+                    verbose=True,
                 )
             result = []
             try:
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
                 __tools.setStatus(
-                    f"Fetched [{i}] ({databPath[i]})", logConsole=logConsole
+                    f"Fetched [{i}] ({databPath[i]})", verbose=verbose
                 )
             except Exception as e:
                 if raiseError:
@@ -286,22 +286,22 @@ def execute(
                     exit(1)
                 __tools.setStatus(
                     f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})",
-                    logConsole=True,
+                    verbose=True,
                 )
             data.append(result)
         if commit:
             conn.commit()
-            __tools.setStatus("Changes commited", logConsole=logConsole)
+            __tools.setStatus("Changes commited", verbose=verbose)
             c.close()
             conn.close()
-            __tools.setStatus("Connection closed", logConsole=logConsole)
+            __tools.setStatus("Connection closed", verbose=verbose)
 
-    __tools.setStatus("Preparing results", logConsole=logConsole)
+    __tools.setStatus("Preparing results", verbose=verbose)
 
     # &Conditions
     if __execMethod:
         constants.__stopTime__ = time.time()
-        __tools.setStatus("Calculating time", logConsole=logConsole)
+        __tools.setStatus("Calculating time", verbose=verbose)
         constants.__time__ = (
             f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
         )
@@ -311,7 +311,7 @@ def execute(
     __temp = []
     if inlineData:
         if __execMethod:
-            __tools.setStatus("Inlining data", logConsole=logConsole)
+            __tools.setStatus("Inlining data", verbose=verbose)
         for values in data:
             for value in values:
                 __temp.append(value)
@@ -322,7 +322,7 @@ def execute(
     __temp = []
     if splitByColumns:
         if __execMethod:
-            __tools.setStatus("Spliting by columns", logConsole=logConsole)
+            __tools.setStatus("Spliting by columns", verbose=verbose)
         __temp = []
         for database in data:
             __temp.append(list(zip(*database)))
@@ -335,16 +335,16 @@ def execute(
         if __execMethod:
             __tools.setStatus(
                 f"Converting to matrix [{__temp__.shape[0]}x{__temp__.shape[1]}]",
-                logConsole=logConsole,
+                verbose=verbose,
             )
-            __tools.setStatus("Returning results", logConsole=logConsole)
+            __tools.setStatus("Returning results", verbose=verbose)
         if returnDict:
             return dict(zip(databPath, np.array(data)))
         else:
             return np.array(data)
     else:
         if __execMethod:
-            __tools.setStatus("Returning results", logConsole=logConsole)
+            __tools.setStatus("Returning results", verbose=verbose)
         if returnDict:
             return dict(zip(databPath, data))
         else:

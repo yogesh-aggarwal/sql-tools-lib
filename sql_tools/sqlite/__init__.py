@@ -5,7 +5,7 @@ from .connect import *
 from .databFuncs import *
 from .execute import *
 from .fetch import *
-from .io import tableToCSV
+from .io import tbToCsv
 
 __version__ = f"SQL-Tools: SQLite version: {driver.sqlite_version}"
 __help__ = 'Visit the documentation for more help or type "help(sql_tools)"'

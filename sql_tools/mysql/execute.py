@@ -23,7 +23,7 @@ class execute:
         # asyncExec=False,
         # splitExec=False,
         returnDict=False,
-        logConsole=False,
+        verbose=False,
         raiseError=True,
         simplify=False,
         # commit=True,
@@ -36,7 +36,7 @@ class execute:
         # self.__splitByColumns = splitByColumns
         # self.__asyncExec = asyncExec
         self.__returnDict = returnDict
-        self.__logConsole = logConsole  # For being verbose
+        self.__verbose = verbose  # For being verbose
         self.__raiseError = raiseError  # Raise error or not if something goes wrong
         self.__simplify = simplify  # Commit the changes
         # self.__commit = commit
@@ -65,7 +65,7 @@ class execute:
     def execute(self):
         self.__simplify = constants.simplify if not self.__simplify else self.__simplify
         constants.__pid__ = os.getpid()
-        tools.timer("start", self.__execMethod, self.__logConsole)
+        tools.timer("start", self.__execMethod, self.__verbose)
 
         # &For database to list
         self.db = self.__parseDatabase()
@@ -91,6 +91,7 @@ class execute:
                 host=host, user=user, password=password, db=self.db[i], charset=charset
             )
             data = []
+            tools.setStatus(f"Executing command database: {self.db[i]}", verbose=self.__verbose)
             for comm in self.__command[i]:
                 try:
                     with connection.cursor() as cursor:
@@ -106,8 +107,8 @@ class execute:
             connection.commit()
             connection.close()
 
-        tools.setStatus("Preparing results", logConsole=self.__logConsole)
-        tools.timer("stop", self.__execMethod, self.__logConsole)
+        tools.setStatus("Preparing results", verbose=self.__verbose)
+        tools.timer("stop", self.__execMethod, self.__verbose)
 
         final = np.array(final)  # For performace
         if self.__simplify:
@@ -123,7 +124,7 @@ class execute:
     def __parseCommands(self, command="", db=""):
         command = command if command else self.__command
         if self.__execMethod:
-            tools.setStatus("Parsing commands", self.__raiseError, self.__logConsole)
+            tools.setStatus("Parsing commands", self.__raiseError, self.__verbose)
         try:
             db = tools.parseDbs(db) if db else tools.parseDbs(self.db)
             if len(db) == 1:
@@ -152,7 +153,7 @@ class execute:
 
     def __parseDatabase(self, db=""):
         db = db if db else self.db
-        tools.setStatus("Parsing database(s)", self.__raiseError, self.__logConsole)
+        tools.setStatus("Parsing database(s)", self.__raiseError, self.__verbose)
         try:
             if tools.checkInstance(db, str):
                 db = [db]
@@ -166,5 +167,5 @@ class execute:
             if self.__raiseError:
                 raise mysqlException.DatabaseError()
             else:
-                tools.setStatus("Error while parsing databases", logConsole=True)
+                tools.setStatus("Error while parsing databases", verbose=True)
         return db
