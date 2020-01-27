@@ -1,5 +1,5 @@
 from .connect import *
-from .execute import execute
+from .execute import *
 from .dbTools import *
 from .tableTools import *
 

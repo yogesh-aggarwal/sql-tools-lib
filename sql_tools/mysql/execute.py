@@ -10,7 +10,6 @@ import sql_tools.internals as tools
 from sql_tools import constants
 
 from . import driver, mysqlException
-from . import tools as mysqlTools
 
 # TODO: Implement the remaining parameters
 
@@ -133,7 +132,7 @@ class execute:
         if self.__execMethod:
             tools.setStatus("Parsing commands", self.__raiseError, self.__verbose)
         try:
-            db = mysqlTools.parseDbs(db) if db else mysqlTools.parseDbs(self.db)
+            db = tools.parseDbs(db) if db else tools.parseDbs(self.db)
             if len(db) == 1:
                 if tools.checkInstance(command, str):
                     command = [[command]]

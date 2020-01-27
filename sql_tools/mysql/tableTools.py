@@ -6,11 +6,10 @@ import sql_tools.internals as tools
 from sql_tools import constants
 
 from . import execute, mysqlException
-from . import tools as mysqlTools
 
 
 def getTbls(db="", err=True, verbose=False):
-    db = mysqlTools.parseDbs(db)
+    db = tools.parseDbs(db)
     return [
         [x[0] for x in execute(["SHOW TABLES"], db=datab, err=err, verbose=verbose).list[0][0]] for datab in db
     ]
@@ -20,7 +19,7 @@ def csvToTbl(
     db, table, csv, primaryKey="", foreignKey="", err=True, verbose=False
 ):
     tools.setStatus("Parsing parameters", verbose=verbose, err=err)
-    dbs = mysqlTools.parseDbs(db)
+    dbs = tools.parseDbs(db)
     tables = tools.parseTables(table, db)
     csvs = tools.parseTables(csv, db)
 
@@ -112,7 +111,7 @@ def csvToTbl(
 
 def execFile(file, db="", out=True, err=True, verbose=False):
     tools.setStatus("Pasing objects", verbose=verbose, err=err)
-    datab = mysqlTools.parseDbs(db)
+    datab = tools.parseDbs(db)
     files = tools.parseTables(file, datab)
 
     for i, db in enumerate(datab):
@@ -138,7 +137,7 @@ def execFile(file, db="", out=True, err=True, verbose=False):
 
 
 def getCNames(tbl, db="", err=True, verbose=False):
-    dbs = mysqlTools.parseDbs(db)
+    dbs = tools.parseDbs(db)
     return [
         [
             execute([f"SHOW columns FROM {y}"], db=dbs[x], verbose=verbose).get.T[0].T[0][0].tolist()
@@ -150,8 +149,8 @@ def getCNames(tbl, db="", err=True, verbose=False):
 
 def showTbl(tbl, db="", sep=("%", 30), err=True, verbose=False):
     tools.setStatus("Parsing parameters", verbose=verbose, err=err)
-    dbs = mysqlTools.parseDbs(db)
-    sep = mysqlTools.parseDbs(sep)
+    dbs = tools.parseDbs(db)
+    sep = tools.parseDbs(sep)
     tbls = tools.parseTables(tbl, dbs)
     for i, db in enumerate(dbs):
         tools.setStatus(f"For database: {db}", verbose=verbose, err=err)

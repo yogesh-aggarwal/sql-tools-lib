@@ -52,7 +52,7 @@ def tbToCsv(tb, db="", returnDict=False, index=False):
         tools.setStatus(f"Converting database to dataframe ({db[i]})")
         try:
             final.append(
-                tools.sqliteTools.__tbToCsv(
+                tools.__tbToCsv(
                     data=execute(f"SELECT * FROM {tb[i]}")[0],
                     tb=tb[i],
                     db=db[i],
@@ -144,7 +144,7 @@ def dbToCSV(db="", returnDict=False):
     for i in range(len(db)):
         tools.setStatus(f"Creating CSV of {db[i]}")
         final.append(
-            tools.sqliteTools.__tbToCsv(
+            tools.__tbToCsv(
                 data=execute("SELECT * FROM sqlite_master")[0],
                 tb="",
                 db=db[i],

@@ -1,8 +1,7 @@
 import sql_tools.internals as tools
+from sql_tools import constants
 
 from . import driver, mysqlException
-from . import tools as mysqlTools
-from sql_tools import constants
 
 
 def connect(
@@ -56,6 +55,6 @@ def connect(
 
 
 def disconnect(db=[], err=True, verbose=False):
-    db = mysqlTools.parseDbs(db)
+    db = tools.parseDbs(db)
     tools.setStatus("Disconnecting database", verbose=verbose, err=err)
     constants.__dbMysql__ = [x for x in constants.__dbMysql__ if x not in db]

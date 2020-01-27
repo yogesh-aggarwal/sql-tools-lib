@@ -28,21 +28,24 @@ def connect(db, validateDb=True, err=True):
             return False
 
 
-def disconnect(db, err=True):
+def disconnect(db="", err=True):
     """
     Disconnects the provided database from the `data scope` of sqlite.
     """
-    try:
-        if isinstance(db, str):
-            constants.__dbSqlite__.remove(db)
-        elif isinstance(db, list) or isinstance(db, tuple):
-            constants.__dbSqlite__ = [
-                datab for datab in constants.__dbSqlite__ if datab not in db
-            ]
-        if db == []:
-            raise sqliteException.PathError("Please provide a valid database(s) path.")
-    except ValueError as e:
-        raise sqliteException.DatabaseError(f"Error in database(s) provided. {e}")
+    if db:
+        try:
+            if isinstance(db, str):
+                constants.__dbSqlite__.remove(db)
+            elif isinstance(db, list) or isinstance(db, tuple):
+                constants.__dbSqlite__ = [
+                    datab for datab in constants.__dbSqlite__ if datab not in db
+                ]
+            if db == []:
+                raise sqliteException.PathError("Please provide a valid database(s) path.")
+        except ValueError as e:
+            raise sqliteException.DatabaseError(f"Error in database(s) provided. {e}")
+    else:
+        constants.__dbSqlite__ = []
 
 
 def isConnected(db):

@@ -3,7 +3,6 @@ import warnings
 import sql_tools.internals as tools
 
 from . import execute
-from . import tools as mysqlTools
 
 #  TODO: Move database
 #  TODO: Copy database
@@ -14,7 +13,7 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 def clearDb(db="", err=True):
     try:
-        db = mysqlTools.parseDbs(db)
+        db = tools.parseDbs(db)
         delDb(db)
         createDb(db)
     except Exception as e:
@@ -23,7 +22,7 @@ def clearDb(db="", err=True):
 
 
 def createDb(db, err=True, verbose=False):
-    db = mysqlTools.parseDbs(db)
+    db = tools.parseDbs(db)
     for x in db:
         try:
             tools.setStatus(f"Creating: {x}", verbose=verbose, err=err)
@@ -39,7 +38,7 @@ def createDb(db, err=True, verbose=False):
 
 
 def delDb(db="", err=True, verbose=False):
-    db = mysqlTools.parseDbs(db)
+    db = tools.parseDbs(db)
     for x in db:
         try:
             tools.setStatus(f"Deleting: {x}", verbose=verbose, err=err)
@@ -65,7 +64,7 @@ def getDbs(err=True, verbose=False):
 
 
 def isIdentical(db="", err=True, verbose=False):
-    db = mysqlTools.parseDbs(db)
+    db = tools.parseDbs(db)
     tables = [execute(["SHOW TABLES"], x).list for x in db]
     try:
         tables = list(filter(lambda x: x != tables[0], tables))
