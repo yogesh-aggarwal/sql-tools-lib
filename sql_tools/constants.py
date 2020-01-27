@@ -6,7 +6,7 @@ You can read the full documentation on https://yogesh-aggarwal.gitbook.io/sql-to
 Thanks for using the package.
 """
 
-__version__ = "SQL-Tools version: 2.0.0"
+__version__ = "SQL-Tools version: 3.0.0"
 
 # &Global Sharing
 __time__ = None
