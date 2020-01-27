@@ -5,7 +5,7 @@ Database operation extension for SQL-Tools library.
 import os
 import shutil
 
-from . import __tools, constants, sqliteException
+from . import tools, constants, sqliteException
 from . import advTools
 from .execute import execute
 
@@ -44,10 +44,10 @@ def createDb(databPath="", raiseError=True):
     final = []
     for i in range(len(databPath)):
         try:
-            __tools.setStatus("Creating database")
+            tools.setStatus("Creating database")
             execute("", databPath=databPath[i], __execMethod=False)
-            __tools.setStatus("Fetching byte results")
-            __tools.setStatus("Database created.")
+            tools.setStatus("Fetching byte results")
+            tools.setStatus("Database created.")
             # LOG ---> Created database at {datab[0]} because of two path in the main instance.
             final.append(True)
         except Exception as e:

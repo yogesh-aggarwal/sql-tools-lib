@@ -4,7 +4,7 @@ Contains methods related to connection(s) between database and file.
 
 import time
 
-from . import __tools, constants, sqliteException
+from . import tools, constants, sqliteException
 from pandas import read_csv
 from numpy import array
 
@@ -46,10 +46,10 @@ def tbToCsv(tb, databPath="", returnDict=False, index=False):
 
     final = []
     for i in range(len(databPath)):
-        __tools.setStatus(f"Converting database to dataframe ({databPath[i]})")
+        tools.setStatus(f"Converting database to dataframe ({databPath[i]})")
         try:
             final.append(
-                __tools.__tbToCsv(
+                tools.__tbToCsv(
                     data=execute(f"SELECT * FROM {tb[i]}")[0],
                     tb=tb[i],
                     databPath=databPath[i],
@@ -60,10 +60,10 @@ def tbToCsv(tb, databPath="", returnDict=False, index=False):
             raise e
 
     if returnDict:
-        __tools.setStatus("Convering to dictionary")
+        tools.setStatus("Convering to dictionary")
         final = dict(zip(tb, final))
 
-    __tools.setStatus("Returning results")
+    tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
     constants.__time__ = (
         f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
@@ -110,7 +110,7 @@ def csvToTbl(csv, tb, databPath="", returnDict=False):
         for j in cData:
             value = []
             for record in j:
-                if __tools.dataType(record) == "str":
+                if tools.dataType(record) == "str":
                     value.append(f"'{record}'")
                 else:
                     value.append(record)
@@ -139,9 +139,9 @@ def dbToCSV(databPath="", returnDict=False):
 
     final = []
     for i in range(len(databPath)):
-        __tools.setStatus(f"Creating CSV of {databPath[i]}")
+        tools.setStatus(f"Creating CSV of {databPath[i]}")
         final.append(
-            __tools.__tbToCsv(
+            tools.__tbToCsv(
                 data=execute("SELECT * FROM sqlite_master")[0],
                 tb="",
                 databPath=databPath[i],
@@ -150,10 +150,10 @@ def dbToCSV(databPath="", returnDict=False):
         )
 
     if returnDict:
-        __tools.setStatus("Packing into dictionary")
+        tools.setStatus("Packing into dictionary")
         final = dict(zip(databPath, final))
 
-    __tools.setStatus("Returning results")
+    tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
     constants.__time__ = (
         f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"

@@ -4,7 +4,7 @@ File containing methods to fetch data.
 import os
 import time
 
-from . import __tools, constants, sqliteException, sampleData
+from . import tools, constants, sqliteException, sampleData
 from .execute import execute
 from numpy import array
 
@@ -69,7 +69,7 @@ def getNRecords(tblName, databPath="", returnDict=False):
     result = []
     for i in range(len(tblName)):
         try:
-            __tools.setStatus(f"Getting records for {databPath[i]}")
+            tools.setStatus(f"Getting records for {databPath[i]}")
             if "ERROR IN SQL QUERY --->" not in execute(
                 f"SELECT * FROM {tblName[i]};",
                 databPath=databPath[i],
@@ -102,10 +102,10 @@ def getNRecords(tblName, databPath="", returnDict=False):
             result.append(0)
 
     if returnDict:
-        __tools.setStatus("Packing into dictionary")
+        tools.setStatus("Packing into dictionary")
         result = dict(zip(tblName, result))
 
-    __tools.setStatus("Returning results")
+    tools.setStatus("Returning results")
 
     constants.__stopTime__ = time.time()
     constants.__time__ = (
@@ -143,7 +143,7 @@ def getNColumns(tblName, databPath="", returnDict=False):
         except Exception:
             result.append(0)
     if returnDict:
-        __tools.setStatus("Packing into dictionary")
+        tools.setStatus("Packing into dictionary")
         result = dict(zip(tblName, result))
 
     constants.__stopTime__ = time.time()
@@ -169,7 +169,7 @@ def getCNames(tblName, databPath="", returnDict=False):
 
     result = []
     for i in range(len(tblName)):
-        __tools.setStatus(f"Retrieving records for {tblName[i]}")
+        tools.setStatus(f"Retrieving records for {tblName[i]}")
         try:
             queryResult = execute(
                 f"PRAGMA table_info({tblName[i]});",
@@ -192,10 +192,10 @@ def getCNames(tblName, databPath="", returnDict=False):
             raise ValueError(queryResult)
 
     if returnDict:
-        __tools.setStatus("Packing into dictionary")
+        tools.setStatus("Packing into dictionary")
         result = dict(zip(databPath, result))
 
-    __tools.setStatus("Returning results")
+    tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
     constants.__time__ = (
         f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
@@ -213,7 +213,7 @@ def getTNames(databPath="", returnDict=False):
 
     result = []
     for i in range(len(databPath)):
-        __tools.setStatus(f"Getting table names for {databPath[i]}")
+        tools.setStatus(f"Getting table names for {databPath[i]}")
         queryResult = execute(
             f"SELECT name FROM sqlite_master WHERE type = 'table';",
             databPath=databPath[i],
@@ -231,10 +231,10 @@ def getTNames(databPath="", returnDict=False):
             raise ValueError(queryResult)
 
     if returnDict:
-        __tools.setStatus("Packing into dictionary")
+        tools.setStatus("Packing into dictionary")
         result = dict(zip(databPath, result))
 
-    __tools.setStatus("Returning results")
+    tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
     constants.__time__ = (
         f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
@@ -270,7 +270,7 @@ def getTCommand(tblName, databPath="", returnDict=False):
 
     final = []
     for i in range(len(databPath)):
-        __tools.setStatus(f"Retrieving records for {tblName[i]}")
+        tools.setStatus(f"Retrieving records for {tblName[i]}")
         queryResult = execute(
             f"SELECT sql FROM sqlite_master WHERE type = 'table' and name='{tblName[i]}';",
             databPath=databPath[i],
@@ -317,10 +317,10 @@ def getTCommand(tblName, databPath="", returnDict=False):
             )
 
     if returnDict:
-        __tools.setStatus("Packing into dictionary")
+        tools.setStatus("Packing into dictionary")
         result = dict(zip(tblName, result))
 
-    __tools.setStatus("Returning results")
+    tools.setStatus("Returning results")
     constants.__stopTime__ = time.time()
     constants.__time__ = (
         f"Wall time: {(constants.__stopTime__ - constants.__startTime__)*10}s"
@@ -337,13 +337,13 @@ def getDbSize(databPath="", returnDict=False):
 
     final = []
     for i in range(len(databPath)):
-        __tools.setStatus(f"Getting size of {databPath[i]}")
+        tools.setStatus(f"Getting size of {databPath[i]}")
         final.append(
             f"{os.stat(databPath[i]).st_size} bytes ({os.stat(databPath[i]).st_size * 10**(-6)} MB)"
         )
 
     if returnDict:
-        __tools.setStatus("Packing into dictionary")
+        tools.setStatus("Packing into dictionary")
         final = dict(zip(databPath, final))
 
     constants.__stopTime__ = time.time()

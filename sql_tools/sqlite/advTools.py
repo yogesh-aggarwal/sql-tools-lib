@@ -2,7 +2,7 @@
 Advanced tools extension for SQL-Tools library.
 """
 
-from . import __tools, sqliteException
+from . import tools, sqliteException
 from .execute import execute
 from .fetch import getCNames, getNRecords, getTNames
 
@@ -13,7 +13,7 @@ def validate(databPath="", returnDict=False, raiseError=False, deep=True):
     Vaidates the database whether the database is properly operable or not.
     """
     # For database to list
-    __tools.setStatus("Validating data")
+    tools.setStatus("Validating data")
     try:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -53,11 +53,11 @@ def validate(databPath="", returnDict=False, raiseError=False, deep=True):
     if returnDict:
         final = dict(zip(databPath, final))
 
-    __tools.setStatus("Returning data")
+    tools.setStatus("Returning data")
     return final
 
 
-tools = __tools
+tools = tools
 
 
 class GenerateChecksum:
