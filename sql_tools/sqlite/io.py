@@ -4,10 +4,12 @@ Contains methods related to connection(s) between database and file.
 
 import time
 
-from . import tools, constants, sqliteException
-from pandas import read_csv
 from numpy import array
+from pandas import read_csv
 
+import sql_tools.internals as tools
+
+from . import constants, sqliteException
 from .execute import execute
 from .fetch import _pdatabase, _ptableName, getTNames
 
@@ -49,7 +51,7 @@ def tbToCsv(tb, databPath="", returnDict=False, index=False):
         tools.setStatus(f"Converting database to dataframe ({databPath[i]})")
         try:
             final.append(
-                tools.__tbToCsv(
+                tools.sqliteTools.__tbToCsv(
                     data=execute(f"SELECT * FROM {tb[i]}")[0],
                     tb=tb[i],
                     databPath=databPath[i],
@@ -141,7 +143,7 @@ def dbToCSV(databPath="", returnDict=False):
     for i in range(len(databPath)):
         tools.setStatus(f"Creating CSV of {databPath[i]}")
         final.append(
-            tools.__tbToCsv(
+            tools.sqliteTools.__tbToCsv(
                 data=execute("SELECT * FROM sqlite_master")[0],
                 tb="",
                 databPath=databPath[i],

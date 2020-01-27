@@ -3,13 +3,14 @@ Execute extension for SQL-Tools library.
 """
 
 import json
-from . import driver
-import time
 import os
+import time
 
 import numpy as np
 
-from . import tools, constants, sqliteException
+import sql_tools.internals as tools
+
+from . import constants, driver, sqliteException
 
 
 def execute(
@@ -104,9 +105,7 @@ def execute(
                         "Please provide a valid database path."
                     )
                     exit(1)
-                tools.setStatus(
-                    "Please provide a valid database path.", verbose=True
-                )
+                tools.setStatus("Please provide a valid database path.", verbose=True)
     else:
         __temp_lst__ = []
         __temp_lst__.append(databPath)
@@ -199,9 +198,7 @@ def execute(
     # &Executing the main command
     data = []
     if splitExec:
-        tools.setStatus(
-            "Opted for splitExec (seperate execution)", verbose=verbose
-        )
+        tools.setStatus("Opted for splitExec (seperate execution)", verbose=verbose)
         for i in range(len(databPath)):
             conn = driver.connect(databPath[i])
             tools.setStatus("Connected", verbose=verbose)
@@ -210,8 +207,7 @@ def execute(
 
             try:
                 tools.setStatus(
-                    f"Executing [{i}]: {command[i]} ({databPath[i]})",
-                    verbose=verbose,
+                    f"Executing [{i}]: {command[i]} ({databPath[i]})", verbose=verbose,
                 )
                 c.execute(command[i])
             except Exception as e:
@@ -229,9 +225,7 @@ def execute(
             try:
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
-                    tools.setStatus(
-                        f"Fetched data ({databPath[i]})", verbose=verbose
-                    )
+                    tools.setStatus(f"Fetched data ({databPath[i]})", verbose=verbose)
             except Exception as e:
                 if raiseError:
                     raise sqliteException.UnknownError(
@@ -257,8 +251,7 @@ def execute(
         for i in range(len(databPath)):
             try:
                 tools.setStatus(
-                    f"Executing [{i}]: {command[i]} ({databPath[i]})",
-                    verbose=verbose,
+                    f"Executing [{i}]: {command[i]} ({databPath[i]})", verbose=verbose,
                 )
                 c.execute(command[i])
             except Exception as e:
@@ -275,9 +268,7 @@ def execute(
             try:
                 for data_fetched in c.fetchall():
                     result.append(data_fetched)
-                tools.setStatus(
-                    f"Fetched [{i}] ({databPath[i]})", verbose=verbose
-                )
+                tools.setStatus(f"Fetched [{i}] ({databPath[i]})", verbose=verbose)
             except Exception as e:
                 if raiseError:
                     raise sqliteException.UnknownError(

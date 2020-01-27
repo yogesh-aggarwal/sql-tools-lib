@@ -4,9 +4,12 @@ File containing methods to fetch data.
 import os
 import time
 
-from . import tools, constants, sqliteException, sampleData
-from .execute import execute
 from numpy import array
+
+import sql_tools.internals as tools
+
+from . import constants, sampleData, sqliteException
+from .execute import execute
 
 
 def _pdatabase(databPath):

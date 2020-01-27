@@ -1,16 +1,11 @@
-from . import constants, mysqlException, tools
-from . import driver
+import sql_tools.internals as tools
+
+from . import constants, driver, mysqlException
+from . import tools as mysqlTools
 
 
 def connect(
-    host,
-    user,
-    pword,
-    db=[],
-    charset="",
-    validate=True,
-    raiseError=True,
-    verbose=False,
+    host, user, pword, db=[], charset="", validate=True, raiseError=True, verbose=False,
 ):
     charset = constants.__charset__ if not charset else charset
     tools.setStatus("Checking credentials", verbose=verbose, raiseError=raiseError)
@@ -26,10 +21,18 @@ def connect(
         raise mysqlException.ConnectionError(
             "Cannot connect to MySQL server, it may be server or credential problem"
         )
-    tools.setStatus("Credentials are correct, connecting to database", verbose=verbose, raiseError=raiseError)
+    tools.setStatus(
+        "Credentials are correct, connecting to database",
+        verbose=verbose,
+        raiseError=raiseError,
+    )
     constants.__credentials__ = (host, user, pword, charset)
 
-    tools.setStatus("Manipulating database for SQL-Tools execution", verbose=verbose, raiseError=raiseError)
+    tools.setStatus(
+        "Manipulating database for SQL-Tools execution",
+        verbose=verbose,
+        raiseError=raiseError,
+    )
     if tools.checkInstance(db, list, tuple):
         constants.__db__.extend(db)
     elif tools.checkInstance(db, str):
@@ -37,10 +40,14 @@ def connect(
     else:
         raise mysqlException.DatabaseError(
             "Invalid database dtype, it should be str or array"
-        ) if raiseError else tools.setStatus("Invalid database dtype, it should be str or array", verbose=True, raiseError=raiseError)
+        ) if raiseError else tools.setStatus(
+            "Invalid database dtype, it should be str or array",
+            verbose=True,
+            raiseError=raiseError,
+        )
 
 
 def disconnect(db=[], raiseError=True, verbose=False):
-    db = tools.parseDbs(db)
+    db = mysqlTools.parseDbs(db)
     tools.setStatus("Disconnecting database", verbose=verbose, raiseError=raiseError)
     constants.__db__ = [x for x in constants.__db__ if x not in db]

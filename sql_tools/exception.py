@@ -6,6 +6,10 @@ class PathError(Exception):
     def __init(self, message="Error in path provided."):
         super().__init__()
 
+class ParameterError(Exception):
+    def __init(self, message="Parameter not provided"):
+        super().__init__()
+
 class TableError(Exception):
     def __init(self, message="Error in table name provided."):
         super().__init__()

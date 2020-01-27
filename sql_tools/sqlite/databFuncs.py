@@ -5,8 +5,9 @@ Database operation extension for SQL-Tools library.
 import os
 import shutil
 
-from . import tools, constants, sqliteException
-from . import advTools
+import sql_tools.internals as tools
+
+from . import advTools, constants, sqliteException
 from .execute import execute
 
 
@@ -354,6 +355,7 @@ class Database:
     """
     Class for database configuration related operations.
     """
+
     def __init__(self, databPath=""):
         self.databPath = databPath
 
@@ -426,4 +428,3 @@ class Database:
 if __name__ == "__main__":
     print("Simple functions extention for SQL-Tools library.")
     print("Helps to perform simple operations related to location of database(s).")
-

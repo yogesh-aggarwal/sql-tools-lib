@@ -2,11 +2,14 @@
 Advanced tools extension for SQL-Tools library.
 """
 
-from . import tools, sqliteException
+import sql_tools.internals as tools
+
+from . import sqliteException
 from .execute import execute
 from .fetch import getCNames, getNRecords, getTNames
 
 # TODO: Swap columns
+
 
 def validate(databPath="", returnDict=False, raiseError=False, deep=True):
     """

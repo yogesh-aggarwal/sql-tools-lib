@@ -7,3 +7,12 @@ Thanks for using the package.
 """
 
 __version__ = "SQL-Tools version: 2.0.0"
+
+__time__ = None
+__startTime__ = None
+__stopTime__ = None
+__status__ = None
+
+__query__ = None
+__history__ = []
+__pid__ = None

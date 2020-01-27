@@ -2,11 +2,14 @@ import numpy as np
 import pandas as pd
 from prettytable import PrettyTable
 
-from . import execute, tools, constants, mysqlException
+import sql_tools.internals as tools
+
+from . import constants, execute, mysqlException
+from . import tools as mysqlTools
 
 
 def getTbls(db="", raiseError=True, verbose=False):
-    db = tools.parseDbs(db)
+    db = mysqlTools.parseDbs(db)
     return [
         [x[0] for x in execute(["SHOW TABLES"], db=datab, raiseError=raiseError, verbose=verbose).list[0][0]] for datab in db
     ]
@@ -16,7 +19,7 @@ def csvToTbl(
     db, table, csv, primaryKey="", foreignKey="", raiseError=True, verbose=False
 ):
     tools.setStatus("Parsing parameters", verbose=verbose, raiseError=raiseError)
-    dbs = tools.parseDbs(db)
+    dbs = mysqlTools.parseDbs(db)
     tables = tools.parseTables(table, db)
     csvs = tools.parseTables(csv, db)
 
@@ -108,7 +111,7 @@ def csvToTbl(
 
 def execFile(file, db="", out=True, raiseError=True, verbose=False):
     tools.setStatus("Pasing objects", verbose=verbose, raiseError=raiseError)
-    datab = tools.parseDbs(db)
+    datab = mysqlTools.parseDbs(db)
     files = tools.parseTables(file, datab)
 
     for i, db in enumerate(datab):
@@ -134,7 +137,7 @@ def execFile(file, db="", out=True, raiseError=True, verbose=False):
 
 
 def getCNames(tbl, db="", raiseError=True, verbose=False):
-    dbs = tools.parseDbs(db)
+    dbs = mysqlTools.parseDbs(db)
     return [
         [
             execute([f"SHOW columns FROM {y}"], db=dbs[x], verbose=verbose).get.T[0].T[0][0].tolist()
@@ -146,8 +149,8 @@ def getCNames(tbl, db="", raiseError=True, verbose=False):
 
 def showTbl(tbl, db="", sep=("%", 30), raiseError=True, verbose=False):
     tools.setStatus("Parsing parameters", verbose=verbose, raiseError=raiseError)
-    dbs = tools.parseDbs(db)
-    sep = tools.parseDbs(sep)
+    dbs = mysqlTools.parseDbs(db)
+    sep = mysqlTools.parseDbs(sep)
     tbls = tools.parseTables(tbl, dbs)
     for i, db in enumerate(dbs):
         tools.setStatus(f"For database: {db}", verbose=verbose, raiseError=raiseError)

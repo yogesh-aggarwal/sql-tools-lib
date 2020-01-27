@@ -2,14 +2,16 @@
 Execute extension for SQL-Tools library.
 """
 
-# TODO: Implement the remaining parameters
-
-from . import driver
 import os
 
 import numpy as np
 
-from . import tools, constants, mysqlException
+import sql_tools.internals as tools
+
+from . import constants, driver, mysqlException
+from . import tools as mysqlTools
+
+# TODO: Implement the remaining parameters
 
 
 class execute:
@@ -40,7 +42,9 @@ class execute:
         self.__raiseError = raiseError  # Raise error or not if something goes wrong
         self.__simplify = simplify  # Commit the changes
         # self.__commit = commit
-        self.__execMethod = __execMethod  # Whether called user (True) or internally (False)
+        self.__execMethod = (
+            __execMethod  # Whether called user (True) or internally (False)
+        )
 
         self.__result = []
 
@@ -57,7 +61,7 @@ class execute:
     @property
     def dict(self):
         return dict(zip(self.db, self.__result))
-        
+
     @property
     def time(self):
         return tools.timer("result")
@@ -91,7 +95,9 @@ class execute:
                 host=host, user=user, password=password, db=self.db[i], charset=charset
             )
             data = []
-            tools.setStatus(f"Executing command database: {self.db[i]}", verbose=self.__verbose)
+            tools.setStatus(
+                f"Executing command database: {self.db[i]}", verbose=self.__verbose
+            )
             for comm in self.__command[i]:
                 try:
                     with connection.cursor() as cursor:
@@ -126,7 +132,7 @@ class execute:
         if self.__execMethod:
             tools.setStatus("Parsing commands", self.__raiseError, self.__verbose)
         try:
-            db = tools.parseDbs(db) if db else tools.parseDbs(self.db)
+            db = mysqlTools.parseDbs(db) if db else mysqlTools.parseDbs(self.db)
             if len(db) == 1:
                 if tools.checkInstance(command, str):
                     command = [[command]]
@@ -134,13 +140,19 @@ class execute:
                     command = [command]
                 elif tools.checkInstance(command[0], list, tuple):
                     if tools.checkInstance(command[0][0], list, tuple):
-                        raise mysqlException.UnknownError("Database and commands are not commuting, n(commands) != n(database)")
+                        raise mysqlException.UnknownError(
+                            "Database and commands are not commuting, n(commands) != n(database)"
+                        )
                 else:
                     raise mysqlException.CommandError()
             else:
                 if tools.checkInstance(command, list, tuple):
-                    if not tools.checkInstance(command[0], list, tuple) or tools.checkInstance(command[0][0], list, tuple):
-                        raise mysqlException.UnknownError("Database and commands are not commuting, n(commands) != n(database)")
+                    if not tools.checkInstance(
+                        command[0], list, tuple
+                    ) or tools.checkInstance(command[0][0], list, tuple):
+                        raise mysqlException.UnknownError(
+                            "Database and commands are not commuting, n(commands) != n(database)"
+                        )
                 else:
                     raise mysqlException.CommandError()
         except IndexError:
@@ -157,7 +169,9 @@ class execute:
         try:
             if tools.checkInstance(db, str):
                 db = [db]
-            elif not tools.checkInstance(db, list, tuple) or not tools.checkInstance(db[0], str):
+            elif not tools.checkInstance(db, list, tuple) or not tools.checkInstance(
+                db[0], str
+            ):
                 raise ValueError
         except Exception:
             pass
