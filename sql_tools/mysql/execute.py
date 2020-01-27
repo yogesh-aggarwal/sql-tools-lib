@@ -26,7 +26,7 @@ class execute:
         # splitExec=False,
         returnDict=False,
         verbose=False,
-        raiseError=True,
+        err=True,
         simplify=False,
         # commit=True,
         __execMethod=True,
@@ -39,7 +39,7 @@ class execute:
         # self.__asyncExec = asyncExec
         self.__returnDict = returnDict
         self.__verbose = verbose  # For being verbose
-        self.__raiseError = raiseError  # Raise error or not if something goes wrong
+        self.__raiseError = err  # Raise error or not if something goes wrong
         self.__simplify = simplify  # Commit the changes
         # self.__commit = commit
         self.__execMethod = (
@@ -176,7 +176,7 @@ class execute:
         except Exception:
             pass
 
-        db = constants.__db__ if not db else db
+        db = constants.__dbMysql__ if not db else db
         if not db:
             if self.__raiseError:
                 raise mysqlException.DatabaseError()

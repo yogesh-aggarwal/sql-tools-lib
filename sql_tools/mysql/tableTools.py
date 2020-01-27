@@ -8,28 +8,28 @@ from . import constants, execute, mysqlException
 from . import tools as mysqlTools
 
 
-def getTbls(db="", raiseError=True, verbose=False):
+def getTbls(db="", err=True, verbose=False):
     db = mysqlTools.parseDbs(db)
     return [
-        [x[0] for x in execute(["SHOW TABLES"], db=datab, raiseError=raiseError, verbose=verbose).list[0][0]] for datab in db
+        [x[0] for x in execute(["SHOW TABLES"], db=datab, err=err, verbose=verbose).list[0][0]] for datab in db
     ]
 
 
 def csvToTbl(
-    db, table, csv, primaryKey="", foreignKey="", raiseError=True, verbose=False
+    db, table, csv, primaryKey="", foreignKey="", err=True, verbose=False
 ):
-    tools.setStatus("Parsing parameters", verbose=verbose, raiseError=raiseError)
+    tools.setStatus("Parsing parameters", verbose=verbose, err=err)
     dbs = mysqlTools.parseDbs(db)
     tables = tools.parseTables(table, db)
     csvs = tools.parseTables(csv, db)
 
     for i, db in enumerate(dbs):
         for k, table in enumerate(tables[i]):
-            tools.setStatus(f"Reading CSV: {csvs[i][k]}", verbose=verbose, raiseError=raiseError)
+            tools.setStatus(f"Reading CSV: {csvs[i][k]}", verbose=verbose, err=err)
             data = pd.read_csv(csvs[i][k])
 
             if primaryKey == foreignKey:
-                if raiseError:
+                if err:
                     mysqlException.KeyError("Primary & Foreign keys are same.")
                 else:
                     tools.setStatus("Primary & Foreign keys are same.", verbose=True)
@@ -38,16 +38,16 @@ def csvToTbl(
             attributes = ""
             for column in data.columns.values:
                 # &Generating the query
-                tools.setStatus("Generating temporary query for table", verbose=verbose, raiseError=raiseError)
+                tools.setStatus("Generating temporary query for table", verbose=verbose, err=err)
                 attributes += f"{column} TEXT, "
 
             attributes = attributes[:-2]
 
             try:
-                tools.setStatus(f"Creating table: {table}", verbose=verbose, raiseError=raiseError)
+                tools.setStatus(f"Creating table: {table}", verbose=verbose, err=err)
                 execute(f"CREATE TABLE {table} ({attributes});", db=db)
             except Exception as e:
-                raise e if raiseError else tools.setStatus(e, verbose=True, raiseError=raiseError)
+                raise e if err else tools.setStatus(e, verbose=True, err=err)
             del attributes
 
             # Inejecting the records
@@ -60,13 +60,13 @@ def csvToTbl(
                     st += f'"{column}", '
                 final.append(st[:-2])
 
-            tools.setStatus("Inserting records", verbose=verbose, raiseError=raiseError)
+            tools.setStatus("Inserting records", verbose=verbose, err=err)
             for record in final:
                 record = record.replace("nan", "NULL")
                 print(f"INSERT INTO {table} VALUES ({record})")
                 execute([f"INSERT INTO {table} VALUES ({record})"], verbose=verbose, db=db)
 
-            tools.setStatus("Manipulating table for end use", verbose=verbose, raiseError=raiseError)
+            tools.setStatus("Manipulating table for end use", verbose=verbose, err=err)
             dtypes = constants.dtypeMap
             dataDtypes = data.dtypes
             for column in data.columns.values:
@@ -109,15 +109,15 @@ def csvToTbl(
                     )
 
 
-def execFile(file, db="", out=True, raiseError=True, verbose=False):
-    tools.setStatus("Pasing objects", verbose=verbose, raiseError=raiseError)
+def execFile(file, db="", out=True, err=True, verbose=False):
+    tools.setStatus("Pasing objects", verbose=verbose, err=err)
     datab = mysqlTools.parseDbs(db)
     files = tools.parseTables(file, datab)
 
     for i, db in enumerate(datab):
         for file in files[i]:
             try:
-                tools.setStatus("Reading file", verbose=verbose, raiseError=raiseError)
+                tools.setStatus("Reading file", verbose=verbose, err=err)
                 file = open(file)
                 sql = file.read().replace("\n", "").split(";")
                 try:
@@ -125,18 +125,18 @@ def execFile(file, db="", out=True, raiseError=True, verbose=False):
                 except:
                     pass
                 file.close()
-                tools.setStatus(f"Executing file", verbose=verbose, raiseError=raiseError)
+                tools.setStatus(f"Executing file", verbose=verbose, err=err)
                 result = execute([sql], db, verbose=verbose).get
                 if out:
-                    tools.setStatus("Printing results", verbose=verbose, raiseError=raiseError)
+                    tools.setStatus("Printing results", verbose=verbose, err=err)
                     print(result)
             except Exception as e:
-                raise mysqlException.UnknownError(e) if raiseError else tools.setStatus(e, verbose=True, raiseError=raiseError)
+                raise mysqlException.UnknownError(e) if err else tools.setStatus(e, verbose=True, err=err)
                 return False
     return True
 
 
-def getCNames(tbl, db="", raiseError=True, verbose=False):
+def getCNames(tbl, db="", err=True, verbose=False):
     dbs = mysqlTools.parseDbs(db)
     return [
         [
@@ -147,27 +147,27 @@ def getCNames(tbl, db="", raiseError=True, verbose=False):
     ]
 
 
-def showTbl(tbl, db="", sep=("%", 30), raiseError=True, verbose=False):
-    tools.setStatus("Parsing parameters", verbose=verbose, raiseError=raiseError)
+def showTbl(tbl, db="", sep=("%", 30), err=True, verbose=False):
+    tools.setStatus("Parsing parameters", verbose=verbose, err=err)
     dbs = mysqlTools.parseDbs(db)
     sep = mysqlTools.parseDbs(sep)
     tbls = tools.parseTables(tbl, dbs)
     for i, db in enumerate(dbs):
-        tools.setStatus(f"For database: {db}", verbose=verbose, raiseError=raiseError)
+        tools.setStatus(f"For database: {db}", verbose=verbose, err=err)
         for tbl in tbls[i]:
             data = None
             try:
-                tools.setStatus(f"Retrieving records for table: {tbl}", verbose=verbose, raiseError=raiseError)
+                tools.setStatus(f"Retrieving records for table: {tbl}", verbose=verbose, err=err)
                 data = execute([f"SELECT * FROM {tbl}"], db).get[0][0]
             except Exception as e:
-                raise e if raiseError else False
+                raise e if err else False
 
-            tools.setStatus("Preparing table", verbose=verbose, raiseError=raiseError)
+            tools.setStatus("Preparing table", verbose=verbose, err=err)
             _tbl = tbl
             print(f"{sep[0]*sep[1]} [Table: {_tbl}] {sep[0]*sep[1]}")
             tbl = PrettyTable()
             tbl.field_names = getCNames(_tbl, db)[0][0]
             del _tbl
             [tbl.add_row(x) for x in data]
-            tools.setStatus("Printing table", verbose=verbose, raiseError=raiseError)
+            tools.setStatus("Printing table", verbose=verbose, err=err)
             print(f"{tbl}\n\n")

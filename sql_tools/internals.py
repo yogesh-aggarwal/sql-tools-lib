@@ -7,7 +7,7 @@ from sql_tools import constants
 from . import exception
 
 
-def setStatus(arg, raiseError=True, verbose=False):
+def setStatus(arg, err=True, verbose=False):
     try:
         if verbose:
             logging.basicConfig(format="[%(process)d] SQL-Tools: %(message)s")
@@ -18,7 +18,7 @@ def setStatus(arg, raiseError=True, verbose=False):
         constants.__status__ = arg
         return True
     except Exception:
-        if raiseError:
+        if err:
             raise exception.DatabaseError("Unable to set the status.")
         return False
 

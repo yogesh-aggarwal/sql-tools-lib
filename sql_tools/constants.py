@@ -8,11 +8,33 @@ Thanks for using the package.
 
 __version__ = "SQL-Tools version: 2.0.0"
 
+# &Global Sharing
 __time__ = None
 __startTime__ = None
 __stopTime__ = None
-__status__ = None
-
 __query__ = None
+__status__ = None
 __history__ = []
+
+# &Global constant variables
 __pid__ = None
+__jsonFormat__ = "Error in JSON file or it may not in the specified format.\nFormat:\n\t{\n\t\t<database>:\n\t\t{\n\t\t\t<table name>:\n\t\t\t[\n\t\t\t\t<commands>\n\t\t\t]\n\t\t}\n\t}"
+
+
+# &MySQL
+__dbMysql__ = []
+__credentials__ = None
+__charset__ = "utf8mb4"
+simplify = False
+dtypeMap = {
+    "float64": "FLOAT",
+    "float32": "FLOAT",
+    "int64": "INT(64)",
+    "int32": "INT(32)",
+    "object": "TEXT",
+    "datetime64[ns]": "DATE",
+    "datetime32[ns]": "DATE",
+}
+
+# &SQLite
+__dbSqlite__ = []

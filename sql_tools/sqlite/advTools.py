@@ -11,7 +11,7 @@ from .fetch import getCNames, getNRecords, getTNames
 # TODO: Swap columns
 
 
-def validate(databPath="", returnDict=False, raiseError=False, deep=True):
+def validate(databPath="", returnDict=False, err=False, deep=True):
     """
     Vaidates the database whether the database is properly operable or not.
     """
@@ -46,7 +46,7 @@ def validate(databPath="", returnDict=False, raiseError=False, deep=True):
 
             final.append(True)
         except Exception:
-            if raiseError:
+            if err:
                 raise sqliteException.DatabaseError(
                     "The provided database has some problem in it."
                 )

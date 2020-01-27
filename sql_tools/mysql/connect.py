@@ -5,10 +5,17 @@ from . import tools as mysqlTools
 
 
 def connect(
-    host, user, pword, db=[], charset="", validate=True, raiseError=True, verbose=False,
+    host,
+    user,
+    pword,
+    db=[],
+    charset="",
+    validateDb=True,
+    err=True,
+    verbose=False,
 ):
     charset = constants.__charset__ if not charset else charset
-    tools.setStatus("Checking credentials", verbose=verbose, raiseError=raiseError)
+    tools.setStatus("Checking credentials", verbose=verbose, err=err)
     try:
         driver.connect(
             host=host,
@@ -24,30 +31,30 @@ def connect(
     tools.setStatus(
         "Credentials are correct, connecting to database",
         verbose=verbose,
-        raiseError=raiseError,
+        err=err,
     )
     constants.__credentials__ = (host, user, pword, charset)
 
     tools.setStatus(
         "Manipulating database for SQL-Tools execution",
         verbose=verbose,
-        raiseError=raiseError,
+        err=err,
     )
     if tools.checkInstance(db, list, tuple):
-        constants.__db__.extend(db)
+        constants.__dbMysql__.extend(db)
     elif tools.checkInstance(db, str):
-        constants.__db__.append(db)
+        constants.__dbMysql__.append(db)
     else:
         raise mysqlException.DatabaseError(
             "Invalid database dtype, it should be str or array"
-        ) if raiseError else tools.setStatus(
+        ) if err else tools.setStatus(
             "Invalid database dtype, it should be str or array",
             verbose=True,
-            raiseError=raiseError,
+            err=err,
         )
 
 
-def disconnect(db=[], raiseError=True, verbose=False):
+def disconnect(db=[], err=True, verbose=False):
     db = mysqlTools.parseDbs(db)
-    tools.setStatus("Disconnecting database", verbose=verbose, raiseError=raiseError)
-    constants.__db__ = [x for x in constants.__db__ if x not in db]
+    tools.setStatus("Disconnecting database", verbose=verbose, err=err)
+    constants.__dbMysql__ = [x for x in constants.__dbMysql__ if x not in db]

@@ -24,7 +24,7 @@ def execute(
     splitExec=False,
     returnDict=False,
     verbose=False,
-    raiseError=True,
+    err=True,
     commit=True,
     __execMethod=True,
 ):
@@ -77,7 +77,7 @@ def execute(
                 try:
                     data = json.loads(f.read())
                 except Exception:
-                    if raiseError:
+                    if err:
                         raise sqliteException.JSONError(
                             "JSON file error. Could be the syntax problem."
                         )
@@ -92,15 +92,15 @@ def execute(
                 databPath.append(i)
 
         else:
-            databPath = constants.__databPath__
+            databPath = constants.__dbSqlite__
             if isinstance(databPath, str):
                 databPath = []
-                databPath.append(constants.__databPath__)
+                databPath.append(constants.__dbSqlite__)
             elif isinstance(databPath, list) or isinstance(databPath, tuple):
                 databPath = []
-                databPath.extend(constants.__databPath__)
+                databPath.extend(constants.__dbSqlite__)
             if databPath == []:
-                if raiseError:
+                if err:
                     raise sqliteException.PathError(
                         "Please provide a valid database path."
                     )
@@ -114,7 +114,7 @@ def execute(
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            if raiseError:
+            if err:
                 raise sqliteException.PathError(
                     'Invalid path input. Path should be a "str" or "list" type object.'
                 )
@@ -135,7 +135,7 @@ def execute(
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            if raiseError:
+            if err:
                 raise sqliteException.CommandError(
                     'Invalid command input. Command should be a "str" or "list" type object.'
                 )
@@ -146,7 +146,7 @@ def execute(
             )
         command = __temp_lst__.copy()
     except Exception:
-        if raiseError:
+        if err:
             raise sqliteException.CommandError("Error while parsing your command.")
             exit(1)
         tools.setStatus("Error while parsing your command.", verbose=True)
@@ -160,7 +160,7 @@ def execute(
         elif isinstance(__temp_lst__[0], str):
             pass
         else:
-            if raiseError:
+            if err:
                 raise sqliteException.PathError(
                     'Invalid path input. Path should be a "str" or "list" type object.'
                 )
@@ -173,7 +173,7 @@ def execute(
         if len(databPath) > 1:
             splitExec = False
     except Exception:
-        if raiseError:
+        if err:
             raise sqliteException.PathError("Error while parsing your path.")
             exit(1)
         tools.setStatus("Error while parsing your path.", verbose=True)
@@ -181,7 +181,7 @@ def execute(
     # &Unequal condition
     try:
         if len(command) != len(databPath):
-            if raiseError:
+            if err:
                 raise sqliteException.MatrixError(
                     "Cannot apply command to the provided data set. Please provide equal commands and paths. Should form a matrix."
                 )
@@ -211,7 +211,7 @@ def execute(
                 )
                 c.execute(command[i])
             except Exception as e:
-                if raiseError:
+                if err:
                     raise sqliteException.QueryError(
                         f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})"
                     )
@@ -227,7 +227,7 @@ def execute(
                     result.append(data_fetched)
                     tools.setStatus(f"Fetched data ({databPath[i]})", verbose=verbose)
             except Exception as e:
-                if raiseError:
+                if err:
                     raise sqliteException.UnknownError(
                         f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
                     )
@@ -255,7 +255,7 @@ def execute(
                 )
                 c.execute(command[i])
             except Exception as e:
-                if raiseError:
+                if err:
                     raise sqliteException.QueryError(
                         f"ERROR IN SQL QUERY ---> {e} (From database {databPath[i]})"
                     )
@@ -270,7 +270,7 @@ def execute(
                     result.append(data_fetched)
                 tools.setStatus(f"Fetched [{i}] ({databPath[i]})", verbose=verbose)
             except Exception as e:
-                if raiseError:
+                if err:
                     raise sqliteException.UnknownError(
                         f"SQL: SOME ERROR OCCURED.\n---> {e} (From database {databPath[i]})"
                     )

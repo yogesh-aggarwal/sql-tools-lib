@@ -11,7 +11,7 @@ from . import advTools, constants, sqliteException
 from .execute import execute
 
 
-def createDb(databPath="", raiseError=True):
+def createDb(databPath="", err=True):
     """
     Creates the databases at the path provided.
     Caution:
@@ -19,13 +19,13 @@ def createDb(databPath="", raiseError=True):
     Provide the name of the database in the path.
     """
     if not databPath:
-        databPath = constants.__databPath__
+        databPath = constants.__dbSqlite__
         if isinstance(databPath, str):
             databPath = []
-            databPath.append(constants.__databPath__)
+            databPath.append(constants.__dbSqlite__)
         elif isinstance(databPath, list) or isinstance(databPath, tuple):
             databPath = []
-            databPath.extend(constants.__databPath__)
+            databPath.extend(constants.__dbSqlite__)
         if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
@@ -53,13 +53,13 @@ def createDb(databPath="", raiseError=True):
             final.append(True)
         except Exception as e:
             final.append(False)
-            if raiseError:
+            if err:
                 raise e
 
     return final
 
 
-def moveDb(newPath, oldPath="", raiseError=True):
+def moveDb(newPath, oldPath="", err=True):
     """
     Moves the database from the old path to new path.
     Caution:
@@ -108,7 +108,7 @@ def moveDb(newPath, oldPath="", raiseError=True):
     final = []
     for i in range(len(oldPath)):
         if not oldPath[i]:
-            oldPath[i] = constants.__databPath__[i]
+            oldPath[i] = constants.__dbSqlite__[i]
             if oldPath[i] == None:
                 raise sqliteException.PathError(
                     "Please provide a valid database path (oldPath)."
@@ -118,12 +118,12 @@ def moveDb(newPath, oldPath="", raiseError=True):
             final.append(True)
         except Exception as e:
             final.append(False)
-            if raiseError:
+            if err:
                 raise e
     return final
 
 
-def copyDb(newPath, oldPath="", raiseError=True):
+def copyDb(newPath, oldPath="", err=True):
     """
     Creates a copy of database from the old path to the new path.
     Caution:
@@ -162,7 +162,7 @@ def copyDb(newPath, oldPath="", raiseError=True):
                 'Invalid path input. Path should be a "str" or "list" type object (oldPath).'
             )
     else:
-        databPath = constants.__databPath__
+        databPath = constants.__dbSqlite__
         if databPath == []:
             raise ValueError("Please provide the database path")
         else:
@@ -186,13 +186,13 @@ def copyDb(newPath, oldPath="", raiseError=True):
                 return True
             else:
                 final.append(False)
-                if raiseError:
+                if err:
                     raise e
 
     return final
 
 
-def delDb(databPath="", raiseError=True):
+def delDb(databPath="", err=True):
     """
     Deletes the database at the provided path.
     Caution:
@@ -200,13 +200,13 @@ def delDb(databPath="", raiseError=True):
     This action is irreversible.
     """
     if not databPath:
-        databPath = constants.__databPath__
+        databPath = constants.__dbSqlite__
         if isinstance(databPath, str):
             databPath = []
-            databPath.append(constants.__databPath__)
+            databPath.append(constants.__dbSqlite__)
         elif isinstance(databPath, list) or isinstance(databPath, tuple):
             databPath = []
-            databPath.extend(constants.__databPath__)
+            databPath.extend(constants.__dbSqlite__)
         if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
@@ -229,24 +229,24 @@ def delDb(databPath="", raiseError=True):
             final.append(True)
         except Exception as e:
             final.append(False)
-            if raiseError:
+            if err:
                 raise e
 
     return final
 
 
-def isIdentical(compareWith, databPath="", raiseError=True):
+def isIdentical(compareWith, databPath="", err=True):
     """
     Returns whether the database(s) are identical or not.
     """
     if not databPath:
-        databPath = constants.__databPath__
+        databPath = constants.__dbSqlite__
         if isinstance(databPath, str):
             databPath = []
-            databPath.append(constants.__databPath__)
+            databPath.append(constants.__dbSqlite__)
         elif isinstance(databPath, list) or isinstance(databPath, tuple):
             databPath = []
-            databPath.extend(constants.__databPath__)
+            databPath.extend(constants.__dbSqlite__)
         if databPath == []:
             raise sqliteException.PathError(
                 "Please provide a valid database path (databPath)."
@@ -296,32 +296,32 @@ def isIdentical(compareWith, databPath="", raiseError=True):
             data1 = data1.read()
             data2 = data2.read()
         except Exception as e:
-            if raiseError:
+            if err:
                 raise e
 
         try:
             final.append(True) if data1 == data2 else final.append(False)
         except Exception as e:
             final.append(False)
-            if raiseError:
+            if err:
                 raise e
     del data1
     del data2
     return final
 
 
-def clearDb(databPath="", raiseError=True):
+def clearDb(databPath="", err=True):
     """
     Clears the database provided.
     """
     if not databPath:
-        databPath = constants.__databPath__
+        databPath = constants.__dbSqlite__
         if isinstance(databPath, str):
             databPath = []
-            databPath.append(constants.__databPath__)
+            databPath.append(constants.__dbSqlite__)
         elif isinstance(databPath, list) or isinstance(databPath, tuple):
             databPath = []
-            databPath.extend(constants.__databPath__)
+            databPath.extend(constants.__dbSqlite__)
         if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
@@ -345,7 +345,7 @@ def clearDb(databPath="", raiseError=True):
             final.append(True)
         except Exception as e:
             final.append(False)
-            if raiseError:
+            if err:
                 raise e
 
     return final
@@ -360,13 +360,13 @@ class Database:
         self.databPath = databPath
 
     def __str__(self):
-        return f'Databases: {", ".join(constants.__databPath__)}'
+        return f'Databases: {", ".join(constants.__dbSqlite__)}'
 
     def path(self):
         """
         Returns the path of all the connected databases.
         """
-        return constants.__databPath__
+        return constants.__dbSqlite__
 
     def add(self, databPath=""):
         """
@@ -379,9 +379,9 @@ class Database:
         ) if len(databPath) == 0 else True
 
         if isinstance(databPath, list) or isinstance(databPath, tuple):
-            constants.__databPath__.extend(databPath)
+            constants.__dbSqlite__.extend(databPath)
         elif isinstance(databPath, str):
-            constants.__databPath__.append(databPath)
+            constants.__dbSqlite__.append(databPath)
         elif isinstance(databPath, dict):
             raise ValueError(
                 "Invalid value provided. Path must be of type list, tuple or str"
@@ -392,11 +392,11 @@ class Database:
         Removes the database from connect scope (disconnects the database).
         """
         if isinstance(databPath, list) or isinstance(databPath, tuple):
-            constants.__databPath__ = [
-                path for path in constants.__databPath__ if path not in databPath
+            constants.__dbSqlite__ = [
+                path for path in constants.__dbSqlite__ if path not in databPath
             ]
         elif isinstance(databPath, str):
-            constants.__databPath__.remove(databPath)
+            constants.__dbSqlite__.remove(databPath)
         elif isinstance(databPath, dict):
             raise ValueError(
                 "Invalid value provided. Path must be of type list, tuple or str"
@@ -406,7 +406,7 @@ class Database:
         """
         Clears the database operation scope i.e. disconnect all the connected databases.
         """
-        constants.__databPath__ = []
+        constants.__dbSqlite__ = []
 
     def validate(self, databPath=""):
         """
@@ -414,7 +414,7 @@ class Database:
         """
         databPath = databPath if len(databPath) != 0 else self.databPath
 
-        databPath = constants.__databPath__ if len(databPath) == 0 else True
+        databPath = constants.__dbSqlite__ if len(databPath) == 0 else True
 
         return advTools.validate(databPath)
 

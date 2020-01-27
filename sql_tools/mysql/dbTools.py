@@ -12,21 +12,21 @@ from . import tools as mysqlTools
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
-def clearDb(db="", raiseError=True):
+def clearDb(db="", err=True):
     try:
         db = mysqlTools.parseDbs(db)
         delDb(db)
         createDb(db)
     except Exception as e:
-        raise e if raiseError else False
+        raise e if err else False
     return True
 
 
-def createDb(db, raiseError=True, verbose=False):
+def createDb(db, err=True, verbose=False):
     db = mysqlTools.parseDbs(db)
     for x in db:
         try:
-            tools.setStatus(f"Creating: {x}", verbose=verbose, raiseError=raiseError)
+            tools.setStatus(f"Creating: {x}", verbose=verbose, err=err)
             execute(
                 [f"CREATE DATABASE {x};"],
                 ["mysql"],
@@ -34,15 +34,15 @@ def createDb(db, raiseError=True, verbose=False):
                 _execute__execMethod=False,
             ).execute()
         except Exception as e:
-            raise e if raiseError else False
+            raise e if err else False
     return True
 
 
-def delDb(db="", raiseError=True, verbose=False):
+def delDb(db="", err=True, verbose=False):
     db = mysqlTools.parseDbs(db)
     for x in db:
         try:
-            tools.setStatus(f"Deleting: {x}", verbose=verbose, raiseError=raiseError)
+            tools.setStatus(f"Deleting: {x}", verbose=verbose, err=err)
             execute(
                 [f"DROP DATABASE {x};"],
                 ["mysql"],
@@ -50,34 +50,34 @@ def delDb(db="", raiseError=True, verbose=False):
                 _execute__execMethod=False,
             ).execute()
         except Exception as e:
-            raise e if raiseError else False
+            raise e if err else False
     return True
 
 
-def getDbs(raiseError=True, verbose=False):
+def getDbs(err=True, verbose=False):
     try:
         return [
             x[0]
             for x in execute(["SHOW DATABASES;"], ["mysql"], verbose=verbose).list[0][0]
         ]
     except Exception as e:
-        raise e if raiseError else False
+        raise e if err else False
 
 
-def isIdentical(db="", raiseError=True, verbose=False):
+def isIdentical(db="", err=True, verbose=False):
     db = mysqlTools.parseDbs(db)
     tables = [execute(["SHOW TABLES"], x).list for x in db]
     try:
         tables = list(filter(lambda x: x != tables[0], tables))
         tools.setStatus(
-            "Comparing tables properties", verbose=verbose, raiseError=raiseError
+            "Comparing tables properties", verbose=verbose, err=err
         )
         if len(tables) != 0:
             print(False)
             return False
         else:
             tools.setStatus(
-                "Comparing tables records", verbose=verbose, raiseError=raiseError
+                "Comparing tables records", verbose=verbose, err=err
             )
             tables = [
                 execute(["SHOW TABLES"], x, verbose=verbose).list[0][0] for x in db
@@ -99,4 +99,4 @@ def isIdentical(db="", raiseError=True, verbose=False):
                 del tables, records
                 return True
     except Exception as e:
-        raise e if raiseError else False
+        raise e if err else False

@@ -7,7 +7,6 @@ from .fetch import *
 from .io import tbToCsv
 
 __version__ = f"SQL-Tools: SQLite version: {driver.sqlite_version}"
-__help__ = 'Visit the documentation for more help or type "help(sql_tools)"'
 
 
 if __name__ == "__main__":

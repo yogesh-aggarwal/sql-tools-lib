@@ -6,7 +6,7 @@ from . import execute
 
 
 def parseDbs(db):
-    db = constants.__db__ if not db else db
+    db = constants.__dbMysql__ if not db else db
     return execute.execute([], db, _execute__execMethod=False)._execute__parseDatabase()
 
 

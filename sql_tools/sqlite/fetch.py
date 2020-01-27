@@ -14,13 +14,13 @@ from .execute import execute
 
 def _pdatabase(databPath):
     if not databPath:
-        databPath = constants.__databPath__
+        databPath = constants.__dbSqlite__
         if isinstance(databPath, str):
             databPath = []
-            databPath.append(constants.__databPath__)
+            databPath.append(constants.__dbSqlite__)
         elif isinstance(databPath, list) or isinstance(databPath, tuple):
             databPath = []
-            databPath.extend(constants.__databPath__)
+            databPath.extend(constants.__dbSqlite__)
         if databPath == []:
             raise sqliteException.PathError("Please provide a valid database path.")
     else:
