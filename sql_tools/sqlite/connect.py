@@ -2,11 +2,10 @@
 Connect extension for SQL-Tools library.
 """
 
-from sql_tools import constants
+from sql_tools import constants, exception
 from sql_tools import internals as tools
 
-from . import sqliteException
-from .advTools import validate
+# from .advTools import validate
 
 
 def connect(db, validateDb=True, err=True):
@@ -19,12 +18,12 @@ def connect(db, validateDb=True, err=True):
         elif tools.checkInstance(db, list, tuple):
             constants.__dbSqlite__.extend(db)
         if db == []:
-            raise sqliteException.PathError("Please provide a valid database path.")
-        validate(db, err=True) if validate else False
+            raise exception.PathError("Please provide a valid database path.")
+        # validate(db, err=True) if validate else False
         return True
     except Exception as e:
         if err:
-            raise sqliteException.DatabaseError(f"Error in database(s) provided. {e}")
+            raise exception.DatabaseError(f"Error in database(s) provided. {e}")
         else:
             return False
 
@@ -42,36 +41,11 @@ def disconnect(db="", err=True):
                     datab for datab in constants.__dbSqlite__ if datab not in db
                 ]
             if db == []:
-                raise sqliteException.PathError(
-                    "Please provide a valid database(s) path."
-                )
+                raise exception.PathError("Please provide a valid database(s) path.")
         except ValueError as e:
-            raise sqliteException.DatabaseError(f"Error in database(s) provided. {e}")
+            raise exception.DatabaseError(f"Error in database(s) provided. {e}")
     else:
         constants.__dbSqlite__ = []
-
-
-def isConnected(db):
-    """
-    Checks whether the database(s) is connected or not.
-    """
-    if tools.checkInstance(db, list, tuple) or db == "":
-        final = []
-        for path in constants.__dbSqlite__:
-            if path == db:
-                final.append(True)
-            else:
-                final.append(False)
-        return final
-    elif isinstance(db, str):
-        if db in constants.__dbSqlite__:
-            return [True]
-        else:
-            return [False]
-    elif isinstance(db, dict):
-        raise ValueError("Dictionaries are not allowed")
-    else:
-        return False
 
 
 if __name__ == "__main__":

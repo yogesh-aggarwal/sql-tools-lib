@@ -17,7 +17,8 @@ def clearDb(db="", err=True):
         delDb(db)
         createDb(db)
     except Exception as e:
-        raise e if err else False
+        if err:
+            raise e
     return True
 
 
@@ -33,7 +34,8 @@ def createDb(db, err=True, verbose=False):
                 _execute__execMethod=False,
             ).execute()
         except Exception as e:
-            raise e if err else False
+            if err:
+                raise e
     return True
 
 
@@ -49,7 +51,8 @@ def delDb(db="", err=True, verbose=False):
                 _execute__execMethod=False,
             ).execute()
         except Exception as e:
-            raise e if err else False
+            if err:
+                raise e
     return True
 
 
@@ -60,7 +63,8 @@ def getDbs(err=True, verbose=False):
             for x in execute(["SHOW DATABASES;"], ["mysql"], verbose=verbose).list[0][0]
         ]
     except Exception as e:
-        raise e if err else False
+        if err:
+            raise e
 
 
 def isIdentical(db="", err=True, verbose=False):
@@ -98,4 +102,5 @@ def isIdentical(db="", err=True, verbose=False):
                 del tables, records
                 return True
     except Exception as e:
-        raise e if err else False
+        if err:
+            raise e

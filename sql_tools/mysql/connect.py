@@ -1,7 +1,7 @@
 import sql_tools.internals as tools
-from sql_tools import constants
+from sql_tools import constants, exception
 
-from . import driver, mysqlException
+from . import driver
 
 
 def connect(
@@ -25,7 +25,7 @@ def connect(
             charset=charset,
         ).close()
     except Exception:
-        raise mysqlException.ConnectionError(
+        raise exception.ConnectionError(
             "Cannot connect to MySQL server, it may be server or credential problem"
         )
     tools.setStatus(
@@ -33,7 +33,8 @@ def connect(
         verbose=verbose,
         err=err,
     )
-    constants.__credentials__ = (host, user, pword, charset)
+    constants.__credentials__ = (host, user, pword)
+    constants.__charset__ = charset
 
     tools.setStatus(
         "Manipulating database for SQL-Tools execution",
@@ -45,7 +46,7 @@ def connect(
     elif tools.checkInstance(db, str):
         constants.__dbMysql__.append(db)
     else:
-        raise mysqlException.DatabaseError(
+        raise exception.DatabaseError(
             "Invalid database dtype, it should be str or array"
         ) if err else tools.setStatus(
             "Invalid database dtype, it should be str or array",

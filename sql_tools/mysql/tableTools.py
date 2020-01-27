@@ -3,9 +3,9 @@ import pandas as pd
 from prettytable import PrettyTable
 
 import sql_tools.internals as tools
-from sql_tools import constants
+from sql_tools import constants, exception
 
-from . import execute, mysqlException
+from . import execute
 
 
 def getTbls(db="", err=True, verbose=False):
@@ -30,7 +30,7 @@ def csvToTbl(
 
             if primaryKey == foreignKey:
                 if err:
-                    mysqlException.KeyError("Primary & Foreign keys are same.")
+                    exception.KeyError("Primary & Foreign keys are same.")
                 else:
                     tools.setStatus("Primary & Foreign keys are same.", verbose=True)
                     exit()
@@ -131,7 +131,7 @@ def execFile(file, db="", out=True, err=True, verbose=False):
                     tools.setStatus("Printing results", verbose=verbose, err=err)
                     print(result)
             except Exception as e:
-                raise mysqlException.UnknownError(e) if err else tools.setStatus(e, verbose=True, err=err)
+                raise exception.UnknownError(e) if err else tools.setStatus(e, verbose=True, err=err)
                 return False
     return True
 
@@ -160,7 +160,8 @@ def showTbl(tbl, db="", sep=("%", 30), err=True, verbose=False):
                 tools.setStatus(f"Retrieving records for table: {tbl}", verbose=verbose, err=err)
                 data = execute([f"SELECT * FROM {tbl}"], db).get[0][0]
             except Exception as e:
-                raise e if err else False
+                if err:
+                    raise e
 
             tools.setStatus("Preparing table", verbose=verbose, err=err)
             _tbl = tbl

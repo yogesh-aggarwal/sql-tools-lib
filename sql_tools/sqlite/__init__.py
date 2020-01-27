@@ -1,10 +1,10 @@
 from . import driver
 from .advTools import *
 from .connect import *
-from .databFuncs import *
+from .dbTools import *
 from .execute import *
-from .fetch import *
-from .io import tbToCsv
+from .tableTools import *
+from .io import *
 
 __version__ = f"SQL-Tools: SQLite version: {driver.sqlite_version}"
 
