@@ -16,7 +16,7 @@ def getNRecords(tbl, db="", err=True, returnDict=False):
     """
     tools.timer("start")
     dbs = tools.parseDbs(db, base="sqlite")
-    tbls = tools.parseTables(tbl, db)
+    tbls = tools.parseTables(tbl, dbs)
 
     final = []
     for i, db in enumerate(dbs):
@@ -56,7 +56,7 @@ def getCNames(tbl, db="", err=True, returnDict=False, __len=False):
     """
     tools.timer("start")
     dbs = tools.parseDbs(db, base="sqlite")
-    tbls = tools.parseTables(tbl, db)
+    tbls = tools.parseTables(tbl, dbs)
 
     final = []
     for i, db in enumerate(dbs):
@@ -120,7 +120,7 @@ def getTCommand(tbl, db="", err=True):
     """
     tools.timer("start")
     dbs = tools.parseDbs(db, base="sqlite")
-    tbls = tools.parseTables(tbl, db)
+    tbls = tools.parseTables(tbl, dbs)
 
     final = []
     for i, db in enumerate(dbs):
