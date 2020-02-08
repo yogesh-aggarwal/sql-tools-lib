@@ -1,14 +1,15 @@
 import logging
 import os
+import warnings
 from datetime import datetime
-from os import getpid
-
-from numpy import array
 
 import sql_tools.internals as tools
+from numpy import array
 from sql_tools import constants
 
 from . import exception
+
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
 def setStatus(arg, err=True, verbose=False):
@@ -16,7 +17,7 @@ def setStatus(arg, err=True, verbose=False):
         if verbose:
             logging.basicConfig(format="[%(process)d] SQL-Tools: %(message)s")
             logging.warning(arg)  # Change the logging style
-            constants.__pid__ = getpid()
+            constants.__pid__ = os.getpid()
         else:
             constants.__history__.append(arg)
         constants.__status__ = arg
@@ -283,7 +284,11 @@ class Exec:
             pass
 
         if not db:
-            db = constants.__dbSqlite__ if self.base == "sqlite" else constants.__dbMysql__
+            db = (
+                constants.__dbSqlite__
+                if self.base == "sqlite"
+                else constants.__dbMysql__
+            )
         if not db:
             if self.__raiseError:
                 raise exception.DatabaseError()

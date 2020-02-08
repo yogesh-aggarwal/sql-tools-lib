@@ -8,9 +8,6 @@ from . import execute
 #  TODO: Copy database
 
 
-warnings.simplefilter(action="ignore", category=FutureWarning)
-
-
 def clearDb(db="", err=True):
     try:
         db = tools.parseDbs(db)

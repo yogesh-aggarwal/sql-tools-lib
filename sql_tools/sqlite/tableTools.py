@@ -66,8 +66,11 @@ def getCNames(tbl, db="", err=True, returnDict=False, __len=False):
             try:
                 queryResult = execute(f"PRAGMA table_info({tbl});", db).get
                 if "ERROR IN SQL QUERY --->" not in queryResult:
-                    data = queryResult[0][0].T[1].tolist()
-                    tables.append(data) if not __len else tables.append(len(queryResult[0][0].T[1].tolist()))
+                    try:
+                        data = queryResult[0][0].T[1].tolist()
+                    except IndexError:
+                        data = []
+                    tables.append(data) if not __len else tables.append(len(data))
             except Exception as e:
                 if err:
                     raise e
@@ -150,7 +153,7 @@ def getDbSize(db="", returnDict=False):
     Returns the database size in bytes.
     """
     tools.timer("start")
-    db = tools.parseDbs(db)
+    db = tools.parseDbs(db, base="sqlite")
 
     final = []
     for i in range(len(db)):
