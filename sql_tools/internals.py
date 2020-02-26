@@ -12,6 +12,21 @@ from . import exception
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
+"""
+& Available functions
+- setStatus
+- checkInstance
+- timer
+- parseDbs
+- parseTables
+- __tableToCsv
+- dataType
+
+& Available tools
+- Exec
+"""
+
+
 def setStatus(arg, err=True, verbose=False):
     try:
         if verbose:
@@ -47,7 +62,14 @@ def timer(method, verbose=False):
 def parseDbs(db, base="mysql", default=True):
     if not db:
         if default:
-            db = constants.__dbMysql__ if base == "mysql" else constants.__dbSqlite__
+            if base == "mysql":
+                db = constants.__dbMysql__
+            if base == "sqlite":
+                db = constants.__dbSqlite__
+            elif base == "json":
+                constants.__dbJson__
+            else:
+                exception.Unknown("Invalid database base provided")
     return Exec([], db)._Exec__parseDatabase()
 
 
@@ -109,6 +131,7 @@ def dataType(data):
 
 
 class Exec:
+    """Base exec class for execution operations with SQLite & MySQL"""
     def __init__(
         self,
         command,

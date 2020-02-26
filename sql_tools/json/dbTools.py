@@ -17,7 +17,7 @@ def createDb(db="", err=True):
     if not db:
         return False
     else:
-        for db in tools.parseDbs(db, base="sqlite"):
+        for db in tools.parseDbs(db, base="json"):
             try:
                 open(db, "w+").close()
             except Exception as e:
@@ -79,7 +79,7 @@ def delDb(db="", err=True):
     if not db:
         return False
     else:
-        for db in tools.parseDbs(db, base="sqlite"):
+        for db in tools.parseDbs(db, base="json"):
             try:
                 os.remove(db)
             except Exception as e:
@@ -96,7 +96,7 @@ def isIdentical(db="", err=True):
     if not db:
         return False
     else:
-        for db in tools.parseDbs(db, base="sqlite"):
+        for db in tools.parseDbs(db, base="json"):
             try:
                 with open(db, "rb") as f:
                     data = f.read()
@@ -111,7 +111,7 @@ def clearDb(db="", err=True):
     """
     Clears the database provided.
     """
-    for x in tools.parseDbs(db, base="sqlite"):
+    for x in tools.parseDbs(db, base="json"):
         try:
             with open(x, "w") as f:
                 f.write("")

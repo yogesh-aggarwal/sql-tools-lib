@@ -38,3 +38,6 @@ dtypeMap = {
 
 # &SQLite
 __dbSqlite__ = []
+
+# &JSON
+__dbJson__ = []

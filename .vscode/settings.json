@@ -3,7 +3,7 @@
     "python.linting.pycodestyleEnabled": false,
     "python.linting.enabled": true,
     "python.linting.pylamaEnabled": true,
-    "python.pythonPath": "/bin/python",
+    "python.pythonPath": "C:\\Users\\yoges\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
     "python.testing.unittestArgs": [
         "-v",
         "-s",
