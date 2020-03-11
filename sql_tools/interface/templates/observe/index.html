@@ -1,0 +1,10 @@
+{% extends 'global/navbar.html' %}
+
+{% block body %}
+<h2>
+    Connected: {% if connected %}<span style="color: green">Connected</span>{% else %}<span style="color: red">Not connected</span>{% endif %}
+</h2>
+
+<h3>Observe</h3>
+
+{% endblock body %}

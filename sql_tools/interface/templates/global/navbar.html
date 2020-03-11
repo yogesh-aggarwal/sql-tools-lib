@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock title %} - SQL-Tools</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/main.css" />
+
+    <!-- Extended -->
+    {% block head %}{% endblock head %}
+  </head>
+  <body>
+    <div class="navbar-sticky usn">
+      <div class="left">
+        <img
+          class="logo udsn"
+          src="https://raw.githubusercontent.com/yogesh-aggarwal/sql-tools-lib/master/docs/media/brand.png"
+          alt=""
+        />
+      </div>
+      <div class="menu-center">
+        <a href="/explore" class="item">Explore</a>
+        <a href="/observe" class="item">Observe</a>
+        <a href="/execute" class="item">Execute</a>
+        <a href="/about" class="item">About</a>
+      </div>
+      <div class="right"><button class="btn-red ns mx-1">Close</button></div>
+    </div>
+    <div class="container">
+      {% block body %}{% endblock body %}
+    </div>
+  </body>
+  {% block foot %}{% endblock foot %}
+</html>
