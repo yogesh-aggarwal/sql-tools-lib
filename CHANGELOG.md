@@ -3,11 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 
-## [3.0.0] - 2020-01-26
+## [3.1.0] - 2020-0_-__
 
-### Updates
-- (MySQL) Updated tools
-- (SQLite) Updated tools
+### Added
+- Asynchronous support for execution
+- 
+
+## [3.0.0] - 2020-01-26
 
 ### Changed
 - Improved time complexity for sqlite, mysql operations
@@ -15,6 +17,10 @@ All notable changes to this project will be documented in this file.
 - Method of working is refactored
 - (MySQL, SQLite) **Function names are changed**
 - (MySQL, SQLite) **Parameter names are changed**
+
+### Updates
+- (MySQL) Updated tools
+- (SQLite) Updated tools
 
 
 ## [2.0.0] - 2020-01-26

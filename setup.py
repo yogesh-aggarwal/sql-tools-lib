@@ -6,7 +6,7 @@ with open("README.md", "r") as readMe:
 setup(
     name="sql_tools",
     packages=find_packages(),
-    version="3.0.2",
+    version="3.1.0",
     license="AGPL 3.0",
     description="An integrative library that contains tools for performing various tasks related to MySQL/sqlite3 databases.",
     long_description=longDesc,
@@ -15,7 +15,7 @@ setup(
     author="Yogesh Aggarwal",
     author_email="developeryogeshgit@gmail.com",
     url="https://github.com/yogesh-aggarwal/sql-tools-lib",
-    download_url="https://raw.githubusercontent.com/yogesh-aggarwal/sql-tools-lib/master/dist/sql_tools-3.0.2.tar.gz",
+    download_url="https://raw.githubusercontent.com/yogesh-aggarwal/sql-tools-lib/master/dist/sql_tools-3.1.0.tar.gz",
     keywords=["SQL", "DATABASES", "TABLES", "RECORDS"],
     install_requires=["numpy", "pandas", "cryptography", "py"],
     classifiers=[

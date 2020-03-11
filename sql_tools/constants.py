@@ -6,7 +6,7 @@ You can read the full documentation on https://yogesh-aggarwal.gitbook.io/sql-to
 Thanks for using the package.
 """
 
-__version__ = "SQL-Tools version: 3.0.2"
+__version__ = "SQL-Tools version: 3.1.0"
 
 # &Global Sharing
 __time__ = None
@@ -19,7 +19,7 @@ __history__ = []
 # &Global constant variables
 __pid__ = None
 __jsonFormat__ = "Error in JSON file or it may not in the specified format.\nFormat:\n\t{\n\t\t<database>:\n\t\t{\n\t\t\t<table name>:\n\t\t\t[\n\t\t\t\t<commands>\n\t\t\t]\n\t\t}\n\t}"
-
+__result__ = None
 
 # &MySQL
 __dbMysql__ = []
