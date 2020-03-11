@@ -7,7 +7,7 @@ import os
 import sql_tools.internals as tools
 
 
-def createDb(db="", err=True):
+def createDb(db="", asyncExec=False, err=True):
     """
     Creates the databases at the path provided.
     Caution:
@@ -26,7 +26,7 @@ def createDb(db="", err=True):
     return True
 
 
-def moveDb(newPath, oldPath="", err=True):
+def moveDb(newPath, oldPath="", asyncExec=False, err=True):
     """
     Moves the database from the old path to new path.
     Caution:
@@ -47,7 +47,7 @@ def moveDb(newPath, oldPath="", err=True):
     return True
 
 
-def copyDb(newPath, oldPath="", err=True):
+def copyDb(newPath, oldPath="", asyncExec=False, err=True):
     """
     Creates a copy of database from the old path to the new path.
     Caution:
@@ -69,7 +69,7 @@ def copyDb(newPath, oldPath="", err=True):
     return True
 
 
-def delDb(db="", err=True):
+def delDb(db="", asyncExec=False, err=True):
     """
     Deletes the database at the provided path.
     Caution:
@@ -88,7 +88,7 @@ def delDb(db="", err=True):
     return True
 
 
-def isIdentical(db="", err=True):
+def isIdentical(db="", asyncExec=False, err=True):
     """
     Returns whether the database(s) are identical or not.
     """
@@ -107,7 +107,7 @@ def isIdentical(db="", err=True):
     return True if len(result) == 1 else False
 
 
-def clearDb(db="", err=True):
+def clearDb(db="", asyncExec=False, err=True):
     """
     Clears the database provided.
     """

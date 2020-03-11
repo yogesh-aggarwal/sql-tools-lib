@@ -14,7 +14,6 @@ def getNRecords(tbl, db="", err=True, returnDict=False):
     Returns the no. of records in the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
-    tools.timer("start")
     dbs = tools.parseDbs(db, base="sqlite")
     tbls = tools.parseTables(tbl, dbs)
 
@@ -37,7 +36,6 @@ def getNRecords(tbl, db="", err=True, returnDict=False):
         final = dict(zip(dbs, final))
 
     tools.setStatus("Returning results")
-    tools.timer("stop")
     return final
 
 
@@ -54,7 +52,6 @@ def getCNames(tbl, db="", err=True, returnDict=False, __len=False):
     Returns the column names of the provided table.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
-    tools.timer("start")
     dbs = tools.parseDbs(db, base="sqlite")
     tbls = tools.parseTables(tbl, dbs)
 
@@ -81,7 +78,6 @@ def getCNames(tbl, db="", err=True, returnDict=False, __len=False):
         final = dict(zip(dbs, final))
 
     tools.setStatus("Returning results")
-    tools.timer("stop")
     return final
 
 
@@ -91,9 +87,8 @@ def getTNames(db="", err=True, returnDict=False):
     You can provided multiple database paths..
     """
     dbs = tools.parseDbs(db, base="sqlite")
-    tools.timer("start")
     final = []
-    for i, db in enumerate(dbs):
+    for _, db in enumerate(dbs):
         tables = []
         tools.setStatus(f"Getting table names for {db}")
         queryResult = execute(f"SELECT name FROM sqlite_master WHERE type = 'table';", db).get
@@ -112,7 +107,6 @@ def getTNames(db="", err=True, returnDict=False):
         final = dict(zip(dbs, final))
 
     tools.setStatus("Returning results")
-    tools.timer("stop")
     return final
 
 
@@ -121,7 +115,6 @@ def getTCommand(tbl, db="", err=True):
     Returns the command for creating the provided table in the database accordingly.
     You can provided multiple table names and multiple database paths to get the result in group by providing the arguments in a list.
     """
-    tools.timer("start")
     dbs = tools.parseDbs(db, base="sqlite")
     tbls = tools.parseTables(tbl, dbs)
 
@@ -144,7 +137,6 @@ def getTCommand(tbl, db="", err=True):
                     raise exception.TableError("Invalid table name, no such table exists")
         final.append(tables)
     tools.setStatus("Returning results")
-    tools.timer("stop")
     return final
 
 
@@ -152,7 +144,6 @@ def getDbSize(db="", returnDict=False):
     """
     Returns the database size in bytes.
     """
-    tools.timer("start")
     db = tools.parseDbs(db, base="sqlite")
 
     final = []
@@ -166,7 +157,6 @@ def getDbSize(db="", returnDict=False):
         tools.setStatus("Packing into dictionary")
         final = dict(zip(db, final))
 
-    tools.timer("stop")
     return final
 
 
@@ -178,7 +168,6 @@ def getSampleDb(db, bigData=False):
     - Small database will contain 2 tables with small dataset (~5 Minutes).
     - Big database will contain 3 tables with big dataset (~10 Minutes).
     """
-    tools.timer("start")
     try:
         open(db, "a+")
     except:
@@ -192,15 +181,12 @@ def getSampleDb(db, bigData=False):
     for i in range(len(query)):
         execute(query[i], db=db)
 
-    tools.timer("stop")
-    tools.timer("result")
-
 
 def execTime():
     """
     Returns the execution time.
     """
-    return tools.timer("result")
+    return constants.__time__
 
 
 def status():

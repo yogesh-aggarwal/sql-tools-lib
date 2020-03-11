@@ -3,9 +3,9 @@ import os
 import warnings
 from datetime import datetime
 
-import sql_tools.internals as tools
 from numpy import array
 from sql_tools import constants
+from threading import Thread
 
 from . import exception
 
@@ -33,8 +33,6 @@ def setStatus(arg, err=True, verbose=False):
             logging.basicConfig(format="[%(process)d] SQL-Tools: %(message)s")
             logging.warning(arg)  # Change the logging style
             constants.__pid__ = os.getpid()
-        else:
-            constants.__history__.append(arg)
         constants.__status__ = arg
         return True
     except Exception:
@@ -47,16 +45,20 @@ def checkInstance(value, *args):
     return True if [x for x in args if isinstance(value, x)] else False
 
 
-def timer(method, verbose=False):
-    if method == "start":
+def timer(main):
+    def wrapper(classObj):
         constants.__startTime__ = datetime.now()
-        setStatus("Starting execution", verbose=verbose)
-    elif method == "stop":
+        setStatus("Starting execution")
+
+        result = main(classObj)
+
         constants.__stopTime__ = datetime.now()
-        setStatus("Calculating time", verbose=verbose)
-    elif method == "result":
+        setStatus("Calculating time")
+
         constants.__time__ = f"Wall time: {(constants.__stopTime__ - constants.__startTime__).total_seconds()}s"
-        return constants.__time__
+        return result
+
+    return wrapper
 
 
 def parseDbs(db, base="mysql", default=True):
@@ -79,7 +81,6 @@ def parseTables(tables, db):
 
 # &SQLite
 def __tbToCsv(data, tblName, db="", tbl=True, database=True, index=False):
-    timer("start")
     # db = parseDbs(db)
 
     # db = db[
@@ -104,7 +105,6 @@ def __tbToCsv(data, tblName, db="", tbl=True, database=True, index=False):
 
     # # else:
     # #     raise AttributeError("One attribute must be provided.")
-    timer("stop")
     return True
 
 
@@ -132,6 +132,7 @@ def dataType(data):
 
 class Exec:
     """Base exec class for execution operations with SQLite & MySQL"""
+
     def __init__(
         self,
         command,
@@ -177,7 +178,7 @@ class Exec:
 
     @property
     def time(self):
-        return tools.timer("result")
+        return constants.__time__
 
     def __properties(self, db):
         if self.property:
@@ -199,10 +200,10 @@ class Exec:
         self.base = type
         self.property = () if type == "sqlite" else args
 
+    @timer
     def execute(self):
         self.__simplify = constants.simplify if not self.__simplify else self.__simplify
         constants.__pid__ = os.getpid()
-        tools.timer("start", self.__verbose)
 
         # &For database to list
         self.db = self.__parseDatabase()
@@ -222,14 +223,15 @@ class Exec:
         for i in range(len(self.db)):
             # Connect to the database
             connection = self.__properties(self.db[i])
-            tools.setStatus("Connected", verbose=self.__verbose)
-            tools.setStatus("Creating the pointer", verbose=self.__verbose)
+            setStatus("Connected", verbose=self.__verbose)
+            setStatus("Creating the pointer", verbose=self.__verbose)
 
             data = []
-            tools.setStatus(
+            setStatus(
                 f"Executing command database: {self.db[i]}", verbose=self.__verbose
             )
             for comm in self.__command[i]:
+                constants.__history__.append(comm)
                 try:
                     cursor = connection.cursor()
                     cursor.execute(comm)
@@ -244,8 +246,7 @@ class Exec:
             connection.commit()
             connection.close()
 
-        tools.setStatus("Preparing results", verbose=self.__verbose)
-        tools.timer("stop", self.__verbose)
+        setStatus("Preparing results", verbose=self.__verbose)
 
         final = array(final)  # For performace
         if self.__simplify:
@@ -260,26 +261,26 @@ class Exec:
 
     def __parseCommands(self, command="", db=""):
         command = command if command else self.__command
-        tools.setStatus("Parsing commands", self.__raiseError, self.__verbose)
+        setStatus("Parsing commands", self.__raiseError, self.__verbose)
         try:
-            db = tools.parseDbs(db) if db else tools.parseDbs(self.db)
+            db = parseDbs(db) if db else parseDbs(self.db)
             if len(db) == 1:
-                if tools.checkInstance(command, str):
+                if checkInstance(command, str):
                     command = [[command]]
-                elif tools.checkInstance(command[0], str):
+                elif checkInstance(command[0], str):
                     command = [command]
-                elif tools.checkInstance(command[0], list, tuple):
-                    if tools.checkInstance(command[0][0], list, tuple):
+                elif checkInstance(command[0], list, tuple):
+                    if checkInstance(command[0][0], list, tuple):
                         raise exception.UnknownError(
                             "Database and commands are not commuting, n(commands) != n(database)"
                         )
                 else:
                     raise exception.CommandError()
             else:
-                if tools.checkInstance(command, list, tuple):
-                    if not tools.checkInstance(
+                if checkInstance(command, list, tuple):
+                    if not checkInstance(
                         command[0], list, tuple
-                    ) or tools.checkInstance(command[0][0], list, tuple):
+                    ) or checkInstance(command[0][0], list, tuple):
                         raise exception.UnknownError(
                             "Database and commands are not commuting, n(commands) != n(database)"
                         )
@@ -295,11 +296,11 @@ class Exec:
 
     def __parseDatabase(self, db=""):
         db = db if db else self.db
-        tools.setStatus("Parsing database(s)", self.__raiseError, self.__verbose)
+        setStatus("Parsing database(s)", self.__raiseError, self.__verbose)
         try:
-            if tools.checkInstance(db, str):
+            if checkInstance(db, str):
                 db = [db]
-            elif not tools.checkInstance(db, list, tuple) or not tools.checkInstance(
+            elif not checkInstance(db, list, tuple) or not checkInstance(
                 db[0], str
             ):
                 raise ValueError
@@ -316,5 +317,5 @@ class Exec:
             if self.__raiseError:
                 raise exception.DatabaseError()
             else:
-                tools.setStatus("Error while parsing databases", verbose=True)
+                setStatus("Error while parsing databases", verbose=True)
         return db
