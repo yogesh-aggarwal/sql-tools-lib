@@ -1,5 +1,7 @@
 {% extends 'global/navbar.html' %}
 
+{% block title %}Execute{% endblock title %}
+
 {% block body %}
 <h2>
     Connected: {% if connected %}<span style="color: green">Connected</span>{% else %}<span style="color: red">Not connected</span>{% endif %}

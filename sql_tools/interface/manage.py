@@ -14,7 +14,7 @@ def main():
 
 def serve():
     get_wsgi_application()
-    call_command("runserver")
+    call_command("runserver", "3400")
 
 
 if __name__ == "__main__":

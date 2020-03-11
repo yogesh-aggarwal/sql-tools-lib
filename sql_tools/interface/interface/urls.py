@@ -20,8 +20,7 @@ from . import views
 
 urlpatterns = [
     url(r"^admin/", admin.site.urls),
-    path("", include("home.urls"), name="Home"),
-    path("explore", include("explore.urls"), name="Explore"),
+    path("", include("explore.urls"), name="Explore"),
     path("observe", include("observe.urls"), name="Observe"),
     path("execute", include("execute.urls"), name="Execute"),
     path("about", views.about, name="About"),

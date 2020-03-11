@@ -1495,6 +1495,11 @@
   cursor: pointer;
 }
 
+a {
+  color: #0d7be2;
+  text-decoration: none;
+}
+
 * {
   font-family: 'Rubik', sans-serif;
 }
