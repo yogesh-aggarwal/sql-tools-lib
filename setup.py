@@ -8,7 +8,7 @@ setup(
     packages=find_packages(),
     version="3.1.0",
     license="AGPL 3.0",
-    description="An integrative library that contains tools for performing various tasks related to MySQL/sqlite3 databases.",
+    description="An integrative library that contains tools for performing various tasks related to MySQL & sqlite3 databases.",
     long_description=longDesc,
     long_description_content_type="text/markdown",
     include_package_data=True,
