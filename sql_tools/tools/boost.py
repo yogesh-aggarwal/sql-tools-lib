@@ -38,22 +38,16 @@ def writeHistoryToFile(file, err=True, verbose=False):
             raise e
 
 
-def startInterface(method="sqlite", asyncExec=True):
-    def run():
-        try:
-            import django
-            import webbrowser
+def parseJson(file):
+    data = None
+    with open(file) as f:
+        data = f.read()
+    import json
 
-            webbrowser.open_new_tab("http://127.0.0.1:3400")
-            os.chdir(f"{os.getcwd()}\\sql_tools\\interface")
-            os.system("python manage.py runserver 3400")
-        except ModuleNotFoundError:
-            from colorama import init as ansi
-            ansi()
+    data = json.loads(data)
+    return {"db": tuple(data.keys()), "command": tuple(data.values())}
 
-            print(
-                f'\033[1;31;40;_You must install django>3.0.0 to use the SQL-Tools web interface. Run "pip install django --user" to install it.\033[0m\n'
-            )
-            exit(0)
 
-    Thread(target=run).start() if asyncExec else run()
+def parseFile(file):
+    with open(file) as f:
+        return f.read().replace("\n", "").split(";")

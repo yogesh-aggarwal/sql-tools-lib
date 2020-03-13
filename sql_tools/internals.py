@@ -5,7 +5,6 @@ from datetime import datetime
 
 from numpy import array
 from sql_tools import constants
-from threading import Thread
 
 from . import exception
 
@@ -137,32 +136,24 @@ class Exec:
         self,
         command,
         db=[],
-        # matrix=True,
-        # inlineData=False,
-        # splitByColumns=False,
-        # asyncExec=False,
-        # splitExec=False,
         returnDict=False,
         verbose=False,
         err=True,
         simplify=False,
-        # commit=True,
     ):
         self.__command = command  # Commands to be executed
         self.db = db  # Database
-        # self.__matrix = matrix
-        # self.__inlineData = inlineData
-        # self.__splitByColumns = splitByColumns
-        # self.__asyncExec = asyncExec
         self.__returnDict = returnDict
         self.__verbose = verbose  # For being verbose
         self.__raiseError = err  # Raise error or not if something goes wrong
         self.__simplify = simplify  # Commit the changes
-        # self.__commit = commit
         self.__result = []
         self._driver = None
         self.base = "mysql"
         self.property = ()
+    
+    def __repr__(self):
+        return self.get
 
     @property
     def get(self):
@@ -286,12 +277,9 @@ class Exec:
                         )
                 else:
                     raise exception.CommandError()
-        except IndexError:
+        except Exception:
             if self.__raiseError:
-                raise exception.CommandError("Command not provided")
-        except Exception as e:
-            if self.__raiseError:
-                raise e
+                raise exception.CommandError("Command not provided! Commands must be a str or list object")
         return command
 
     def __parseDatabase(self, db=""):
