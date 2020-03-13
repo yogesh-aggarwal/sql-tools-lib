@@ -2,9 +2,7 @@
 SQL-Tools extension for miscelleneous tools
 """
 
-import os
 import time
-from threading import Thread
 
 import requests
 
