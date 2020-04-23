@@ -4,10 +4,16 @@ from flask import Flask, render_template
 
 from sql_tools import constants
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_url_path="/static",
+    static_folder="./web/static",
+    template_folder="./web/templates",
+)
 
-import logging 
-logging.getLogger('werkzeug').disabled = True
+import logging
+
+logging.getLogger("werkzeug").disabled = True
 
 
 @app.route("/api")
@@ -28,4 +34,4 @@ def api():
 
 @app.route("/")
 def explore():
-    return render_template("./web/templates/explore.html")
+    return render_template("explore.html")
