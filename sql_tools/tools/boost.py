@@ -9,8 +9,7 @@ from threading import Thread
 
 import requests
 
-from sql_tools import constants, exception
-
+from sql_tools import constants, exception, interface
 
 def fetchSQL(url, file="", err=True, verbose=False):
     if not url:
@@ -57,12 +56,11 @@ def parseFile(file):
 def startInterface(method="sqlite", asyncExec=True):
     def run():
         try:
-            import webbrowser
-
-            webbrowser.open_new_tab("http://127.0.0.1:3400")
-            os.chdir(f"{os.getcwd()}\\sql_tools\\interface")
-            os.system("python manage.py runserver 3400")
-        except ModuleNotFoundError:
+            # import webbrowser
+            print(constants.__dbSqlite__)
+            print(interface.server.serve())
+        except ModuleNotFoundError as e:
+            raise e
             from colorama import init as ansi
 
             ansi()
@@ -72,4 +70,5 @@ def startInterface(method="sqlite", asyncExec=True):
             )
             exit(0)
 
-    Thread(target=run).start() if asyncExec else run()
+    # Thread(target=run).start() if asyncExec else run()
+    run()

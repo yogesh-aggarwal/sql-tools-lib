@@ -1,1 +1,1 @@
-from .manage import serve
+from .server import *
