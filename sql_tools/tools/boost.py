@@ -2,14 +2,13 @@
 SQL-Tools extension for miscelleneous tools
 """
 
-import os
 import time
-
 from threading import Thread
 
 import requests
 
 from sql_tools import constants, exception, interface
+
 
 def fetchSQL(url, file="", err=True, verbose=False):
     if not url:
@@ -56,9 +55,7 @@ def parseFile(file):
 def startInterface(method="sqlite", asyncExec=True):
     def run():
         try:
-            # import webbrowser
-            print(constants.__dbSqlite__)
-            print(interface.server.serve())
+            interface.server.serve()
         except ModuleNotFoundError as e:
             raise e
             from colorama import init as ansi
@@ -66,7 +63,7 @@ def startInterface(method="sqlite", asyncExec=True):
             ansi()
 
             print(
-                f'\033[1;31;40;_You must install django>3.0.0 to use the SQL-Tools web interface. Run "pip install django --user" to install it.\033[0m\n'
+                f'\033[1;31;40;_You must install flask>1.1.2 to use the SQL-Tools web interface. Run "pip install flask==1.1.2 --user" to install it.\033[0m\n'
             )
             exit(0)
 

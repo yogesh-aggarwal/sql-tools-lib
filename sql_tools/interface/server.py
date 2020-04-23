@@ -1,4 +1,4 @@
 from .api import app
 
 def serve():
-    app.run()
+    app.run(debug=True)
