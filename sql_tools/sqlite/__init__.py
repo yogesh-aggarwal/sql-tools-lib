@@ -1,4 +1,5 @@
 from . import driver
+from . import db
 
 __version__ = f"SQL-Tools: SQLite version: {driver.sqlite_version}"
 
