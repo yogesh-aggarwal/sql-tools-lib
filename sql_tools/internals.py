@@ -10,7 +10,6 @@ from . import exception
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
-
 """
 & Available functions
 - setStatus
@@ -110,15 +109,8 @@ def __tbToCsv(data, tblName, db="", tbl=True, database=True, index=False):
 def dataType(data):
     try:
         dtype = array(data).dtype
-        if (
-            dtype == "O"
-            or dtype == "<U1"
-            or dtype == "<U5"
-            or dtype == "<U6"
-            or dtype == "<U7"
-            or dtype == "<U11"
-            or dtype == "<U21"
-        ):
+        if (dtype == "O" or dtype == "<U1" or dtype == "<U5" or dtype == "<U6"
+                or dtype == "<U7" or dtype == "<U11" or dtype == "<U21"):
             return "str"
         elif dtype == "int64" or dtype == "<U2":
             return "int"
@@ -131,7 +123,6 @@ def dataType(data):
 
 class Exec:
     """Base exec class for execution operations with SQLite & MySQL"""
-
     def __init__(
         self,
         command,
@@ -151,7 +142,7 @@ class Exec:
         self._driver = None
         self.base = "mysql"
         self.property = ()
-    
+
     def __repr__(self):
         return self.get
 
@@ -174,17 +165,13 @@ class Exec:
     def __properties(self, db):
         if self.property:
             host, user, pword = self.property[0]
-        return (
-            self._driver.connect(
-                host=host,
-                user=user,
-                password=pword,
-                db=db,
-                charset=constants.__charset__,
-            )
-            if self.property
-            else self._driver.connect(db)
-        )
+        return (self._driver.connect(
+            host=host,
+            user=user,
+            password=pword,
+            db=db,
+            charset=constants.__charset__,
+        ) if self.property else self._driver.connect(db))
 
     def __setParams(self, driver, type, *args):
         self._driver = driver
@@ -218,9 +205,8 @@ class Exec:
             setStatus("Creating the pointer", verbose=self.__verbose)
 
             data = []
-            setStatus(
-                f"Executing command database: {self.db[i]}", verbose=self.__verbose
-            )
+            setStatus(f"Executing command database: {self.db[i]}",
+                      verbose=self.__verbose)
             for comm in self.__command[i]:
                 constants.__history__.append(comm)
                 try:
@@ -269,9 +255,9 @@ class Exec:
                     raise exception.CommandError()
             else:
                 if checkInstance(command, list, tuple):
-                    if not checkInstance(
-                        command[0], list, tuple
-                    ) or checkInstance(command[0][0], list, tuple):
+                    if not checkInstance(command[0], list,
+                                         tuple) or checkInstance(
+                                             command[0][0], list, tuple):
                         raise exception.UnknownError(
                             "Database and commands are not commuting, n(commands) != n(database)"
                         )
@@ -279,7 +265,9 @@ class Exec:
                     raise exception.CommandError()
         except Exception:
             if self.__raiseError:
-                raise exception.CommandError("Command not provided! Commands must be a str or list object")
+                raise exception.CommandError(
+                    "Command not provided! Commands must be a str or list object"
+                )
         return command
 
     def __parseDatabase(self, db=""):
@@ -289,18 +277,14 @@ class Exec:
             if checkInstance(db, str):
                 db = [db]
             elif not checkInstance(db, list, tuple) or not checkInstance(
-                db[0], str
-            ):
+                    db[0], str):
                 raise ValueError
         except Exception:
             pass
 
         if not db:
-            db = (
-                constants.__dbSqlite__
-                if self.base == "sqlite"
-                else constants.__dbMysql__
-            )
+            db = (constants.__dbSqlite__
+                  if self.base == "sqlite" else constants.__dbMysql__)
         if not db:
             if self.__raiseError:
                 raise exception.DatabaseError()

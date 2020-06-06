@@ -1,9 +1,9 @@
 {
-    "python.linting.pylintEnabled": false,
+    "python.linting.pylintEnabled": true,
     "python.linting.pycodestyleEnabled": false,
     "python.linting.enabled": true,
-    "python.linting.pylamaEnabled": true,
-    "python.pythonPath": "C:\\Python\\Python38\\python.exe",
+    "python.linting.pylamaEnabled": false,
+    "python.pythonPath": "/bin/python",
     "python.testing.unittestArgs": [
         "-v",
         "-s",
@@ -15,5 +15,5 @@
     "python.testing.nosetestsEnabled": false,
     "python.testing.unittestEnabled": false,
     "python.testing.promptToConfigure": false,
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "yapf"
 }
